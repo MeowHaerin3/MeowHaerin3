@@ -2,7 +2,8 @@
 
 🎓 **Automation Engineer** exploring the world of **Data Engineering** & **Backend Systems**  
 🚀 Passionate about building efficient **pipelines**, clean **APIs**, and interactive **dashboards**  
-🌱 Currently diving into orchestration tools like **Dagster**, **dbt**, and **Airflow** + event streaming with **Kafka**
+🌱 Currently diving into orchestration tools like **Dagster**, **dbt**, and **Airflow** + event streaming with **Kafka**  
+💻 Experienced with **Express**, **React**, and **MongoDB** for full-stack development
 
 ---
 
@@ -21,11 +22,13 @@
 ![Django](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
 ![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
 
 ### ☁️ **Databases & DevOps**
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white)
 ![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
 
@@ -54,5 +57,3 @@
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-blue?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/tanawat-soonthorn/)
 [![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:tanawat.stn@gmail.com)
-
----
