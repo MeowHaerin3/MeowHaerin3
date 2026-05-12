@@ -72,8 +72,10 @@
 
 ## 📈 GitHub Stats
 
-![Your GitHub Stats](https://github-readme-stats.vercel.app/api?username=MeowHaerin3&show_icons=true&theme=radical)
-![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=MeowHaerin3&layout=compact&theme=radical)
+<p align="center">
+  <img src="https://github-readme-stats.vercel.app/api?username=meowhaerin3&show_icons=true&theme=radical&v=1" alt="Jeno's GitHub Stats" />
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=meowhaerin3&layout=compact&theme=radical&v=1" alt="Top Languages" />
+</p>
 
 ---
 
