@@ -73,6 +73,9 @@
 ## 📈 GitHub Stats
 
 ![GitHub Streak](https://github-readme-streak-stats.herokuapp.com/?user=meowhaerin3&theme=radical)
+[![GitHub Trophies](https://github-profile-trophy.vercel.app/?username=meowhaerin3&theme=radical&column=4)](https://github.com/ryo-ma/github-profile-trophy)
+![Activity Graph](https://github-readme-activity-graph.vercel.app/graph?username=meowhaerin3&theme=radical)
+![Views](https://komarev.com/ghpvc/?username=meowhaerin3&color=a91101&style=flat-square)
 
 ---
 
