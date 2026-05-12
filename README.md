@@ -72,10 +72,7 @@
 
 ## 📈 GitHub Stats
 
-<p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=meowhaerin3&show_icons=true&theme=radical&v=1" alt="Jeno's GitHub Stats" />
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=meowhaerin3&layout=compact&theme=radical&v=1" alt="Top Languages" />
-</p>
+![GitHub Streak](https://github-readme-streak-stats.herokuapp.com/?user=meowhaerin3&theme=radical)
 
 ---
 
