@@ -1295,6 +1295,47 @@
   .chip.log-count { background: transparent; border: 1px solid var(--line); color: var(--muted); }
   .chip.log-count.hot { border-color: var(--accent); color: var(--accent-ink); }
 
+  /* ─── Drive sync ─────────────────────────────────────────── */
+  .sync-box {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    padding: 12px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-md);
+    background: var(--surface-2);
+  }
+  .sync-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .sync-state {
+    display: flex;
+    align-items: flex-start;
+    gap: 7px;
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .sync-state .dot {
+    flex: none;
+    width: 6px; height: 6px;
+    margin-top: 6px;
+    border-radius: 50%;
+    background: var(--ok);
+  }
+  .sync-state.is-stale .dot { background: var(--warn); }
+  .sync-state.is-off .dot { background: var(--line-strong); }
+  .sync-err {
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--danger);
+    background: var(--danger-soft);
+    border-radius: var(--r-sm);
+    padding: 7px 9px;
+    margin: 0;
+  }
+  .sync-note { font-size: 11.5px; color: var(--muted); line-height: 1.5; margin: 0; }
+
+  #btnPush[hidden] { display: none; }
+
   /* ─── settings sheet ─────────────────────────────────────── */
   .font-opts { display: flex; flex-direction: column; gap: 6px; }
   .font-opt {
@@ -1403,6 +1444,7 @@
         <p id="mastSub"></p>
       </div>
       <div class="masthead-tools">
+        <button class="btn btn-primary" id="btnPush" type="button" hidden></button>
         <button class="btn" id="btnSettings" type="button"></button>
         <button class="btn" id="btnExport" type="button"></button>
         <button class="btn" id="btnImport" type="button"></button>
@@ -1673,6 +1715,35 @@
 
       "warn.noStore": "เบราว์เซอร์นี้ไม่ให้เก็บข้อมูลลงเครื่อง — งานที่เพิ่มจะหายเมื่อปิดหน้า กด “บันทึกไฟล์สำรอง” ไว้ก่อน",
       "warn.full": "บันทึกลงเครื่องไม่สำเร็จ (พื้นที่เก็บข้อมูลเต็ม) — กด “บันทึกไฟล์สำรอง” ไว้ก่อนปิดหน้านี้",
+      "sync.title": "ซิงก์กับ Google Drive",
+      "sync.push": "ส่งขึ้น Drive",
+      "sync.pushing": "กำลังส่ง…",
+      "sync.pull": "ดึงจาก Drive ตอนนี้",
+      "sync.checking": "กำลังเช็ก Drive…",
+      "sync.never": "ยังไม่เคยส่งกระดานนี้ขึ้น Drive",
+      "sync.last": "ส่งขึ้น Drive ล่าสุด {d}",
+      "sync.pushed": "ส่งขึ้น Drive แล้ว",
+      "sync.pulled": "ดึงของล่าสุดจาก Drive มาแล้ว — {n} งาน",
+      "sync.pulled.one": "ดึงของล่าสุดจาก Drive มาแล้ว — 1 งาน",
+      "sync.upToDate": "ตรงกับ Drive อยู่แล้ว",
+      "sync.none": "ยังไม่มีไฟล์กระดานใน Drive",
+      "sync.dirty": "มีการแก้หลังส่งขึ้นครั้งล่าสุด",
+      "sync.off": "หน้านี้เรียก Google Drive ไม่ได้",
+      "sync.note": "ทุกครั้งที่กดส่งจะได้ไฟล์ใหม่ เพราะ Drive API เขียนทับไฟล์เดิมไม่ได้ ไฟล์เก่ายังอยู่ ลบเองได้ที่ Drive",
+      "sync.autoNote": "เปิดหน้านี้เมื่อไหร่ ระบบจะดึงของล่าสุดจาก Drive ให้เอง ส่วนการส่งขึ้นต้องกดเอง",
+      "sync.conflict.title": "ข้อมูลใน Drive ใหม่กว่า",
+      "sync.conflict.body": "ใน Drive มี {dn} งาน บันทึกไว้เมื่อ {dd} ส่วนเครื่องนี้มี {ln} งาน และถูกแก้หลังจากส่งขึ้นครั้งล่าสุด เลือกได้ว่าจะใช้อันไหน",
+      "sync.conflict.useDrive": "ใช้ของใน Drive",
+      "sync.conflict.keepLocal": "เก็บของในเครื่องไว้",
+      "sync.err.reauth": "Google Drive ต้องเชื่อมต่อใหม่ — ไปที่ claude.ai แล้วเข้า Settings → Connectors",
+      "sync.err.notConnected": "ยังไม่ได้เพิ่ม Google Drive — เพิ่มได้ที่ claude.ai แล้วเข้า Settings → Connectors",
+      "sync.err.selection": "คุณมี Google Drive มากกว่าหนึ่งอัน เลือกอันที่จะใช้ก่อนแล้วลองใหม่",
+      "sync.err.policy": "องค์กรของคุณไม่อนุญาตให้หน้านี้เรียก Google Drive",
+      "sync.err.unavailable": "Google Drive ไม่ตอบตอนนี้ ลองกดใหม่อีกครั้ง",
+      "sync.err.writeUnknown": "ไม่แน่ใจว่าส่งสำเร็จหรือไม่ — เช็กใน Drive ก่อนกดส่งซ้ำ กันไฟล์ซ้ำ",
+      "sync.err.tool": "Google Drive แจ้งข้อผิดพลาด: {m}",
+      "sync.err.other": "ติดต่อ Google Drive ไม่สำเร็จ",
+      "sync.err.badFile": "ไฟล์ล่าสุดใน Drive อ่านไม่ออก ข้ามไปก่อน",
       "file.name": "กระดานงาน"
     },
 
@@ -1893,6 +1964,35 @@
 
       "warn.noStore": "This browser won't let the board store data — anything you add is lost when the page closes. Press “Save backup” first.",
       "warn.full": "Couldn't save to this device (storage is full) — press “Save backup” before closing the page",
+      "sync.title": "Google Drive sync",
+      "sync.push": "Push to Drive",
+      "sync.pushing": "Pushing…",
+      "sync.pull": "Pull from Drive now",
+      "sync.checking": "Checking Drive…",
+      "sync.never": "This board has never been pushed to Drive",
+      "sync.last": "Last pushed to Drive {d}",
+      "sync.pushed": "Pushed to Drive",
+      "sync.pulled": "Loaded the latest from Drive — {n} tasks",
+      "sync.pulled.one": "Loaded the latest from Drive — 1 task",
+      "sync.upToDate": "Already matches Drive",
+      "sync.none": "No board file in Drive yet",
+      "sync.dirty": "edited since that push",
+      "sync.off": "This page can't reach Google Drive",
+      "sync.note": "Every push writes a new file, because the Drive API can't overwrite an existing one. Older files stay where they are — delete them from Drive whenever you like.",
+      "sync.autoNote": "Opening this page pulls the latest copy from Drive automatically. Pushing is always a button press.",
+      "sync.conflict.title": "Drive has a newer copy",
+      "sync.conflict.body": "Drive holds {dn} tasks saved {dd}. This device holds {ln} tasks and has been edited since its last push. Pick which one to keep.",
+      "sync.conflict.useDrive": "Use the Drive copy",
+      "sync.conflict.keepLocal": "Keep this device's copy",
+      "sync.err.reauth": "Google Drive needs reconnecting — go to claude.ai, then Settings → Connectors",
+      "sync.err.notConnected": "Google Drive isn't added — add it at claude.ai, then Settings → Connectors",
+      "sync.err.selection": "You have more than one Google Drive connected. Choose one, then try again.",
+      "sync.err.policy": "Your organisation doesn't allow this page to call Google Drive",
+      "sync.err.unavailable": "Google Drive isn't responding right now. Try again.",
+      "sync.err.writeUnknown": "Not sure whether that push landed — check Drive before pushing again, to avoid a duplicate file.",
+      "sync.err.tool": "Google Drive reported an error: {m}",
+      "sync.err.other": "Couldn't reach Google Drive",
+      "sync.err.badFile": "The newest Drive file couldn't be read, so it was skipped",
       "file.name": "task-board"
     }
   };
@@ -2091,7 +2191,14 @@
     Object.keys(cards).forEach(function (id) {
       if (!seen[id]) columns[0].cards.push(id);
     });
-    return { v: 2, columns: columns, cards: cards };
+    var num = function (x) { return typeof x === "number" ? x : 0; };
+    return {
+      v: 2, columns: columns, cards: cards,
+      // sync bookkeeping, kept so it survives a reload
+      syncedAt: num(raw.syncedAt),
+      touchedAt: num(raw.touchedAt),
+      seenDriveAt: num(raw.seenDriveAt)
+    };
   }
 
   /* ═══ view state ════════════════════════════════════════════ */
@@ -2224,7 +2331,8 @@
   }
 
   /* ═══ mutations ═════════════════════════════════════════════ */
-  function commit() { save(); render(); }
+  function markTouched() { state.touchedAt = Date.now(); }
+  function commit() { markTouched(); save(); render(); renderSync(); }
 
   function addCard(colId, title) {
     var col = state.columns[colIndex(colId)];
@@ -2322,8 +2430,10 @@
     var card = state.cards[cardId];
     if (!card || !text.trim()) return;
     logOf(card).push({ id: uid("g"), text: text.trim(), at: Date.now() });
+    markTouched();
     save();
     render();
+    renderSync();
     renderLogSection(cardId, true);
   }
 
@@ -2336,8 +2446,10 @@
     if (i === -1) return;
 
     var removed = log.splice(i, 1)[0];
+    markTouched();
     save();
     render();
+    renderSync();
     renderLogSection(cardId);
     toast(t("toast.logDeleted"), t("toast.undo"), function () {
       var c = state.cards[cardId];
@@ -2409,6 +2521,244 @@
     var input = $("logInput");
     if (!input || !input.value.trim()) return;
     addLogEntry(editing.id, input.value);
+  }
+
+  /* ═══ Google Drive sync ═════════════════════════════════════
+     Drive has create_file but no update_file, so every push writes a
+     new dated file and a pull reads the newest one back. Pull runs on
+     open; push is always a button press. */
+  var DRIVE = "Google Drive";
+  var SYNC_PREFIX = "todo-board-sync-";
+  var sync = { busy: false, checked: false, off: false, err: "", driveAt: 0 };
+
+  function mcpReady() { return !!(window.claude && window.claude.mcp); }
+
+  function b64decode(b64) {
+    var bin = atob(b64);
+    var bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+
+  /* Lifecycle codes mean MCP will never work in this view — hide the
+     feature rather than nagging about it. */
+  function syncDead(err) {
+    var c = err && err.code;
+    return c === "not_granted" || c === "capability_disabled" || c === "capability_removed";
+  }
+
+  /* Each code has a different fix, so each gets its own message. */
+  function syncErrText(err, isWrite) {
+    var c = err && err.code;
+    if (c === "needs_reauth") return t("sync.err.reauth");
+    if (c === "server_not_connected") return t("sync.err.notConnected");
+    if (c === "selection_required") return t("sync.err.selection");
+    if (c === "blocked_by_policy" || c === "approval_required") return t("sync.err.policy");
+    if (c === "server_unavailable") {
+      // for a write this is ambiguous: the file may or may not exist now
+      return isWrite ? t("sync.err.writeUnknown") : t("sync.err.unavailable");
+    }
+    if (c === "tool_error") return t("sync.err.tool", { m: clip(String(err.message || ""), 120) });
+    return t("sync.err.other");
+  }
+
+  function driveNewest() {
+    return window.claude.mcp.callTool(DRIVE, "search_files", {
+      query: "title contains '" + SYNC_PREFIX + "' and mimeType = 'application/json'",
+      pageSize: 25,
+      excludeContentSnippets: true
+    }, { cache: false }).then(function (res) {
+      // an empty search resolves to {} rather than {files: []}
+      var files = (res && res.payload && res.payload.files) || [];
+      if (!files.length) return null;
+      return files.slice().sort(function (a, b) {
+        return String(b.createdTime || "").localeCompare(String(a.createdTime || ""));
+      })[0];
+    });
+  }
+
+  function driveLoad(file) {
+    return window.claude.mcp.callTool(DRIVE, "download_file_content", {
+      fileId: file.id
+    }, { cache: false }).then(function (res) {
+      var b64 = res && res.payload && res.payload.content;
+      if (!b64) return null;
+      var raw;
+      try { raw = JSON.parse(b64decode(b64)); } catch (e) { return null; }
+      var clean = sanitize(raw);
+      if (!clean) return null;
+      return {
+        state: clean,
+        savedAt: typeof raw.savedAt === "number"
+          ? raw.savedAt
+          : (Date.parse(file.createdTime) || 0)
+      };
+    });
+  }
+
+  function applyRemote(loaded) {
+    state = loaded.state;
+    state.syncedAt = loaded.savedAt;
+    state.touchedAt = loaded.savedAt;
+    state.seenDriveAt = loaded.savedAt;
+    sync.driveAt = loaded.savedAt;
+    view.filter = "all";
+    save();
+    render();
+    renderSync();
+    toast(t("sync.pulled", { n: Object.keys(state.cards).length }));
+  }
+
+  function askSyncConflict(loaded) {
+    var dn = Object.keys(loaded.state.cards).length;
+    var ln = Object.keys(state.cards).length;
+    $("sheet").innerHTML =
+      '<h2 id="sheetTitle">' + esc(t("sync.conflict.title")) + '</h2>' +
+      '<p class="sub"></p>' +
+      '<p style="margin:0;color:var(--ink-2);font-size:14px;">' +
+        esc(t("sync.conflict.body", {
+          dn: dn, ln: ln,
+          dd: localeDate(loaded.savedAt, { day: "numeric", month: "short" }) + " " + localeTime(loaded.savedAt)
+        })) + '</p>' +
+      '<div class="sheet-foot"><span class="spacer"></span>' +
+        '<button class="btn" type="button" id="syncKeepLocal">' +
+          esc(t("sync.conflict.keepLocal")) + '</button>' +
+        '<button class="btn btn-primary" type="button" id="syncUseDrive">' +
+          esc(t("sync.conflict.useDrive")) + '</button>' +
+      '</div>';
+    $("backdrop").hidden = false;
+    $("syncUseDrive").onclick = function () { closeSheet(); applyRemote(loaded); };
+    $("syncKeepLocal").onclick = function () {
+      closeSheet();
+      // remember this Drive version so the same copy stops re-asking
+      state.seenDriveAt = loaded.savedAt;
+      sync.driveAt = loaded.savedAt;
+      save();
+      renderSync();
+    };
+    window.setTimeout(function () { $("syncKeepLocal").focus(); }, 20);
+  }
+
+  function drivePull(manual) {
+    if (!mcpReady() || sync.off || sync.busy) return;
+    sync.busy = true;
+    sync.err = "";
+    renderSync();
+
+    driveNewest().then(function (file) {
+      if (!file) {
+        sync.busy = false; sync.checked = true; renderSync();
+        if (manual) toast(t("sync.none"));
+        return;
+      }
+      return driveLoad(file).then(function (loaded) {
+        sync.busy = false;
+        sync.checked = true;
+        if (!loaded) {
+          sync.err = t("sync.err.badFile");
+          renderSync();
+          return;
+        }
+        sync.driveAt = loaded.savedAt;
+        var known = Math.max(state.syncedAt || 0, state.seenDriveAt || 0);
+        if (loaded.savedAt <= known) {
+          renderSync();
+          if (manual) toast(t("sync.upToDate"));
+          return;
+        }
+        // untouched since the last push → safe to take Drive's copy outright
+        if ((state.touchedAt || 0) <= (state.syncedAt || 0)) applyRemote(loaded);
+        else askSyncConflict(loaded);
+      });
+    }).catch(function (err) {
+      sync.busy = false;
+      sync.checked = true;
+      if (syncDead(err)) sync.off = true;
+      else sync.err = syncErrText(err, false);
+      renderSync();
+      if (manual && sync.err) toast(sync.err);
+    });
+  }
+
+  function drivePush() {
+    if (!mcpReady() || sync.off || sync.busy) return;
+    sync.busy = true;
+    sync.err = "";
+    renderSync();
+
+    var now = new Date();
+    var name = SYNC_PREFIX + isoOf(now) + "-" +
+      String(now.getHours()).padStart(2, "0") +
+      String(now.getMinutes()).padStart(2, "0") + ".json";
+    var savedAt = Date.now();
+
+    window.claude.mcp.callTool(DRIVE, "create_file", {
+      title: name,
+      textContent: JSON.stringify({
+        v: 2, savedAt: savedAt, columns: state.columns, cards: state.cards
+      }),
+      contentMimeType: "application/json",
+      disableConversionToGoogleType: true
+    }).then(function () {
+      state.syncedAt = savedAt;
+      state.seenDriveAt = savedAt;
+      sync.driveAt = savedAt;
+      sync.busy = false;
+      save();
+      renderSync();
+      toast(t("sync.pushed"));
+    }).catch(function (err) {
+      sync.busy = false;
+      if (syncDead(err)) sync.off = true;
+      else sync.err = syncErrText(err, true);
+      renderSync();
+      if (sync.err) toast(sync.err);
+    });
+  }
+
+  function syncBoxHtml() {
+    if (!mcpReady() || sync.off) {
+      return '<div class="sync-box"><p class="sync-state is-off">' +
+        '<span class="dot"></span><span>' + esc(t("sync.off")) + '</span></p></div>';
+    }
+
+    var dirty = (state.touchedAt || 0) > (state.syncedAt || 0);
+    var line;
+    if (sync.busy) line = t("sync.checking");
+    else if (!state.syncedAt) line = t("sync.never");
+    else {
+      line = t("sync.last", {
+        d: localeDate(state.syncedAt, { day: "numeric", month: "short" }) + " " + localeTime(state.syncedAt)
+      });
+      if (dirty) line += " · " + t("sync.dirty");
+    }
+
+    return '<div class="sync-box">' +
+      '<p class="sync-state' + (dirty ? " is-stale" : "") + '">' +
+        '<span class="dot"></span><span>' + esc(line) + '</span></p>' +
+      (sync.err ? '<p class="sync-err">' + esc(sync.err) + '</p>' : '') +
+      '<div class="sync-row">' +
+        '<button class="btn btn-primary" type="button" id="syncPush"' +
+          (sync.busy ? " disabled" : "") + '>' +
+          esc(sync.busy ? t("sync.pushing") : t("sync.push")) + '</button>' +
+        '<button class="btn" type="button" id="syncPull"' +
+          (sync.busy ? " disabled" : "") + '>' + esc(t("sync.pull")) + '</button>' +
+      '</div>' +
+      '<p class="sync-note">' + esc(t("sync.autoNote")) + '</p>' +
+      '<p class="sync-note">' + esc(t("sync.note")) + '</p>' +
+      '</div>';
+  }
+
+  function renderSync() {
+    var btn = $("btnPush");
+    if (btn) {
+      var show = mcpReady() && !sync.off;
+      btn.hidden = !show;
+      btn.disabled = sync.busy;
+      btn.textContent = sync.busy ? t("sync.pushing") : t("sync.push");
+    }
+    var box = $("syncBox");
+    if (box) box.innerHTML = syncBoxHtml();
   }
 
   /* ═══ render: pulse strip ═══════════════════════════════════ */
@@ -2866,6 +3216,8 @@
     $("todayStamp").textContent = localeDate(Date.now(), {
       weekday: "short", day: "numeric", month: "short"
     });
+
+    renderSync();
   }
 
   function render() {
@@ -3049,6 +3401,8 @@
           }).join("") +
         '</div>' +
         '<span class="help">' + esc(t("set.fontHint")) + '</span></div>' +
+      '<div class="field"><label>' + esc(t("sync.title")) + '</label>' +
+        '<div id="syncBox">' + syncBoxHtml() + '</div></div>' +
       '<div class="sheet-foot"><span class="spacer"></span>' +
         '<button class="btn btn-primary" type="button" id="setClose">' +
           esc(t("set.close")) + '</button>' +
@@ -3231,6 +3585,10 @@
   document.addEventListener("click", function (e) {
     var target = e.target;
     var hit;
+
+    // Drive sync
+    if (target.closest("#btnPush") || target.closest("#syncPush")) { drivePush(); return; }
+    if (target.closest("#syncPull")) { drivePull(true); return; }
 
     // settings
     if (target.closest("#btnSettings")) { openSettings(); return; }
@@ -3623,5 +3981,7 @@
   applyStatic();
   save();
   render();
+  renderSync();
+  drivePull(false);
 })();
 </script>
