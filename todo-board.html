@@ -252,6 +252,374 @@
   }
   .icon-btn:hover { background: var(--surface-3); color: var(--ink); }
 
+  /* ─── view nav ───────────────────────────────────────────── */
+  .nav {
+    display: flex;
+    gap: 2px;
+    margin-top: 14px;
+    margin-bottom: -18px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav::-webkit-scrollbar { display: none; }
+
+  .nav button {
+    position: relative;
+    padding: 7px 13px 10px;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font-size: 13.5px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    border-radius: var(--r-sm) var(--r-sm) 0 0;
+  }
+  .nav button::after {
+    content: "";
+    position: absolute;
+    left: 10px; right: 10px; bottom: 0;
+    height: 2px;
+    border-radius: 2px 2px 0 0;
+    background: transparent;
+  }
+  .nav button:hover { color: var(--ink); }
+  .nav button[aria-current="page"] { color: var(--ink); font-weight: 650; }
+  .nav button[aria-current="page"]::after { background: var(--accent); }
+
+  .nav .badge {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 0 6px;
+    border-radius: 999px;
+    background: var(--danger);
+    color: var(--surface);
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-variant-numeric: tabular-nums;
+    vertical-align: 1.5px;
+  }
+
+  /* ─── summary pages ──────────────────────────────────────── */
+  .page {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding-bottom: 44px;
+  }
+  .page[hidden] { display: none; }
+
+  .panel {
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    overflow: hidden;
+  }
+
+  .panel-head {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+    padding: 13px 16px 11px;
+    border-bottom: 1px solid var(--line);
+  }
+  .panel-head .rule {
+    width: 3px;
+    align-self: stretch;
+    border-radius: 2px;
+    background: var(--line-strong);
+    margin: -1px 3px -1px -6px;
+  }
+  .panel-head h2 {
+    margin: 0;
+    font-size: 14.5px;
+    font-weight: 650;
+    letter-spacing: -.008em;
+  }
+  .panel-head .sub {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin: 0;
+  }
+  .panel-head .n {
+    margin-left: auto;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+    flex: none;
+  }
+
+  .panel.sev-over .panel-head .rule { background: var(--danger); }
+  .panel.sev-over .panel-head h2 { color: var(--danger); }
+  .panel.sev-today .panel-head .rule { background: var(--warn); }
+  .panel.sev-today .panel-head h2 { color: var(--warn); }
+  .panel.sev-next .panel-head .rule { background: var(--accent); }
+  .panel.sev-done .panel-head .rule { background: var(--ok); }
+  .panel.sev-done { background: transparent; }
+
+  .rows { display: flex; flex-direction: column; }
+
+  .row {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    padding: 10px 16px;
+    border-top: 1px solid var(--line);
+    cursor: pointer;
+    transition: background .12s;
+  }
+  .rows > .row:first-child { border-top: 0; }
+  .row:hover { background: var(--surface-2); }
+
+  .tick {
+    flex: none;
+    width: 17px; height: 17px;
+    margin-top: 3px;
+    border: 1.5px solid var(--line-strong);
+    border-radius: 5px;
+    background: transparent;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    color: transparent;
+    font-size: 11px;
+    line-height: 1;
+    transition: border-color .12s, background .12s, color .12s;
+  }
+  .tick:hover { border-color: var(--ok); background: var(--ok-soft); color: var(--ok); }
+  .row.done-row .tick { border-color: var(--ok); background: var(--ok); color: var(--surface); }
+
+  .row-main { flex: 1; min-width: 0; }
+  .row-title {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.45;
+    word-break: break-word;
+  }
+  .row.done-row .row-title { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px; }
+
+  .row-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+    font-size: 11.5px;
+    color: var(--muted);
+  }
+  .row-meta .pri-dot {
+    width: 7px; height: 7px;
+    border-radius: 2px;
+    background: var(--line-strong);
+    flex: none;
+  }
+  .row-meta .pri-dot.p-high { background: var(--danger); }
+  .row-meta .pri-dot.p-mid { background: var(--warn); }
+
+  .row-when {
+    flex: none;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    padding-top: 1px;
+  }
+  .row-when .exact {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+  }
+  @media (max-width: 520px) {
+    .row { flex-wrap: wrap; }
+    .row-when { width: 100%; align-items: flex-start; padding-left: 28px; }
+  }
+
+  .panel-empty {
+    padding: 16px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* group headings inside the remaining/due pages */
+  .group-head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 9px 16px;
+    background: var(--surface-2);
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .04em;
+    color: var(--ink-2);
+  }
+  .rows > .group-head:first-child { border-top: 0; }
+  .group-head .n {
+    margin-left: auto;
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .group-head .when {
+    font-family: var(--mono);
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0;
+  }
+
+  /* ─── controls row ───────────────────────────────────────── */
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .control-group { display: flex; align-items: center; gap: 7px; }
+  .control-group > span {
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .seg {
+    display: flex;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+  .seg button {
+    padding: 4px 11px;
+    border: 0;
+    border-left: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 12.5px;
+    cursor: pointer;
+  }
+  .seg button:first-child { border-left: 0; }
+  .seg button:hover { background: var(--surface-2); color: var(--ink); }
+  .seg button[aria-pressed="true"] {
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+    font-weight: 600;
+  }
+
+  /* ─── 14-day load strip ──────────────────────────────────── */
+  /* the chart panel opts out of clipping so the tooltip can sit above the plot */
+  .panel-chart { overflow: visible; }
+
+  .chart-wrap { padding: 16px 16px 12px; }
+
+  .chart-caption {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 22px;
+  }
+  .chart-caption strong { font-size: 13.5px; font-weight: 600; }
+  .chart-caption span { font-size: 12px; color: var(--muted); }
+  @media (max-width: 620px) {
+    .chart-caption { flex-direction: column; gap: 2px; }
+  }
+
+  .plot {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 78px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .day {
+    position: relative;
+    flex: 1 1 0;
+    min-width: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    cursor: default;
+  }
+  .day .bar {
+    width: 100%;
+    max-width: 24px;
+    background: var(--accent);
+    border-radius: 4px 4px 0 0;
+    min-height: 2px;
+    transition: background .12s;
+  }
+  .day.empty .bar {
+    background: var(--line-strong);
+    height: 2px !important;
+    border-radius: 0;
+  }
+  .day.is-today .bar { background: var(--accent-ink); }
+  .day.weekend .bar { opacity: .62; }
+  .day:hover .bar, .day:focus-visible .bar { background: var(--ink-2); }
+
+  .day .cap {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-2);
+    margin-bottom: 3px;
+    line-height: 1;
+  }
+
+  .axis {
+    display: flex;
+    gap: 2px;
+    margin-top: 6px;
+  }
+  .axis .tick-lbl {
+    flex: 1 1 0;
+    min-width: 0;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+    line-height: 1.3;
+  }
+  .axis .tick-lbl.is-today { color: var(--accent-ink); font-weight: 600; }
+  .axis .tick-lbl small {
+    display: block;
+    font-family: var(--sans);
+    font-size: 9.5px;
+    letter-spacing: .02em;
+  }
+
+  .tip {
+    position: absolute;
+    z-index: 60;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: var(--ground);
+    border-radius: var(--r-md);
+    padding: 6px 10px;
+    font-size: 12px;
+    line-height: 1.45;
+    pointer-events: none;
+    white-space: nowrap;
+    box-shadow: var(--shadow-2);
+    max-width: 220px;
+  }
+  .tip[hidden] { display: none; }
+  .tip b { font-weight: 600; }
+  .tip .t-list { color: var(--line-strong); white-space: normal; }
+
   /* ─── pulse strip: the "what's on me right now" answer ───── */
   .pulse-band {
     background: var(--surface);
@@ -324,11 +692,16 @@
     font-size: 12.5px;
     color: var(--muted);
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 8px;
-    flex-wrap: wrap;
   }
-  .pulse-note .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ok); }
+  .pulse-note .dot {
+    flex: none;
+    width: 6px; height: 6px;
+    margin-top: 6px;
+    border-radius: 50%;
+    background: var(--ok);
+  }
 
   /* ─── toolbar ────────────────────────────────────────────── */
   .toolbar {
@@ -844,6 +1217,7 @@
         <input type="file" id="fileInput" accept=".json,application/json" class="sr-only" />
       </div>
     </div>
+    <nav class="wrap nav" id="nav" aria-label="มุมมอง"></nav>
   </header>
 
   <section class="pulse-band" aria-label="สรุปสถานะงาน">
@@ -870,9 +1244,11 @@
 
   <div class="wrap" id="blankSlot"></div>
 
-  <div class="board-scroll">
+  <div class="board-scroll" id="boardScroll">
     <main class="board" id="board"></main>
   </div>
+
+  <main class="wrap page" id="page" hidden></main>
 </div>
 
 <div class="backdrop" id="backdrop" hidden>
@@ -1042,7 +1418,32 @@
   }
 
   /* ═══ view state ════════════════════════════════════════════ */
-  var view = { filter: "all", query: "", composing: null, menuFor: null };
+  var UI_KEY = KEY + ".ui";
+  var view = {
+    page: "board", filter: "all", query: "",
+    composing: null, menuFor: null, groupBy: "col", sortBy: "due"
+  };
+
+  if (canStore) {
+    try {
+      var saved = JSON.parse(window.localStorage.getItem(UI_KEY));
+      if (saved && typeof saved === "object") {
+        if (typeof saved.page === "string") view.page = saved.page;
+        if (typeof saved.groupBy === "string") view.groupBy = saved.groupBy;
+        if (typeof saved.sortBy === "string") view.sortBy = saved.sortBy;
+      }
+    } catch (e) { /* defaults are fine */ }
+  }
+
+  function saveUi() {
+    if (!canStore) return;
+    try {
+      window.localStorage.setItem(UI_KEY, JSON.stringify({
+        page: view.page, groupBy: view.groupBy, sortBy: view.sortBy
+      }));
+    } catch (e) { /* not worth warning about */ }
+  }
+
   var undoBuf = null;
   var toastTimer = 0;
 
@@ -1160,6 +1561,34 @@
     moveCard(cardId, target.id, target.cards.length);
   }
 
+  function doneColumn() {
+    for (var i = state.columns.length - 1; i >= 0; i--) {
+      if (state.columns[i].done) return state.columns[i];
+    }
+    return null;
+  }
+
+  /* Tick a task off from any of the summary views. */
+  function completeCard(cardId) {
+    var card = state.cards[cardId];
+    var from = colOf(cardId);
+    if (!card || !from) return;
+
+    if (from.done) { openEditor(cardId); return; }
+
+    var target = doneColumn();
+    if (!target) {
+      toast("ยังไม่มีคอลัมน์ที่นับว่าเสร็จแล้ว — ตั้งได้จากเมนู ⋯ ของคอลัมน์");
+      return;
+    }
+
+    var back = { colId: from.id, index: from.cards.indexOf(cardId) };
+    moveCard(cardId, target.id, target.cards.length);
+    toast("ปิดงาน “" + card.title.slice(0, 26) + "” แล้ว", "เลิกทำ", function () {
+      moveCard(cardId, back.colId, back.index);
+    });
+  }
+
   function deleteCard(cardId) {
     var col = colOf(cardId);
     if (!col) return;
@@ -1211,19 +1640,20 @@
       if (state.cards[id].doneAt >= start.getTime()) doneToday++;
     });
 
-    var note = $("pulseNote");
+    var tail = doneToday ? " · วันนี้ปิดไปแล้ว " + doneToday + " งาน" : "";
+    var hue = "var(--ok)";
+    var text;
     if (over > 0) {
-      note.innerHTML = '<span class="dot" style="background:var(--danger)"></span>' +
-        'มี ' + over + ' งานที่เลยกำหนดแล้ว — เคลียร์อันนี้ก่อนดีที่สุด' +
-        (doneToday ? ' · วันนี้ปิดไปแล้ว ' + doneToday + ' งาน' : '');
+      hue = "var(--danger)";
+      text = "มี " + over + " งานที่เลยกำหนดแล้ว — เคลียร์กลุ่มนี้ก่อนดีที่สุด" + tail;
     } else if (today > 0) {
-      note.innerHTML = '<span class="dot" style="background:var(--warn)"></span>' +
-        'วันนี้มี ' + today + ' งานที่ครบกำหนด' +
-        (doneToday ? ' · ปิดไปแล้ว ' + doneToday + ' งาน' : '');
+      hue = "var(--warn)";
+      text = "วันนี้มี " + today + " งานที่ครบกำหนด" + tail;
     } else {
-      note.innerHTML = '<span class="dot"></span>ไม่มีงานเลยกำหนดและไม่มีงานครบวันนี้' +
-        (doneToday ? ' · วันนี้ปิดไปแล้ว ' + doneToday + ' งาน' : '');
+      text = "ไม่มีงานเลยกำหนดและไม่มีงานครบวันนี้" + tail;
     }
+    $("pulseNote").innerHTML =
+      '<span class="dot" style="background:' + hue + '"></span><span>' + esc(text) + '</span>';
   }
 
   /* ═══ render: card ══════════════════════════════════════════ */
@@ -1262,6 +1692,335 @@
       '</div></article>';
   }
 
+  /* ═══ render: shared task row ═══════════════════════════════ */
+  var TH_DOW = ["อา.", "จ.", "อ.", "พ.", "พฤ.", "ศ.", "ส."];
+
+  function exactDate(iso) {
+    var p = iso.split("-").map(Number);
+    var d = new Date(p[0], p[1] - 1, p[2]);
+    return TH_DOW[d.getDay()] + " " + p[2] + " " + TH_MONTH[p[1] - 1];
+  }
+
+  function rowHtml(card, opts) {
+    opts = opts || {};
+    var col = colOf(card.id);
+    var isDone = col && col.done;
+
+    var meta = '<span class="pri-dot p-' + card.pri + '" title="ความสำคัญ: ' + PRI_LABEL[card.pri] + '"></span>';
+    if (opts.showColumn !== false && col) meta += '<span>' + esc(col.title) + '</span>';
+    if (card.note) meta += '<span>· ' + esc(card.note.split("\n")[0].slice(0, 54)) + '</span>';
+    card.tags.forEach(function (t) { meta += '<span class="chip tag">' + esc(t) + '</span>'; });
+
+    var when = "";
+    if (card.due) {
+      var d = dueLabel(card.due);
+      when = '<span class="chip due ' + d.cls + '">' + esc(d.text) + '</span>' +
+        (opts.showExact === false ? "" : '<span class="exact">' + esc(exactDate(card.due)) + '</span>');
+    } else if (opts.showExact !== false) {
+      when = '<span class="exact">ไม่กำหนดวันส่ง</span>';
+    }
+
+    return '<div class="row' + (isDone ? " done-row" : "") + '" data-card="' + card.id + '" ' +
+      'tabindex="0" aria-label="' + esc(card.title) + '">' +
+      '<button class="tick" type="button" data-complete="' + card.id + '" ' +
+        'aria-label="' + (isDone ? "เปิดงานนี้" : "ทำเสร็จแล้ว") + '">✓</button>' +
+      '<div class="row-main">' +
+        '<p class="row-title">' + esc(card.title) + '</p>' +
+        '<div class="row-meta">' + meta + '</div>' +
+      '</div>' +
+      (when ? '<div class="row-when">' + when + '</div>' : '') +
+      '</div>';
+  }
+
+  function panelHtml(opts) {
+    var body = opts.cards && opts.cards.length
+      ? '<div class="rows">' + opts.cards.map(function (c) {
+          return rowHtml(c, opts.rowOpts);
+        }).join("") + '</div>'
+      : '<p class="panel-empty">' + esc(opts.empty || "ไม่มีงานในกลุ่มนี้") + '</p>';
+
+    return '<section class="panel' + (opts.sev ? " sev-" + opts.sev : "") + '">' +
+      '<div class="panel-head"><span class="rule"></span>' +
+        '<h2>' + esc(opts.title) + '</h2>' +
+        (opts.sub ? '<p class="sub">' + esc(opts.sub) + '</p>' : '') +
+        '<span class="n">' + (opts.cards ? opts.cards.length : 0) + ' งาน</span>' +
+      '</div>' + (opts.extra || "") + body + '</section>';
+  }
+
+  /* ═══ selectors used by the summary pages ═══════════════════ */
+  var PRI_ORDER = { high: 0, mid: 1, low: 2 };
+
+  function openMatching() {
+    return openCards().filter(matches);
+  }
+
+  function byBucket(cards, test) {
+    return cards.filter(function (c) {
+      var n = daysUntil(c.due);
+      return test(n, c);
+    });
+  }
+
+  function sortCards(list, mode) {
+    var out = list.slice();
+    if (mode === "pri") {
+      out.sort(function (a, b) {
+        var d = PRI_ORDER[a.pri] - PRI_ORDER[b.pri];
+        if (d) return d;
+        return dueRank(a) - dueRank(b);
+      });
+    } else if (mode === "new") {
+      out.sort(function (a, b) { return b.created - a.created; });
+    } else {
+      out.sort(function (a, b) {
+        var d = dueRank(a) - dueRank(b);
+        if (d) return d;
+        return PRI_ORDER[a.pri] - PRI_ORDER[b.pri];
+      });
+    }
+    return out;
+  }
+
+  function dueRank(c) {
+    var n = daysUntil(c.due);
+    return n === null ? 1e6 : n;
+  }
+
+  /* ═══ page: สรุปวันนี้ ═══════════════════════════════════════ */
+  function renderToday() {
+    var cards = openMatching();
+    var overdue = sortCards(byBucket(cards, function (n) { return n !== null && n < 0; }), "due");
+    var today = sortCards(byBucket(cards, function (n) { return n === 0; }), "pri");
+    var tomorrow = sortCards(byBucket(cards, function (n) { return n === 1; }), "pri");
+    var rotting = sortCards(cards.filter(function (c) {
+      return !c.due && c.pri !== "low";
+    }), "pri");
+
+    var start = new Date(); start.setHours(0, 0, 0, 0);
+    var closed = Object.keys(state.cards)
+      .map(function (id) { return state.cards[id]; })
+      .filter(function (c) { return c.doneAt >= start.getTime(); })
+      .sort(function (a, b) { return b.doneAt - a.doneAt; });
+
+    var html = "";
+
+    if (overdue.length) {
+      html += panelHtml({
+        sev: "over", title: "เลยกำหนดแล้ว", sub: "เคลียร์กลุ่มนี้ก่อน",
+        cards: overdue
+      });
+    }
+
+    html += panelHtml({
+      sev: "today", title: "ครบกำหนดวันนี้",
+      sub: new Date().toLocaleDateString("th-TH", { weekday: "long", day: "numeric", month: "long" }),
+      cards: today,
+      empty: overdue.length
+        ? "วันนี้ไม่มีงานครบกำหนดเพิ่ม — เหลือแค่ของค้างด้านบน"
+        : "วันนี้ไม่มีงานครบกำหนด สบายไป"
+    });
+
+    if (tomorrow.length) {
+      html += panelHtml({
+        sev: "next", title: "พรุ่งนี้", sub: "เตรียมไว้ล่วงหน้า", cards: tomorrow
+      });
+    }
+
+    if (rotting.length) {
+      html += panelHtml({
+        title: "สำคัญแต่ยังไม่ได้ตั้งวันส่ง",
+        sub: "งานกลุ่มนี้ลืมง่ายที่สุด เพราะไม่มีวันมาเตือน",
+        cards: rotting,
+        rowOpts: { showExact: false }
+      });
+    }
+
+    html += panelHtml({
+      sev: "done", title: "ปิดไปแล้ววันนี้", cards: closed,
+      empty: "ยังไม่ได้ปิดงานไหนวันนี้",
+      rowOpts: { showExact: false }
+    });
+
+    return html;
+  }
+
+  /* ═══ page: งานที่เหลือ ═════════════════════════════════════ */
+  function renderRemain() {
+    var cards = openMatching();
+
+    var groups = [];
+    if (view.groupBy === "col") {
+      state.columns.forEach(function (col) {
+        if (col.done) return;
+        var inCol = cards.filter(function (c) { return colOf(c.id) === col; });
+        if (inCol.length) groups.push({ label: col.title, cards: inCol });
+      });
+    } else if (view.groupBy === "pri") {
+      ["high", "mid", "low"].forEach(function (p) {
+        var inPri = cards.filter(function (c) { return c.pri === p; });
+        if (inPri.length) groups.push({ label: "ความสำคัญ" + PRI_LABEL[p], cards: inPri });
+      });
+    } else {
+      var byTag = {};
+      var untagged = [];
+      cards.forEach(function (c) {
+        if (!c.tags.length) { untagged.push(c); return; }
+        c.tags.forEach(function (t) {
+          (byTag[t] = byTag[t] || []).push(c);
+        });
+      });
+      Object.keys(byTag).sort().forEach(function (t) {
+        groups.push({ label: t, cards: byTag[t] });
+      });
+      if (untagged.length) groups.push({ label: "ไม่มีป้ายกำกับ", cards: untagged });
+    }
+
+    var controls =
+      '<div class="controls">' +
+        '<div class="control-group"><span>จัดกลุ่ม</span><div class="seg">' +
+          seg("group", "col", "ตามคอลัมน์") + seg("group", "pri", "ตามความสำคัญ") + seg("group", "tag", "ตามป้าย") +
+        '</div></div>' +
+        '<div class="control-group"><span>เรียงโดย</span><div class="seg">' +
+          seg("sort", "due", "กำหนดส่ง") + seg("sort", "pri", "ความสำคัญ") + seg("sort", "new", "เพิ่มล่าสุด") +
+        '</div></div>' +
+      '</div>';
+
+    var body = "";
+    if (!groups.length) {
+      body = '<p class="panel-empty">' +
+        (view.query || view.filter !== "all"
+          ? "ไม่มีงานที่ตรงกับตัวกรองที่เลือกอยู่"
+          : "ไม่มีงานค้างเลย กระดานโล่ง") + '</p>';
+    } else {
+      body = '<div class="rows">' + groups.map(function (g) {
+        return '<div class="group-head">' + esc(g.label) +
+          '<span class="n">' + g.cards.length + '</span></div>' +
+          sortCards(g.cards, view.sortBy).map(function (c) {
+            return rowHtml(c, { showColumn: view.groupBy !== "col" });
+          }).join("");
+      }).join("") + '</div>';
+    }
+
+    return '<section class="panel">' +
+      '<div class="panel-head"><span class="rule"></span>' +
+        '<h2>งานที่ยังเหลือ</h2>' +
+        '<p class="sub">ทุกอย่างที่ยังไม่ได้ปิด</p>' +
+        '<span class="n">' + cards.length + ' งาน</span>' +
+      '</div>' + controls + body + '</section>';
+  }
+
+  function seg(kind, value, label) {
+    var on = (kind === "group" ? view.groupBy : view.sortBy) === value;
+    return '<button type="button" data-' + kind + '="' + value + '" aria-pressed="' + on + '">' +
+      esc(label) + '</button>';
+  }
+
+  /* ═══ page: กำหนดส่ง ════════════════════════════════════════ */
+  var DUE_BUCKETS = [
+    { key: "over", label: "เลยกำหนดแล้ว", when: "ควรจัดการทันที", test: function (n) { return n < 0; } },
+    { key: "today", label: "วันนี้", when: "", test: function (n) { return n === 0; } },
+    { key: "tmr", label: "พรุ่งนี้", when: "", test: function (n) { return n === 1; } },
+    { key: "week", label: "ภายใน 7 วัน", when: "", test: function (n) { return n >= 2 && n <= 7; } },
+    { key: "month", label: "ภายใน 30 วัน", when: "", test: function (n) { return n >= 8 && n <= 30; } },
+    { key: "later", label: "หลังจากนั้น", when: "", test: function (n) { return n > 30; } }
+  ];
+
+  function renderDue() {
+    var cards = openMatching();
+    var dated = cards.filter(function (c) { return c.due; });
+    var undated = cards.filter(function (c) { return !c.due; });
+
+    var body = "";
+    DUE_BUCKETS.forEach(function (b) {
+      var inB = sortCards(dated.filter(function (c) { return b.test(daysUntil(c.due)); }), "due");
+      if (!inB.length) return;
+      body += '<div class="group-head">' + esc(b.label) +
+        (b.when ? '<span class="when">' + esc(b.when) + '</span>' : "") +
+        '<span class="n">' + inB.length + '</span></div>' +
+        inB.map(function (c) { return rowHtml(c); }).join("");
+    });
+
+    if (undated.length) {
+      body += '<div class="group-head">ยังไม่ได้ตั้งวันส่ง' +
+        '<span class="when">เปิดการ์ดแล้วใส่วันได้</span>' +
+        '<span class="n">' + undated.length + '</span></div>' +
+        sortCards(undated, "pri").map(function (c) {
+          return rowHtml(c, { showExact: false });
+        }).join("");
+    }
+
+    var list = body
+      ? '<div class="rows">' + body + '</div>'
+      : '<p class="panel-empty">ยังไม่มีงานที่ตรงกับตัวกรองที่เลือกอยู่</p>';
+
+    return loadStripHtml(dated) +
+      '<section class="panel">' +
+        '<div class="panel-head"><span class="rule"></span>' +
+          '<h2>ตารางกำหนดส่ง</h2>' +
+          '<p class="sub">เรียงจากใกล้ที่สุดไปไกลที่สุด</p>' +
+          '<span class="n">' + cards.length + ' งาน</span>' +
+        '</div>' + list +
+      '</section>';
+  }
+
+  /* 14-day load strip: one series (tasks due per day), single hue,
+     today's column emphasized. The agenda list below is its table view. */
+  var DAYS_AHEAD = 14;
+
+  function loadStripHtml(dated) {
+    var days = [];
+    var max = 0;
+    for (var i = 0; i < DAYS_AHEAD; i++) {
+      var iso = shiftIso(i);
+      var due = dated.filter(function (c) { return c.due === iso; });
+      var p = iso.split("-").map(Number);
+      var dow = new Date(p[0], p[1] - 1, p[2]).getDay();
+      days.push({ iso: iso, day: p[2], dow: dow, cards: due, offset: i });
+      if (due.length > max) max = due.length;
+    }
+
+    if (!max) {
+      return '<section class="panel"><div class="panel-head"><span class="rule"></span>' +
+        '<h2>ภาระงาน 14 วันข้างหน้า</h2></div>' +
+        '<p class="panel-empty">ไม่มีงานที่ครบกำหนดใน 14 วันข้างหน้า</p></section>';
+    }
+
+    // Label only today and the busiest day — never a value on every bar.
+    var peak = -1;
+    days.forEach(function (d, i) { if (d.cards.length === max && peak === -1) peak = i; });
+
+    var bars = days.map(function (d, i) {
+      // 56px of plot leaves room for the cap label inside the 78px band
+      var h = d.cards.length ? Math.max(6, Math.round(d.cards.length / max * 56)) : 0;
+      var label = (i === 0 || i === peak) && d.cards.length
+        ? '<span class="cap">' + d.cards.length + '</span>' : "";
+      return '<button class="day' + (d.cards.length ? "" : " empty") +
+        (i === 0 ? " is-today" : "") +
+        (d.dow === 0 || d.dow === 6 ? " weekend" : "") +
+        '" type="button" data-day="' + d.iso + '" ' +
+        'aria-label="' + esc(exactDate(d.iso)) + ' — ' + d.cards.length + ' งาน">' +
+        label + '<span class="bar" style="height:' + h + 'px"></span></button>';
+    }).join("");
+
+    var axis = days.map(function (d, i) {
+      return '<span class="tick-lbl' + (i === 0 ? " is-today" : "") + '">' + d.day +
+        (i === 0 ? '<small>วันนี้</small>' : '<small>' + TH_DOW[d.dow] + '</small>') + '</span>';
+    }).join("");
+
+    var busy = days[peak];
+    var sub = max === 1
+      ? "กระจายตัวดี ไม่มีวันไหนกองกันเกินหนึ่งงาน"
+      : "หนักสุด " + exactDate(busy.iso) + " — " + max + " งานครบกำหนดวันเดียวกัน";
+
+    return '<section class="panel panel-chart">' +
+      '<div class="chart-wrap">' +
+        '<div class="chart-caption"><strong>ภาระงาน 14 วันข้างหน้า</strong>' +
+          '<span>' + esc(sub) + '</span></div>' +
+        '<div class="plot" id="plot">' + bars + '<div class="tip" id="tip" hidden></div></div>' +
+        '<div class="axis">' + axis + '</div>' +
+      '</div></section>';
+  }
+
   /* ═══ render: board ═════════════════════════════════════════ */
   function sizeBoard() {
     var scroller = document.querySelector(".board-scroll");
@@ -1271,8 +2030,44 @@
       "--col-max", Math.max(240, window.innerHeight - top - 34) + "px");
   }
 
+  var PAGES = [
+    { k: "board", label: "กระดาน" },
+    { k: "today", label: "สรุปวันนี้" },
+    { k: "remain", label: "งานที่เหลือ" },
+    { k: "due", label: "กำหนดส่ง" }
+  ];
+
+  function renderNav() {
+    var overdue = openCards().filter(function (c) {
+      var n = daysUntil(c.due);
+      return n !== null && n < 0;
+    }).length;
+
+    $("nav").innerHTML = PAGES.map(function (p) {
+      var on = view.page === p.k;
+      return '<button type="button" data-page="' + p.k + '"' +
+        (on ? ' aria-current="page"' : "") + '>' + p.label +
+        (p.k === "today" && overdue ? '<span class="badge">' + overdue + '</span>' : "") +
+        '</button>';
+    }).join("");
+  }
+
   function render() {
     renderPulse();
+    renderNav();
+
+    var onBoard = view.page === "board";
+    $("boardScroll").hidden = !onBoard;
+    $("page").hidden = onBoard;
+
+    if (!onBoard) {
+      $("page").innerHTML =
+        view.page === "today" ? renderToday() :
+        view.page === "remain" ? renderRemain() : renderDue();
+      $("blankSlot").innerHTML = "";
+      renderFilterPill();
+      return;
+    }
 
     var filtering = view.filter !== "all" || view.query.trim() !== "";
     var board = $("board");
@@ -1328,12 +2123,7 @@
         '<p>กด “+ เพิ่มงาน” ใต้คอลัมน์ไหนก็ได้เพื่อเริ่ม งานที่เพิ่มจะถูกเก็บไว้ในเบราว์เซอร์เครื่องนี้ เปิดใหม่ครั้งหน้าก็ยังอยู่</p></div>'
       : "";
 
-    // active-filter pill
-    var names = { overdue: "เลยกำหนดแล้ว", today: "ครบวันนี้", week: "ภายใน 7 วัน" };
-    $("filterTagSlot").innerHTML = view.filter !== "all"
-      ? '<span class="filter-tag">กรอง: ' + names[view.filter] +
-        '<button class="icon-btn" type="button" id="clearFilter" aria-label="ล้างตัวกรอง">✕</button></span>'
-      : "";
+    renderFilterPill();
 
     if (view.composing) {
       var ta = $("composerInput");
@@ -1341,6 +2131,14 @@
     }
 
     sizeBoard();
+  }
+
+  function renderFilterPill() {
+    var names = { overdue: "เลยกำหนดแล้ว", today: "ครบวันนี้", week: "ภายใน 7 วัน" };
+    $("filterTagSlot").innerHTML = view.filter !== "all"
+      ? '<span class="filter-tag">กรอง: ' + names[view.filter] +
+        '<button class="icon-btn" type="button" id="clearFilter" aria-label="ล้างตัวกรอง">✕</button></span>'
+      : "";
   }
 
   function menuHtml(col) {
@@ -1565,6 +2363,32 @@
     var t = e.target;
     var hit;
 
+    // view tabs
+    hit = t.closest("[data-page]");
+    if (hit) {
+      view.page = hit.dataset.page;
+      view.menuFor = null;
+      view.composing = null;
+      saveUi();
+      render();
+      window.scrollTo({ top: 0, behavior: "auto" });
+      return;
+    }
+
+    // group / sort controls on the remaining page
+    hit = t.closest("[data-group]");
+    if (hit) { view.groupBy = hit.dataset.group; saveUi(); render(); return; }
+    hit = t.closest("[data-sort]");
+    if (hit) { view.sortBy = hit.dataset.sort; saveUi(); render(); return; }
+
+    // tick a task off from a summary row
+    hit = t.closest("[data-complete]");
+    if (hit) { completeCard(hit.dataset.complete); return; }
+
+    // summary row → open the same editor the board uses
+    hit = t.closest(".row[data-card]");
+    if (hit) { openEditor(hit.dataset.card); return; }
+
     // pulse filters
     hit = t.closest("[data-filter]");
     if (hit) {
@@ -1767,10 +2591,64 @@
       return;
     }
 
-    if (e.key === "Enter" && e.target.classList && e.target.classList.contains("card")) {
+    if (e.key === "Enter" && e.target.classList &&
+        (e.target.classList.contains("card") || e.target.classList.contains("row"))) {
       e.preventDefault();
       openEditor(e.target.dataset.card);
     }
+  });
+
+  /* ═══ load-strip tooltip ════════════════════════════════════ */
+  function showTip(dayBtn) {
+    var tip = $("tip");
+    var plot = $("plot");
+    if (!tip || !plot) return;
+
+    var iso = dayBtn.dataset.day;
+    var due = openMatching().filter(function (c) { return c.due === iso; });
+    var titles = due.slice(0, 3).map(function (c) {
+      return esc(c.title.length > 30 ? c.title.slice(0, 29) + "…" : c.title);
+    }).join("<br />");
+
+    tip.innerHTML = '<b>' + esc(exactDate(iso)) + '</b> · ' + due.length + ' งาน' +
+      (titles ? '<div class="t-list">' + titles +
+        (due.length > 3 ? '<br />และอีก ' + (due.length - 3) + ' งาน' : "") + '</div>' : "");
+
+    var pr = plot.getBoundingClientRect();
+    var br = dayBtn.getBoundingClientRect();
+    tip.hidden = false;
+
+    // measure after the content is in — width and height both vary with the day
+    var half = tip.offsetWidth / 2;
+    var x = br.left - pr.left + br.width / 2;
+    tip.style.left = Math.min(Math.max(x, half + 2), pr.width - half - 2) + "px";
+
+    // sit above the bar, or flip below it when the caption is in the way
+    var bar = dayBtn.querySelector(".bar").getBoundingClientRect();
+    var caption = plot.parentNode.querySelector(".chart-caption");
+    var ceiling = caption ? caption.getBoundingClientRect().bottom : pr.top;
+    var above = bar.top - 8 - tip.offsetHeight;
+    tip.style.top = (above >= ceiling ? above - pr.top : bar.bottom - pr.top + 8) + "px";
+  }
+
+  function hideTip() {
+    var tip = $("tip");
+    if (tip) tip.hidden = true;
+  }
+
+  document.addEventListener("mouseover", function (e) {
+    var day = e.target.closest ? e.target.closest("[data-day]") : null;
+    if (day) showTip(day);
+  });
+  document.addEventListener("mouseout", function (e) {
+    if (e.target.closest && e.target.closest("[data-day]")) hideTip();
+  });
+  document.addEventListener("focusin", function (e) {
+    var day = e.target.closest ? e.target.closest("[data-day]") : null;
+    if (day) showTip(day);
+  });
+  document.addEventListener("focusout", function (e) {
+    if (e.target.closest && e.target.closest("[data-day]")) hideTip();
   });
 
   $("search").addEventListener("input", function (e) {
