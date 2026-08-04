@@ -33,9 +33,28 @@
     --r-md: 8px;
     --r-lg: 12px;
 
-    --sans: "IBM Plex Sans Thai", "IBM Plex Sans Thai Looped", "Noto Sans Thai",
+    --sans: "IBM Plex Sans Thai", "Noto Sans Thai",
       "Leelawadee UI", "Sarabun", "Thonburi", system-ui, -apple-system, "Segoe UI", sans-serif;
     --mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+  }
+
+  /* Font choices. Webfont CDNs are blocked, so every option is a stack of
+     faces the device already has, each with Thai and Latin coverage. */
+  :root[data-font="loop"] {
+    --sans: "IBM Plex Sans Thai Looped", "Noto Sans Thai Looped", "Sarabun",
+      "Leelawadee UI", "Thonburi", system-ui, sans-serif;
+  }
+  :root[data-font="serif"] {
+    --sans: "Noto Serif Thai", "Sarabun", "Charter", "Iowan Old Style",
+      Georgia, "Times New Roman", serif;
+  }
+  :root[data-font="system"] {
+    --sans: system-ui, -apple-system, "Segoe UI", "Leelawadee UI",
+      "Noto Sans Thai", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  :root[data-font="mono"] {
+    --sans: "IBM Plex Mono", ui-monospace, "SF Mono", "Cascadia Mono", Menlo,
+      "Noto Sans Thai", "Leelawadee UI", monospace;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -1144,6 +1163,178 @@
   }
   .sheet-foot .spacer { flex: 1; }
 
+  /* ─── activity log on a task ─────────────────────────────── */
+  .log {
+    margin-top: 16px;
+    padding-top: 15px;
+    border-top: 1px solid var(--line);
+  }
+  .log-head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+  .log-head h3 {
+    margin: 0;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .log-head .n {
+    margin-left: auto;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+  }
+  .log-hint {
+    margin: 0 0 10px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .log-list {
+    max-height: 260px;
+    overflow-y: auto;
+    margin-bottom: 11px;
+  }
+  .log-list:empty { display: none; }
+
+  .log-day {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+    letter-spacing: .02em;
+    padding: 14px 0 7px;
+    position: sticky;
+    top: 0;
+    background: var(--surface);
+  }
+  .log-list > .log-day:first-child { padding-top: 2px; }
+
+  /* the rail makes a day's entries read as one thread */
+  .log-entry {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    padding: 5px 0 6px 13px;
+  }
+  .log-entry::before {
+    content: "";
+    position: absolute;
+    left: 3px; top: 0; bottom: 0;
+    width: 1px;
+    background: var(--line);
+  }
+  .log-entry::after {
+    content: "";
+    position: absolute;
+    left: 0; top: 12px;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--line-strong);
+    border: 2px solid var(--surface);
+    box-sizing: content-box;
+    margin-left: -2px;
+  }
+  .log-entry:last-child::before { bottom: 12px; }
+
+  .log-text {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .log-time {
+    flex: none;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+    padding-top: 3px;
+  }
+  .log-del {
+    flex: none;
+    opacity: 0;
+    transition: opacity .12s;
+  }
+  .log-entry:hover .log-del,
+  .log-entry:focus-within .log-del { opacity: 1; }
+  @media (hover: none) { .log-del { opacity: 1; } }
+
+  .log-add { display: flex; flex-direction: column; gap: 7px; }
+  .log-add textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-md);
+    background: var(--surface-2);
+    font-size: 13.5px;
+    line-height: 1.5;
+    resize: vertical;
+    min-height: 56px;
+  }
+  .log-add-row { display: flex; align-items: center; gap: 8px; }
+  .log-add-row .hint { font-size: 11.5px; color: var(--muted); margin-left: auto; }
+
+  .log-empty {
+    margin: 0 0 11px;
+    font-size: 12.5px;
+    color: var(--muted);
+  }
+
+  /* comment count marker on cards and summary rows */
+  .chip.log-count { background: transparent; border: 1px solid var(--line); color: var(--muted); }
+  .chip.log-count.hot { border-color: var(--accent); color: var(--accent-ink); }
+
+  /* ─── settings sheet ─────────────────────────────────────── */
+  .font-opts { display: flex; flex-direction: column; gap: 6px; }
+  .font-opt {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-md);
+    background: var(--surface-2);
+    cursor: pointer;
+    text-align: left;
+  }
+  .font-opt:hover { border-color: var(--muted); }
+  .font-opt[aria-pressed="true"] {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+  .font-opt .name { font-size: 13px; font-weight: 600; flex: none; width: 92px; }
+  .font-opt .sample {
+    flex: 1;
+    min-width: 0;
+    font-size: 14px;
+    color: var(--ink-2);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .font-opt[data-font-opt="sans"] .sample { font-family: "IBM Plex Sans Thai", "Noto Sans Thai", "Leelawadee UI", "Sarabun", system-ui, sans-serif; }
+  .font-opt[data-font-opt="loop"] .sample { font-family: "IBM Plex Sans Thai Looped", "Noto Sans Thai Looped", "Sarabun", "Leelawadee UI", system-ui, sans-serif; }
+  .font-opt[data-font-opt="serif"] .sample { font-family: "Noto Serif Thai", "Sarabun", Charter, Georgia, serif; }
+  .font-opt[data-font-opt="system"] .sample { font-family: system-ui, -apple-system, "Segoe UI", "Leelawadee UI", "Noto Sans Thai", Arial, sans-serif; }
+  .font-opt[data-font-opt="mono"] .sample { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, "Noto Sans Thai", monospace; }
+  @media (max-width: 480px) {
+    .font-opt { flex-direction: column; align-items: flex-start; gap: 3px; }
+    .font-opt .name { width: auto; }
+    .font-opt .sample { width: 100%; }
+  }
+
   /* ─── toast ──────────────────────────────────────────────── */
   .toast {
     position: fixed;
@@ -1208,19 +1399,20 @@
   <header class="masthead">
     <div class="wrap masthead-row">
       <div class="brand">
-        <h1><span class="stamp">Board · <span id="todayStamp"></span></span>ตอนนี้มีงานอะไรบ้าง</h1>
-        <p>ลากการ์ดข้ามคอลัมน์ได้ · คลิกการ์ดเพื่อแก้ไข · ข้อมูลถูกเก็บไว้ในเบราว์เซอร์เครื่องนี้เท่านั้น</p>
+        <h1><span class="stamp">Board · <span id="todayStamp"></span></span><span id="mastTitle"></span></h1>
+        <p id="mastSub"></p>
       </div>
       <div class="masthead-tools">
-        <button class="btn" id="btnExport" type="button">บันทึกไฟล์สำรอง</button>
-        <button class="btn" id="btnImport" type="button">เปิดไฟล์สำรอง</button>
+        <button class="btn" id="btnSettings" type="button"></button>
+        <button class="btn" id="btnExport" type="button"></button>
+        <button class="btn" id="btnImport" type="button"></button>
         <input type="file" id="fileInput" accept=".json,application/json" class="sr-only" />
       </div>
     </div>
-    <nav class="wrap nav" id="nav" aria-label="มุมมอง"></nav>
+    <nav class="wrap nav" id="nav"></nav>
   </header>
 
-  <section class="pulse-band" aria-label="สรุปสถานะงาน">
+  <section class="pulse-band" id="pulseBand">
     <div class="wrap">
       <div class="pulse" id="pulse"></div>
       <p class="pulse-note" id="pulseNote"></p>
@@ -1234,12 +1426,12 @@
           <circle cx="7" cy="7" r="4.5" /><path d="M10.5 10.5 L14 14" stroke-linecap="round" />
         </svg>
       </span>
-      <input type="search" id="search" placeholder="ค้นหางาน หรือป้ายกำกับ" aria-label="ค้นหางาน" />
-      <button class="icon-btn clr" id="clearSearch" type="button" hidden aria-label="ล้างคำค้นหา">✕</button>
+      <input type="search" id="search" />
+      <button class="icon-btn clr" id="clearSearch" type="button" hidden>✕</button>
     </div>
     <span id="filterTagSlot"></span>
     <span class="spacer"></span>
-    <button class="btn btn-ghost" id="btnReset" type="button">เริ่มกระดานใหม่</button>
+    <button class="btn btn-ghost" id="btnReset" type="button"></button>
   </div>
 
   <div class="wrap" id="blankSlot"></div>
@@ -1274,10 +1466,455 @@
     } catch (e) { return false; }
   })();
 
-  /* ═══ dates ═════════════════════════════════════════════════ */
-  var TH_MONTH = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.",
-                  "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+  /* ═══ i18n ══════════════════════════════════════════════════
+     Every user-facing string lives here. Task content the user
+     typed is never translated — only the interface around it. */
+  var STR = {
+    th: {
+      "locale": "th-TH",
+      "month": ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."],
+      "dow": ["อา.", "จ.", "อ.", "พ.", "พฤ.", "ศ.", "ส."],
 
+      "mast.title": "ตอนนี้มีงานอะไรบ้าง",
+      "mast.sub": "ลากการ์ดข้ามคอลัมน์ได้ · คลิกการ์ดเพื่อแก้ไขและเพิ่มบันทึก · ข้อมูลเก็บไว้ในเบราว์เซอร์เครื่องนี้เท่านั้น",
+      "btn.settings": "ตั้งค่า",
+      "btn.export": "บันทึกไฟล์สำรอง",
+      "btn.import": "เปิดไฟล์สำรอง",
+      "btn.reset": "เริ่มกระดานใหม่",
+      "nav.aria": "มุมมอง",
+      "pulse.aria": "สรุปสถานะงาน",
+
+      "page.board": "กระดาน",
+      "page.today": "สรุปวันนี้",
+      "page.remain": "งานที่เหลือ",
+      "page.due": "กำหนดส่ง",
+
+      "tile.overdue": "เลยกำหนดแล้ว",
+      "tile.today": "ครบวันนี้",
+      "tile.week": "ภายใน 7 วัน",
+      "tile.open": "ค้างอยู่ทั้งหมด",
+      "note.over": "มี {n} งานที่เลยกำหนดแล้ว — เคลียร์กลุ่มนี้ก่อนดีที่สุด",
+      "note.today": "วันนี้มี {n} งานที่ครบกำหนด",
+      "note.clear": "ไม่มีงานเลยกำหนดและไม่มีงานครบวันนี้",
+      "note.tail": " · วันนี้ปิดไปแล้ว {n} งาน",
+
+      "search.ph": "ค้นหางาน ป้ายกำกับ หรือบันทึก",
+      "search.aria": "ค้นหางาน",
+      "search.clear": "ล้างคำค้นหา",
+      "filter.label": "กรอง: ",
+      "filter.clear": "ล้างตัวกรอง",
+
+      "col.empty": "ว่าง",
+      "col.hidden": "ซ่อนอยู่ {n} งาน (ไม่ตรงตัวกรอง)",
+      "col.menuAria": "ตัวเลือกคอลัมน์ {t}",
+      "board.addCard": "เพิ่มงาน",
+      "board.addCol": "เพิ่มคอลัมน์",
+      "compose.ph": "พิมพ์ชื่องาน แล้วกด Enter",
+      "compose.add": "เพิ่ม",
+      "compose.hint": "Esc เพื่อปิด",
+      "blank.title": "กระดานว่างอยู่",
+      "blank.body": "กด “+ เพิ่มงาน” ใต้คอลัมน์ไหนก็ได้เพื่อเริ่ม งานที่เพิ่มจะถูกเก็บไว้ในเบราว์เซอร์เครื่องนี้ เปิดใหม่ครั้งหน้าก็ยังอยู่",
+      "card.aria": "แก้ไขงาน: {t}",
+      "card.left": "ย้ายไปคอลัมน์ซ้าย",
+      "card.right": "ย้ายไปคอลัมน์ขวา",
+      "card.noteFlag": "มีรายละเอียด",
+
+      "menu.rename": "เปลี่ยนชื่อคอลัมน์",
+      "menu.sort": "เรียงตามกำหนดส่ง",
+      "menu.markDone": "นับคอลัมน์นี้ว่าเสร็จแล้ว",
+      "menu.unmarkDone": "เลิกนับว่าเป็นงานที่เสร็จแล้ว",
+      "menu.clear": "ล้างการ์ดในคอลัมน์นี้",
+      "menu.delete": "ลบคอลัมน์",
+
+      "pri.high": "สำคัญมาก",
+      "pri.mid": "ปานกลาง",
+      "pri.low": "ไว้ทีหลัง",
+      "pri.high.short": "สูง",
+      "pri.mid.short": "กลาง",
+      "pri.low.short": "ต่ำ",
+      "pri.aria": "ความสำคัญ: {t}",
+
+      "ed.title": "แก้ไขงาน",
+      "ed.created": "สร้างเมื่อ {d}",
+      "ed.fTitle": "ชื่องาน",
+      "ed.fNote": "รายละเอียด",
+      "ed.fNotePh": "โน้ตกันลืม เช่น ต้องเตรียมอะไร ติดอยู่ตรงไหน",
+      "ed.fDue": "กำหนดส่ง",
+      "ed.fPri": "ความสำคัญ",
+      "ed.fTags": "ป้ายกำกับ",
+      "ed.tagsPh": "งาน, บ้าน, เงิน",
+      "ed.tagsHelp": "คั่นด้วยเครื่องหมายจุลภาค",
+      "ed.fCol": "อยู่ในคอลัมน์",
+      "ed.delete": "ลบงานนี้",
+      "quick.today": "วันนี้",
+      "quick.tomorrow": "พรุ่งนี้",
+      "quick.plus7": "+7 วัน",
+      "quick.clear": "ไม่กำหนด",
+
+      "log.title": "บันทึกความคืบหน้า",
+      "log.hint": "ลูกค้าขอเพิ่ม หรือมีอะไรเปลี่ยน ให้เพิ่มเป็นรายการใหม่ตามวัน งานเดิมจะได้อยู่ใบเดียวไม่แตกเป็นหลายใบ",
+      "log.empty": "ยังไม่มีบันทึก เริ่มจดรายการแรกได้เลย",
+      "log.ph": "เช่น ลูกค้าขอเพิ่มหน้ารายงาน export PDF",
+      "log.add": "เพิ่มบันทึก",
+      "log.addHint": "Ctrl + Enter",
+      "log.del": "ลบบันทึกนี้",
+      "log.n": "{n} รายการ",
+      "log.count": "{n} บันทึก",
+      "log.today": "วันนี้",
+      "log.yesterday": "เมื่อวาน",
+      "toast.logDeleted": "ลบบันทึกแล้ว",
+
+      "today.overdue.title": "เลยกำหนดแล้ว",
+      "today.overdue.sub": "เคลียร์กลุ่มนี้ก่อน",
+      "today.due.title": "ครบกำหนดวันนี้",
+      "today.due.emptyA": "วันนี้ไม่มีงานครบกำหนดเพิ่ม — เหลือแค่ของค้างด้านบน",
+      "today.due.emptyB": "วันนี้ไม่มีงานครบกำหนด สบายไป",
+      "today.tomorrow.title": "พรุ่งนี้",
+      "today.tomorrow.sub": "เตรียมไว้ล่วงหน้า",
+      "today.rot.title": "สำคัญแต่ยังไม่ได้ตั้งวันส่ง",
+      "today.rot.sub": "งานกลุ่มนี้ลืมง่ายที่สุด เพราะไม่มีวันมาเตือน",
+      "today.closed.title": "ปิดไปแล้ววันนี้",
+      "today.closed.empty": "ยังไม่ได้ปิดงานไหนวันนี้",
+      "panel.count": "{n} งาน",
+      "panel.empty": "ไม่มีงานในกลุ่มนี้",
+
+      "remain.title": "งานที่ยังเหลือ",
+      "remain.sub": "ทุกอย่างที่ยังไม่ได้ปิด",
+      "remain.groupLabel": "จัดกลุ่ม",
+      "remain.sortLabel": "เรียงโดย",
+      "group.col": "ตามคอลัมน์",
+      "group.pri": "ตามความสำคัญ",
+      "group.tag": "ตามป้าย",
+      "group.untagged": "ไม่มีป้ายกำกับ",
+      "sort.due": "กำหนดส่ง",
+      "sort.pri": "ความสำคัญ",
+      "sort.new": "เพิ่มล่าสุด",
+      "remain.noMatch": "ไม่มีงานที่ตรงกับตัวกรองที่เลือกอยู่",
+      "remain.none": "ไม่มีงานค้างเลย กระดานโล่ง",
+
+      "due.title": "ตารางกำหนดส่ง",
+      "due.sub": "เรียงจากใกล้ที่สุดไปไกลที่สุด",
+      "due.noMatch": "ยังไม่มีงานที่ตรงกับตัวกรองที่เลือกอยู่",
+      "bucket.over": "เลยกำหนดแล้ว",
+      "bucket.overWhen": "ควรจัดการทันที",
+      "bucket.today": "วันนี้",
+      "bucket.tmr": "พรุ่งนี้",
+      "bucket.week": "ภายใน 7 วัน",
+      "bucket.month": "ภายใน 30 วัน",
+      "bucket.later": "หลังจากนั้น",
+      "bucket.undated": "ยังไม่ได้ตั้งวันส่ง",
+      "bucket.undatedWhen": "เปิดการ์ดแล้วใส่วันได้",
+
+      "chart.title": "ภาระงาน 14 วันข้างหน้า",
+      "chart.empty": "ไม่มีงานที่ครบกำหนดใน 14 วันข้างหน้า",
+      "chart.spread": "กระจายตัวดี ไม่มีวันไหนกองกันเกินหนึ่งงาน",
+      "chart.peak": "หนักสุด {d} — {n} งานครบกำหนดวันเดียวกัน",
+      "chart.dayAria": "{d} — {n} งาน",
+      "chart.today": "วันนี้",
+      "tip.count": "{n} งาน",
+      "tip.more": "และอีก {n} งาน",
+
+      "dueL.overN": "เลยมา {n} วัน",
+      "dueL.over1": "เลยมาเมื่อวาน",
+      "dueL.today": "ครบวันนี้",
+      "dueL.tmr": "พรุ่งนี้",
+      "dueL.inN": "อีก {n} วัน",
+      "dueL.none": "ไม่กำหนดวันส่ง",
+
+      "row.complete": "ทำเสร็จแล้ว",
+      "row.reopen": "เปิดงานนี้",
+
+      "common.cancel": "ยกเลิก",
+      "common.save": "บันทึก",
+      "common.ok": "ตกลง",
+
+      "addCol.title": "เพิ่มคอลัมน์",
+      "addCol.label": "ชื่อคอลัมน์",
+      "addCol.ph": "เช่น สัปดาห์นี้ / ไว้ค่อยทำ",
+      "rename.title": "เปลี่ยนชื่อคอลัมน์",
+      "reset.title": "เริ่มกระดานใหม่",
+      "reset.body": "งานทั้งหมดบนกระดานนี้จะถูกลบและแทนที่ด้วยกระดานตั้งต้น ถ้ายังไม่ได้กด “บันทึกไฟล์สำรอง” งานเดิมจะหายถาวร",
+      "reset.ok": "ลบทั้งหมดแล้วเริ่มใหม่",
+      "clearCol.title": "ล้างคอลัมน์ “{t}”",
+      "clearCol.body": "การ์ด {n} ใบในคอลัมน์นี้จะถูกลบถาวร",
+      "clearCol.ok": "ลบ {n} การ์ด",
+      "delCol.title": "ลบคอลัมน์ “{t}”",
+      "delCol.bodyMove": "การ์ด {n} ใบจะย้ายไปคอลัมน์ “{to}” ไม่มีงานไหนหาย",
+      "delCol.bodyEmpty": "คอลัมน์นี้ว่างอยู่ ลบได้เลย",
+      "delCol.ok": "ลบคอลัมน์",
+      "import.title": "เปิดไฟล์สำรอง",
+      "import.body": "ไฟล์นี้มี {n} งาน กระดานปัจจุบันจะถูกแทนที่ทั้งหมด",
+      "import.ok": "แทนที่กระดาน",
+
+      "toast.undo": "เลิกทำ",
+      "toast.closed": "ปิดงาน “{t}” แล้ว",
+      "toast.deleted": "ลบ “{t}” แล้ว",
+      "toast.noDoneCol": "ยังไม่มีคอลัมน์ที่นับว่าเสร็จแล้ว — ตั้งได้จากเมนู ⋯ ของคอลัมน์",
+      "toast.sorted": "เรียงคอลัมน์ “{t}” ตามกำหนดส่งแล้ว",
+      "toast.colEmpty": "คอลัมน์นี้ว่างอยู่แล้ว",
+      "toast.needOneCol": "ต้องเหลือคอลัมน์อย่างน้อยหนึ่งคอลัมน์",
+      "toast.reset": "เริ่มกระดานใหม่แล้ว",
+      "toast.saved": "บันทึกไฟล์สำรองแล้ว",
+      "toast.dlFail": "ดาวน์โหลดไม่ได้ในหน้านี้ ลองเปิดกระดานในแท็บใหม่",
+      "toast.importBad": "ไฟล์นี้อ่านไม่ได้ ต้องเป็นไฟล์สำรองที่บันทึกจากกระดานนี้",
+      "toast.imported": "เปิดไฟล์สำรองแล้ว — {n} งาน",
+
+      "set.title": "ตั้งค่า",
+      "set.lang": "ภาษา",
+      "set.font": "ฟอนต์",
+      "set.fontHint": "ใช้ฟอนต์ที่ติดมากับเครื่อง ถ้าเครื่องไม่มีตัวไหน จะถอยไปใช้ตัวถัดไปในลิสต์ให้เอง",
+      "set.close": "เสร็จแล้ว",
+      "font.sans": "ปกติ",
+      "font.loop": "ไทยหัวกลม",
+      "font.serif": "มีเชิง",
+      "font.system": "ของระบบ",
+      "font.mono": "โมโนสเปซ",
+      "font.sample": "ส่งรายงาน 12 ชิ้น · Ship 12 reports",
+
+      "warn.noStore": "เบราว์เซอร์นี้ไม่ให้เก็บข้อมูลลงเครื่อง — งานที่เพิ่มจะหายเมื่อปิดหน้า กด “บันทึกไฟล์สำรอง” ไว้ก่อน",
+      "warn.full": "บันทึกลงเครื่องไม่สำเร็จ (พื้นที่เก็บข้อมูลเต็ม) — กด “บันทึกไฟล์สำรอง” ไว้ก่อนปิดหน้านี้",
+      "file.name": "กระดานงาน"
+    },
+
+    en: {
+      "locale": "en-GB",
+      "month": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      "dow": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+
+      "mast.title": "What's on my plate",
+      "mast.sub": "Drag cards between columns · click a card to edit it and log updates · everything is stored in this browser only",
+      "btn.settings": "Settings",
+      "btn.export": "Save backup",
+      "btn.import": "Open backup",
+      "btn.reset": "Start a new board",
+      "nav.aria": "Views",
+      "pulse.aria": "Workload summary",
+
+      "page.board": "Board",
+      "page.today": "Today",
+      "page.remain": "Remaining",
+      "page.due": "Due dates",
+
+      "tile.overdue": "Overdue",
+      "tile.today": "Due today",
+      "tile.week": "Within 7 days",
+      "tile.open": "Open in total",
+      "note.over": "{n} tasks are past their due date — clear these first",
+      "note.over.one": "1 task is past its due date — clear it first",
+      "note.today": "{n} tasks are due today",
+      "note.today.one": "1 task is due today",
+      "note.clear": "Nothing overdue and nothing due today",
+      "note.tail": " · {n} closed today",
+      "note.tail.one": " · 1 closed today",
+
+      "search.ph": "Search tasks, tags or updates",
+      "search.aria": "Search tasks",
+      "search.clear": "Clear search",
+      "filter.label": "Filter: ",
+      "filter.clear": "Clear filter",
+
+      "col.empty": "Empty",
+      "col.hidden": "{n} hidden by the filter",
+      "col.hidden.one": "1 hidden by the filter",
+      "col.menuAria": "Options for column {t}",
+      "board.addCard": "Add task",
+      "board.addCol": "Add column",
+      "compose.ph": "Type a task name, then press Enter",
+      "compose.add": "Add",
+      "compose.hint": "Esc to close",
+      "blank.title": "The board is empty",
+      "blank.body": "Press “+ Add task” under any column to start. Everything you add is kept in this browser, so it will still be here next time.",
+      "card.aria": "Edit task: {t}",
+      "card.left": "Move to the column on the left",
+      "card.right": "Move to the column on the right",
+      "card.noteFlag": "Has details",
+
+      "menu.rename": "Rename column",
+      "menu.sort": "Sort by due date",
+      "menu.markDone": "Count this column as done",
+      "menu.unmarkDone": "Stop counting this column as done",
+      "menu.clear": "Clear cards in this column",
+      "menu.delete": "Delete column",
+
+      "pri.high": "High priority",
+      "pri.mid": "Medium priority",
+      "pri.low": "Low priority",
+      "pri.high.short": "High",
+      "pri.mid.short": "Med",
+      "pri.low.short": "Low",
+      "pri.aria": "Priority: {t}",
+
+      "ed.title": "Edit task",
+      "ed.created": "Created {d}",
+      "ed.fTitle": "Task",
+      "ed.fNote": "Details",
+      "ed.fNotePh": "Notes so you don't forget — what to prepare, where it's stuck",
+      "ed.fDue": "Due date",
+      "ed.fPri": "Priority",
+      "ed.fTags": "Tags",
+      "ed.tagsPh": "work, home, money",
+      "ed.tagsHelp": "Separate with commas",
+      "ed.fCol": "In column",
+      "ed.delete": "Delete task",
+      "quick.today": "Today",
+      "quick.tomorrow": "Tomorrow",
+      "quick.plus7": "+7 days",
+      "quick.clear": "No date",
+
+      "log.title": "Updates",
+      "log.hint": "When a client asks for something extra or anything changes, add it as a dated entry — the task stays as one card instead of splitting into many.",
+      "log.empty": "No updates yet. Add the first one below.",
+      "log.ph": "e.g. Client asked for a PDF export on the report page",
+      "log.add": "Add update",
+      "log.addHint": "Ctrl + Enter",
+      "log.del": "Delete this update",
+      "log.n": "{n} entries",
+      "log.n.one": "1 entry",
+      "log.count": "{n} updates",
+      "log.count.one": "1 update",
+      "log.today": "Today",
+      "log.yesterday": "Yesterday",
+      "toast.logDeleted": "Update deleted",
+
+      "today.overdue.title": "Overdue",
+      "today.overdue.sub": "Clear these first",
+      "today.due.title": "Due today",
+      "today.due.emptyA": "Nothing else falls due today — only the overdue work above",
+      "today.due.emptyB": "Nothing is due today",
+      "today.tomorrow.title": "Tomorrow",
+      "today.tomorrow.sub": "Worth getting ahead of",
+      "today.rot.title": "Important, but no due date",
+      "today.rot.sub": "The easiest group to forget — no date will ever remind you",
+      "today.closed.title": "Closed today",
+      "today.closed.empty": "Nothing closed yet today",
+      "panel.count": "{n} tasks",
+      "panel.count.one": "1 task",
+      "panel.empty": "Nothing in this group",
+
+      "remain.title": "Everything still open",
+      "remain.sub": "All the work you haven't closed",
+      "remain.groupLabel": "Group by",
+      "remain.sortLabel": "Sort by",
+      "group.col": "Column",
+      "group.pri": "Priority",
+      "group.tag": "Tag",
+      "group.untagged": "No tags",
+      "sort.due": "Due date",
+      "sort.pri": "Priority",
+      "sort.new": "Newest",
+      "remain.noMatch": "Nothing matches the current filter",
+      "remain.none": "Nothing open — the board is clear",
+
+      "due.title": "Due-date schedule",
+      "due.sub": "Nearest first",
+      "due.noMatch": "Nothing matches the current filter",
+      "bucket.over": "Overdue",
+      "bucket.overWhen": "needs attention now",
+      "bucket.today": "Today",
+      "bucket.tmr": "Tomorrow",
+      "bucket.week": "Within 7 days",
+      "bucket.month": "Within 30 days",
+      "bucket.later": "Later than that",
+      "bucket.undated": "No due date set",
+      "bucket.undatedWhen": "open a card to add one",
+
+      "chart.title": "Load over the next 14 days",
+      "chart.empty": "Nothing falls due in the next 14 days",
+      "chart.spread": "Nicely spread — no day carries more than one task",
+      "chart.peak": "Heaviest on {d} — {n} tasks due the same day",
+      "chart.dayAria": "{d} — {n} tasks",
+      "chart.dayAria.one": "{d} — 1 task",
+      "chart.today": "Today",
+      "tip.count": "{n} tasks",
+      "tip.count.one": "1 task",
+      "tip.more": "and {n} more",
+
+      "dueL.overN": "{n} days late",
+      "dueL.over1": "1 day late",
+      "dueL.today": "Due today",
+      "dueL.tmr": "Tomorrow",
+      "dueL.inN": "In {n} days",
+      "dueL.none": "No due date",
+
+      "row.complete": "Mark as done",
+      "row.reopen": "Open this task",
+
+      "common.cancel": "Cancel",
+      "common.save": "Save",
+      "common.ok": "OK",
+
+      "addCol.title": "Add a column",
+      "addCol.label": "Column name",
+      "addCol.ph": "e.g. This week / Someday",
+      "rename.title": "Rename column",
+      "reset.title": "Start a new board",
+      "reset.body": "Every task on this board will be deleted and replaced with the starter board. If you haven't pressed “Save backup”, the current work is gone for good.",
+      "reset.ok": "Delete everything and restart",
+      "clearCol.title": "Clear column “{t}”",
+      "clearCol.body": "All {n} cards in this column will be permanently deleted",
+      "clearCol.body.one": "The single card in this column will be permanently deleted",
+      "clearCol.ok": "Delete {n} cards",
+      "clearCol.ok.one": "Delete 1 card",
+      "delCol.title": "Delete column “{t}”",
+      "delCol.bodyMove": "Its {n} cards move to “{to}”, so no task is lost",
+      "delCol.bodyMove.one": "Its single card moves to “{to}”, so no task is lost",
+      "delCol.bodyEmpty": "This column is empty and safe to delete",
+      "delCol.ok": "Delete column",
+      "import.title": "Open backup",
+      "import.body": "This file holds {n} tasks. Your current board will be replaced entirely.",
+      "import.body.one": "This file holds 1 task. Your current board will be replaced entirely.",
+      "import.ok": "Replace the board",
+
+      "toast.undo": "Undo",
+      "toast.closed": "Closed “{t}”",
+      "toast.deleted": "Deleted “{t}”",
+      "toast.noDoneCol": "No column counts as done yet — set one from a column's ⋯ menu",
+      "toast.sorted": "Sorted “{t}” by due date",
+      "toast.colEmpty": "This column is already empty",
+      "toast.needOneCol": "At least one column has to remain",
+      "toast.reset": "Started a new board",
+      "toast.saved": "Backup saved",
+      "toast.dlFail": "Downloads are blocked on this page — try opening the board in its own tab",
+      "toast.importBad": "That file can't be read. It has to be a backup saved from this board.",
+      "toast.imported": "Backup loaded — {n} tasks",
+      "toast.imported.one": "Backup loaded — 1 task",
+
+      "set.title": "Settings",
+      "set.lang": "Language",
+      "set.font": "Typeface",
+      "set.fontHint": "These use fonts already installed on your device. If one isn't available, the next in the list takes over automatically.",
+      "set.close": "Done",
+      "font.sans": "Default",
+      "font.loop": "Thai looped",
+      "font.serif": "Serif",
+      "font.system": "System",
+      "font.mono": "Monospace",
+      "font.sample": "Ship 12 reports · ส่งรายงาน 12 ชิ้น",
+
+      "warn.noStore": "This browser won't let the board store data — anything you add is lost when the page closes. Press “Save backup” first.",
+      "warn.full": "Couldn't save to this device (storage is full) — press “Save backup” before closing the page",
+      "file.name": "task-board"
+    }
+  };
+
+  var FONTS = ["sans", "loop", "serif", "system", "mono"];
+
+  function t(key, vars) {
+    // English needs singular forms; Thai has no plural, so it simply has no ".one" keys
+    if (vars && vars.n === 1 && STR[view.lang][key + ".one"] !== undefined) key += ".one";
+    var s = STR[view.lang][key];
+    if (s === undefined) s = STR.th[key];
+    if (s === undefined) return key;
+    if (vars) {
+      Object.keys(vars).forEach(function (k) {
+        s = s.split("{" + k + "}").join(vars[k]);
+      });
+    }
+    return s;
+  }
+  function L() { return STR[view.lang]; }
+
+  /* ═══ dates ═════════════════════════════════════════════════ */
   function isoOf(d) {
     return d.getFullYear() + "-" +
       String(d.getMonth() + 1).padStart(2, "0") + "-" +
@@ -1302,17 +1939,35 @@
   }
   function prettyDate(iso) {
     var p = iso.split("-").map(Number);
-    return p[2] + " " + TH_MONTH[p[1] - 1];
+    var m = L().month[p[1] - 1];
+    return view.lang === "en" ? m + " " + p[2] : p[2] + " " + m;
+  }
+  function exactDate(iso) {
+    var p = iso.split("-").map(Number);
+    var d = new Date(p[0], p[1] - 1, p[2]);
+    return L().dow[d.getDay()] + " " + prettyDate(iso);
   }
   function dueLabel(iso) {
     var n = daysUntil(iso);
     if (n === null) return { text: "", cls: "" };
-    if (n < -1) return { text: "เลยมา " + Math.abs(n) + " วัน", cls: "due-over" };
-    if (n === -1) return { text: "เลยมาเมื่อวาน", cls: "due-over" };
-    if (n === 0) return { text: "ครบวันนี้", cls: "due-today" };
-    if (n === 1) return { text: "พรุ่งนี้", cls: "due-soon" };
-    if (n <= 7) return { text: "อีก " + n + " วัน", cls: "due-soon" };
+    if (n < -1) return { text: t("dueL.overN", { n: Math.abs(n) }), cls: "due-over" };
+    if (n === -1) return { text: t("dueL.over1"), cls: "due-over" };
+    if (n === 0) return { text: t("dueL.today"), cls: "due-today" };
+    if (n === 1) return { text: t("dueL.tmr"), cls: "due-soon" };
+    if (n <= 7) return { text: t("dueL.inN", { n: n }), cls: "due-soon" };
     return { text: prettyDate(iso), cls: "" };
+  }
+  function localeDate(ms, opts) {
+    try { return new Date(ms).toLocaleDateString(L().locale, opts); }
+    catch (e) { return prettyDate(isoOf(new Date(ms))); }
+  }
+  function localeTime(ms) {
+    try {
+      return new Date(ms).toLocaleTimeString(L().locale, { hour: "2-digit", minute: "2-digit" });
+    } catch (e) {
+      var d = new Date(ms);
+      return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0");
+    }
   }
 
   /* ═══ state ═════════════════════════════════════════════════ */
@@ -1323,34 +1978,70 @@
       Math.random().toString(36).slice(2, 6);
   }
 
+  var SEED = {
+    th: {
+      cols: ["ต้องทำ", "กำลังทำ", "รอคนอื่น", "เสร็จแล้ว"],
+      cards: [
+        ["จ่ายค่าไฟ + ค่าเน็ต", "ตัดจากบัญชีหลัก เช็กยอดก่อน", 2, "high", ["เงิน"]],
+        ["นัดหมอฟัน ขูดหินปูน", "ทิ้งไว้มาสองรอบแล้ว", null, "mid", ["สุขภาพ"]],
+        ["ซื้อของเข้าบ้าน", "กาแฟ / ผงซักฟอก / ถ่าน AA", null, "low", ["บ้าน"]],
+        ["สรุป OEE รายสัปดาห์ส่งหัวหน้า", "เหลือกราฟ downtime กับสรุป 3 บรรทัด", 0, "high", ["งาน"]],
+        ["รอทีมไลน์ยืนยันสเปกเซนเซอร์", "ถามซ้ำวันจันทร์ถ้ายังเงียบ", 4, "mid", ["งาน"]],
+        ["ต่อ พ.ร.บ. รถ", "", null, "mid", ["รถ"]]
+      ],
+      log: [
+        "ตกลงสโคปแรก: กราฟ availability + performance",
+        "ลูกค้าขอเพิ่มกราฟ downtime แยกตามสาเหตุ",
+        "ขอให้ export เป็น PDF ได้ด้วย ส่งพร้อมกันรอบเดียว"
+      ]
+    },
+    en: {
+      cols: ["To do", "Doing", "Waiting on others", "Done"],
+      cards: [
+        ["Pay the power + internet bills", "Auto-debits from the main account — check the balance first", 2, "high", ["money"]],
+        ["Book a dental cleaning", "Put off twice already", null, "mid", ["health"]],
+        ["Groceries run", "Coffee / detergent / AA batteries", null, "low", ["home"]],
+        ["Weekly OEE summary for my manager", "Downtime chart and a 3-line summary left to do", 0, "high", ["work"]],
+        ["Waiting on the line team to confirm sensor specs", "Chase again Monday if it stays quiet", 4, "mid", ["work"]],
+        ["Renew the car insurance", "", null, "mid", ["car"]]
+      ],
+      log: [
+        "Agreed the first scope: availability + performance charts",
+        "Client asked for a downtime chart broken down by cause",
+        "They also want a PDF export so it can all go out in one send"
+      ]
+    }
+  };
+
   function seed() {
+    var S = SEED[view.lang] || SEED.th;
     var cards = {};
-    function mk(title, note, due, pri, tags) {
+    function mk(spec) {
       var c = {
-        id: uid("k"), title: title, note: note || "", due: due || "",
-        pri: pri || "low", tags: tags || [], created: Date.now(), doneAt: 0
+        id: uid("k"), title: spec[0], note: spec[1] || "",
+        due: spec[2] === null ? "" : shiftIso(spec[2]),
+        pri: spec[3], tags: spec[4] || [], log: [],
+        created: Date.now(), doneAt: 0
       };
       cards[c.id] = c;
       return c.id;
     }
+    var ids = S.cards.map(mk);
     var cols = [
-      { id: uid("c"), title: "ต้องทำ", done: false, cards: [
-        mk("จ่ายค่าไฟ + ค่าเน็ต", "ตัดจากบัญชีหลัก เช็กยอดก่อน", shiftIso(2), "high", ["เงิน"]),
-        mk("นัดหมอฟัน ขูดหินปูน", "ทิ้งไว้มาสองรอบแล้ว", "", "mid", ["สุขภาพ"]),
-        mk("ซื้อของเข้าบ้าน", "กาแฟ / ผงซักฟอก / ถ่าน AA", "", "low", ["บ้าน"])
-      ] },
-      { id: uid("c"), title: "กำลังทำ", done: false, cards: [
-        mk("สรุป OEE รายสัปดาห์ส่งหัวหน้า", "เหลือกราฟ downtime กับสรุป 3 บรรทัด", todayIso(), "high", ["งาน"])
-      ] },
-      { id: uid("c"), title: "รอคนอื่น", done: false, cards: [
-        mk("รอทีมไลน์ยืนยันสเปกเซนเซอร์", "ถามซ้ำวันจันทร์ถ้ายังเงียบ", shiftIso(4), "mid", ["งาน"])
-      ] },
-      { id: uid("c"), title: "เสร็จแล้ว", done: true, cards: [
-        mk("ต่อ พ.ร.บ. รถ", "", "", "mid", ["รถ"])
-      ] }
+      { id: uid("c"), title: S.cols[0], done: false, cards: [ids[0], ids[1], ids[2]] },
+      { id: uid("c"), title: S.cols[1], done: false, cards: [ids[3]] },
+      { id: uid("c"), title: S.cols[2], done: false, cards: [ids[4]] },
+      { id: uid("c"), title: S.cols[3], done: true, cards: [ids[5]] }
     ];
-    cards[cols[3].cards[0]].doneAt = Date.now();
-    return { v: 1, columns: cols, cards: cards };
+    cards[ids[5]].doneAt = Date.now();
+
+    // the sample project card carries a short history so the log reads as a thread
+    var day = 86400000;
+    cards[ids[3]].log = S.log.map(function (text, i) {
+      return { id: uid("g"), text: text, at: Date.now() - (S.log.length - i) * day * 2 };
+    });
+
+    return { v: 2, columns: cols, cards: cards };
   }
 
   function sanitize(raw) {
@@ -1366,7 +2057,16 @@
         note: typeof c.note === "string" ? c.note : "",
         due: typeof c.due === "string" && /^\d{4}-\d{2}-\d{2}$/.test(c.due) ? c.due : "",
         pri: c.pri === "high" || c.pri === "mid" ? c.pri : "low",
-        tags: Array.isArray(c.tags) ? c.tags.filter(function (t) { return typeof t === "string"; }).slice(0, 8) : [],
+        tags: Array.isArray(c.tags) ? c.tags.filter(function (x) { return typeof x === "string"; }).slice(0, 8) : [],
+        log: Array.isArray(c.log) ? c.log.filter(function (g) {
+          return g && typeof g.text === "string";
+        }).map(function (g) {
+          return {
+            id: typeof g.id === "string" ? g.id : uid("g"),
+            text: g.text,
+            at: typeof g.at === "number" ? g.at : Date.now()
+          };
+        }) : [],
         created: typeof c.created === "number" ? c.created : Date.now(),
         doneAt: typeof c.doneAt === "number" ? c.doneAt : 0
       };
@@ -1391,7 +2091,40 @@
     Object.keys(cards).forEach(function (id) {
       if (!seen[id]) columns[0].cards.push(id);
     });
-    return { v: 1, columns: columns, cards: cards };
+    return { v: 2, columns: columns, cards: cards };
+  }
+
+  /* ═══ view state ════════════════════════════════════════════ */
+  var UI_KEY = KEY + ".ui";
+  var view = {
+    lang: "th", font: "sans",
+    page: "board", filter: "all", query: "",
+    composing: null, menuFor: null, groupBy: "col", sortBy: "due"
+  };
+
+  if (canStore) {
+    try {
+      var savedUi = JSON.parse(window.localStorage.getItem(UI_KEY));
+      if (savedUi && typeof savedUi === "object") {
+        if (savedUi.lang === "th" || savedUi.lang === "en") view.lang = savedUi.lang;
+        if (FONTS.indexOf(savedUi.font) !== -1) view.font = savedUi.font;
+        if (typeof savedUi.page === "string") view.page = savedUi.page;
+        if (typeof savedUi.groupBy === "string") view.groupBy = savedUi.groupBy;
+        if (typeof savedUi.sortBy === "string") view.sortBy = savedUi.sortBy;
+      } else if (/^en\b/i.test(navigator.language || "")) {
+        view.lang = "en";
+      }
+    } catch (e) { /* defaults are fine */ }
+  }
+
+  function saveUi() {
+    if (!canStore) return;
+    try {
+      window.localStorage.setItem(UI_KEY, JSON.stringify({
+        lang: view.lang, font: view.font, page: view.page,
+        groupBy: view.groupBy, sortBy: view.sortBy
+      }));
+    } catch (e) { /* not worth warning about */ }
   }
 
   var state = (function () {
@@ -1412,36 +2145,9 @@
     } catch (e) {
       if (!storeBroken) {
         storeBroken = true;
-        showWarn("บันทึกลงเครื่องไม่สำเร็จ (พื้นที่เก็บข้อมูลเต็ม) — กด “บันทึกไฟล์สำรอง” ไว้ก่อนปิดหน้านี้");
+        showWarn(t("warn.full"));
       }
     }
-  }
-
-  /* ═══ view state ════════════════════════════════════════════ */
-  var UI_KEY = KEY + ".ui";
-  var view = {
-    page: "board", filter: "all", query: "",
-    composing: null, menuFor: null, groupBy: "col", sortBy: "due"
-  };
-
-  if (canStore) {
-    try {
-      var saved = JSON.parse(window.localStorage.getItem(UI_KEY));
-      if (saved && typeof saved === "object") {
-        if (typeof saved.page === "string") view.page = saved.page;
-        if (typeof saved.groupBy === "string") view.groupBy = saved.groupBy;
-        if (typeof saved.sortBy === "string") view.sortBy = saved.sortBy;
-      }
-    } catch (e) { /* defaults are fine */ }
-  }
-
-  function saveUi() {
-    if (!canStore) return;
-    try {
-      window.localStorage.setItem(UI_KEY, JSON.stringify({
-        page: view.page, groupBy: view.groupBy, sortBy: view.sortBy
-      }));
-    } catch (e) { /* not worth warning about */ }
   }
 
   var undoBuf = null;
@@ -1478,7 +2184,8 @@
   function matches(card) {
     var q = view.query.trim().toLowerCase();
     if (q) {
-      var hay = (card.title + " " + card.note + " " + card.tags.join(" ")).toLowerCase();
+      var hay = (card.title + " " + card.note + " " + card.tags.join(" ") + " " +
+        (card.log || []).map(function (g) { return g.text; }).join(" ")).toLowerCase();
       if (hay.indexOf(q) === -1) return false;
     }
     if (view.filter === "all") return true;
@@ -1512,6 +2219,10 @@
     toastTimer = window.setTimeout(function () { el.hidden = true; }, actionLabel ? 7000 : 3200);
   }
 
+  function clip(s, n) {
+    return s.length > n ? s.slice(0, n - 1) + "…" : s;
+  }
+
   /* ═══ mutations ═════════════════════════════════════════════ */
   function commit() { save(); render(); }
 
@@ -1520,7 +2231,7 @@
     if (!col) return;
     var card = {
       id: uid("k"), title: title.trim(), note: "", due: "", pri: "low",
-      tags: [], created: Date.now(), doneAt: col.done ? Date.now() : 0
+      tags: [], log: [], created: Date.now(), doneAt: col.done ? Date.now() : 0
     };
     state.cards[card.id] = card;
     col.cards.push(card.id);
@@ -1577,14 +2288,11 @@
     if (from.done) { openEditor(cardId); return; }
 
     var target = doneColumn();
-    if (!target) {
-      toast("ยังไม่มีคอลัมน์ที่นับว่าเสร็จแล้ว — ตั้งได้จากเมนู ⋯ ของคอลัมน์");
-      return;
-    }
+    if (!target) { toast(t("toast.noDoneCol")); return; }
 
     var back = { colId: from.id, index: from.cards.indexOf(cardId) };
     moveCard(cardId, target.id, target.cards.length);
-    toast("ปิดงาน “" + card.title.slice(0, 26) + "” แล้ว", "เลิกทำ", function () {
+    toast(t("toast.closed", { t: clip(card.title, 27) }), t("toast.undo"), function () {
       moveCard(cardId, back.colId, back.index);
     });
   }
@@ -1597,7 +2305,7 @@
     col.cards.splice(idx, 1);
     delete state.cards[cardId];
     commit();
-    toast("ลบ “" + undoBuf.card.title.slice(0, 28) + "” แล้ว", "เลิกทำ", function () {
+    toast(t("toast.deleted", { t: clip(undoBuf.card.title, 29) }), t("toast.undo"), function () {
       if (!undoBuf) return;
       var c = state.columns[colIndex(undoBuf.colId)] || state.columns[0];
       state.cards[undoBuf.card.id] = undoBuf.card;
@@ -1605,6 +2313,102 @@
       undoBuf = null;
       commit();
     });
+  }
+
+  /* ═══ the activity log on a task ════════════════════════════ */
+  function logOf(card) { return card.log || (card.log = []); }
+
+  function addLogEntry(cardId, text) {
+    var card = state.cards[cardId];
+    if (!card || !text.trim()) return;
+    logOf(card).push({ id: uid("g"), text: text.trim(), at: Date.now() });
+    save();
+    render();
+    renderLogSection(cardId, true);
+  }
+
+  function deleteLogEntry(cardId, entryId) {
+    var card = state.cards[cardId];
+    if (!card) return;
+    var log = logOf(card);
+    var i = -1;
+    log.forEach(function (g, k) { if (g.id === entryId) i = k; });
+    if (i === -1) return;
+
+    var removed = log.splice(i, 1)[0];
+    save();
+    render();
+    renderLogSection(cardId);
+    toast(t("toast.logDeleted"), t("toast.undo"), function () {
+      var c = state.cards[cardId];
+      if (!c) return;
+      logOf(c).splice(Math.min(i, logOf(c).length), 0, removed);
+      save();
+      render();
+      if (editing && editing.id === cardId) renderLogSection(cardId);
+    });
+  }
+
+  /* Entries group under a date heading so a run of client requests on the
+     same day reads as one conversation. */
+  function logListHtml(card) {
+    var log = logOf(card).slice().sort(function (a, b) { return a.at - b.at; });
+    if (!log.length) return '<p class="log-empty">' + esc(t("log.empty")) + '</p>';
+
+    var out = "";
+    var lastDay = "";
+    log.forEach(function (g) {
+      var day = isoOf(new Date(g.at));
+      if (day !== lastDay) {
+        lastDay = day;
+        var n = daysUntil(day);
+        var head = n === 0 ? t("log.today") : n === -1 ? t("log.yesterday") : exactDate(day);
+        out += '<div class="log-day">' + esc(head) + '</div>';
+      }
+      out += '<div class="log-entry">' +
+        '<p class="log-text">' + esc(g.text) + '</p>' +
+        '<span class="log-time">' + esc(localeTime(g.at)) + '</span>' +
+        '<button class="icon-btn log-del" type="button" data-log-del="' + g.id + '" ' +
+          'aria-label="' + esc(t("log.del")) + '">✕</button>' +
+        '</div>';
+    });
+    return '<div class="log-list">' + out + '</div>';
+  }
+
+  function logSectionHtml(card) {
+    var n = logOf(card).length;
+    return '<div class="log-head"><h3>' + esc(t("log.title")) + '</h3>' +
+        (n ? '<span class="n">' + t("log.n", { n: n }) + '</span>' : '') +
+      '</div>' +
+      '<p class="log-hint">' + esc(t("log.hint")) + '</p>' +
+      logListHtml(card) +
+      '<div class="log-add">' +
+        '<textarea id="logInput" rows="2" placeholder="' + esc(t("log.ph")) + '"></textarea>' +
+        '<div class="log-add-row">' +
+          '<button class="btn btn-primary" type="button" id="logAdd">' + esc(t("log.add")) + '</button>' +
+          '<span class="hint">' + esc(t("log.addHint")) + '</span>' +
+        '</div>' +
+      '</div>';
+  }
+
+  function renderLogSection(cardId, focus) {
+    var host = $("logSection");
+    var card = state.cards[cardId];
+    if (!host || !card) return;
+    host.innerHTML = logSectionHtml(card);
+    var list = host.querySelector(".log-list");
+    if (list) list.scrollTop = list.scrollHeight;
+    if (focus) {
+      var input = $("logInput");
+      if (input) input.focus();
+    }
+  }
+
+  function submitLog() {
+    if (!editing) return;
+    var input = $("logInput");
+    if (!input || !input.value.trim()) return;
+    addLogEntry(editing.id, input.value);
   }
 
   /* ═══ render: pulse strip ═══════════════════════════════════ */
@@ -1620,18 +2424,18 @@
     });
 
     var tiles = [
-      { k: "overdue", cls: "t-over", n: over, lbl: "เลยกำหนดแล้ว" },
-      { k: "today", cls: "t-today", n: today, lbl: "ครบวันนี้" },
-      { k: "week", cls: "t-week", n: week, lbl: "ภายใน 7 วัน" },
-      { k: "all", cls: "t-open", n: cards.length, lbl: "ค้างอยู่ทั้งหมด" }
+      { k: "overdue", cls: "t-over", n: over, lbl: t("tile.overdue") },
+      { k: "today", cls: "t-today", n: today, lbl: t("tile.today") },
+      { k: "week", cls: "t-week", n: week, lbl: t("tile.week") },
+      { k: "all", cls: "t-open", n: cards.length, lbl: t("tile.open") }
     ];
 
-    $("pulse").innerHTML = tiles.map(function (t) {
-      var on = view.filter === t.k;
-      return '<button type="button" class="tile ' + t.cls + '" data-filter="' + t.k +
+    $("pulse").innerHTML = tiles.map(function (x) {
+      var on = view.filter === x.k;
+      return '<button type="button" class="tile ' + x.cls + '" data-filter="' + x.k +
         '" aria-pressed="' + on + '">' +
-        '<span class="n' + (t.n === 0 ? " zero" : "") + '">' + t.n + '</span>' +
-        '<span class="lbl">' + t.lbl + '</span></button>';
+        '<span class="n' + (x.n === 0 ? " zero" : "") + '">' + x.n + '</span>' +
+        '<span class="lbl">' + esc(x.lbl) + '</span></button>';
     }).join("");
 
     var doneToday = 0;
@@ -1640,24 +2444,36 @@
       if (state.cards[id].doneAt >= start.getTime()) doneToday++;
     });
 
-    var tail = doneToday ? " · วันนี้ปิดไปแล้ว " + doneToday + " งาน" : "";
+    var tail = doneToday ? t("note.tail", { n: doneToday }) : "";
     var hue = "var(--ok)";
     var text;
     if (over > 0) {
       hue = "var(--danger)";
-      text = "มี " + over + " งานที่เลยกำหนดแล้ว — เคลียร์กลุ่มนี้ก่อนดีที่สุด" + tail;
+      text = t("note.over", { n: over }) + tail;
     } else if (today > 0) {
       hue = "var(--warn)";
-      text = "วันนี้มี " + today + " งานที่ครบกำหนด" + tail;
+      text = t("note.today", { n: today }) + tail;
     } else {
-      text = "ไม่มีงานเลยกำหนดและไม่มีงานครบวันนี้" + tail;
+      text = t("note.clear") + tail;
     }
     $("pulseNote").innerHTML =
       '<span class="dot" style="background:' + hue + '"></span><span>' + esc(text) + '</span>';
   }
 
   /* ═══ render: card ══════════════════════════════════════════ */
-  var PRI_LABEL = { high: "สำคัญมาก", mid: "ปานกลาง", low: "ไว้ทีหลัง" };
+  function priLabel(p) { return t("pri." + p); }
+
+  var ICON_LOG = '<svg width="10" height="10" viewBox="0 0 12 12" fill="none" ' +
+    'stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true">' +
+    '<rect x="1.4" y="2.1" width="9.2" height="6.1" rx="1.7" />' +
+    '<path d="M4.2 8.2v2.3l2.5-2.3" /></svg>';
+
+  function logChip(card) {
+    var n = logOf(card).length;
+    if (!n) return "";
+    return '<span class="chip log-count' + (n >= 3 ? " hot" : "") + '" ' +
+      'title="' + esc(t("log.count", { n: n })) + '">' + ICON_LOG + n + '</span>';
+  }
 
   function cardHtml(card, col, ci) {
     var chips = "";
@@ -1666,50 +2482,45 @@
       chips += '<span class="chip due ' + d.cls + '">' + esc(d.text) + '</span>';
     }
     if (card.pri !== "low" && !col.done) {
-      chips += '<span class="chip">' + PRI_LABEL[card.pri] + '</span>';
+      chips += '<span class="chip">' + esc(priLabel(card.pri)) + '</span>';
     }
-    card.tags.forEach(function (t) {
-      chips += '<span class="chip tag">' + esc(t) + '</span>';
+    chips += logChip(card);
+    card.tags.forEach(function (x) {
+      chips += '<span class="chip tag">' + esc(x) + '</span>';
     });
     if (card.note && !chips) {
-      chips += '<span class="chip note-flag" title="มีรายละเอียด">···</span>';
+      chips += '<span class="chip note-flag" title="' + esc(t("card.noteFlag")) + '">···</span>';
     }
 
     var atFirst = ci === 0;
     var atLast = ci === state.columns.length - 1;
 
     return '<article class="card p-' + card.pri + (col.done ? " is-done" : "") +
-      '" draggable="true" data-card="' + card.id + '" tabindex="0" role="button" ' +
-      'aria-label="แก้ไขงาน: ' + esc(card.title) + '">' +
+      '" draggable="true" data-card="' + card.id + '" tabindex="0" ' +
+      'aria-label="' + esc(t("card.aria", { t: card.title })) + '">' +
       '<p class="card-title">' + esc(card.title) + '</p>' +
       (card.note ? '<p class="card-note">' + esc(card.note) + '</p>' : '') +
       '<div class="card-meta">' + chips + '</div>' +
       '<div class="card-move">' +
         '<button type="button" data-nudge="-1" data-card="' + card.id + '"' +
-          (atFirst ? " disabled" : "") + ' aria-label="ย้ายไปคอลัมน์ซ้าย">←</button>' +
+          (atFirst ? " disabled" : "") + ' aria-label="' + esc(t("card.left")) + '">←</button>' +
         '<button type="button" data-nudge="1" data-card="' + card.id + '"' +
-          (atLast ? " disabled" : "") + ' aria-label="ย้ายไปคอลัมน์ขวา">→</button>' +
+          (atLast ? " disabled" : "") + ' aria-label="' + esc(t("card.right")) + '">→</button>' +
       '</div></article>';
   }
 
   /* ═══ render: shared task row ═══════════════════════════════ */
-  var TH_DOW = ["อา.", "จ.", "อ.", "พ.", "พฤ.", "ศ.", "ส."];
-
-  function exactDate(iso) {
-    var p = iso.split("-").map(Number);
-    var d = new Date(p[0], p[1] - 1, p[2]);
-    return TH_DOW[d.getDay()] + " " + p[2] + " " + TH_MONTH[p[1] - 1];
-  }
-
   function rowHtml(card, opts) {
     opts = opts || {};
     var col = colOf(card.id);
     var isDone = col && col.done;
 
-    var meta = '<span class="pri-dot p-' + card.pri + '" title="ความสำคัญ: ' + PRI_LABEL[card.pri] + '"></span>';
+    var meta = '<span class="pri-dot p-' + card.pri + '" title="' +
+      esc(t("pri.aria", { t: priLabel(card.pri) })) + '"></span>';
     if (opts.showColumn !== false && col) meta += '<span>' + esc(col.title) + '</span>';
-    if (card.note) meta += '<span>· ' + esc(card.note.split("\n")[0].slice(0, 54)) + '</span>';
-    card.tags.forEach(function (t) { meta += '<span class="chip tag">' + esc(t) + '</span>'; });
+    if (card.note) meta += '<span>· ' + esc(clip(card.note.split("\n")[0], 55)) + '</span>';
+    meta += logChip(card);
+    card.tags.forEach(function (x) { meta += '<span class="chip tag">' + esc(x) + '</span>'; });
 
     var when = "";
     if (card.due) {
@@ -1717,13 +2528,13 @@
       when = '<span class="chip due ' + d.cls + '">' + esc(d.text) + '</span>' +
         (opts.showExact === false ? "" : '<span class="exact">' + esc(exactDate(card.due)) + '</span>');
     } else if (opts.showExact !== false) {
-      when = '<span class="exact">ไม่กำหนดวันส่ง</span>';
+      when = '<span class="exact">' + esc(t("dueL.none")) + '</span>';
     }
 
     return '<div class="row' + (isDone ? " done-row" : "") + '" data-card="' + card.id + '" ' +
       'tabindex="0" aria-label="' + esc(card.title) + '">' +
       '<button class="tick" type="button" data-complete="' + card.id + '" ' +
-        'aria-label="' + (isDone ? "เปิดงานนี้" : "ทำเสร็จแล้ว") + '">✓</button>' +
+        'aria-label="' + esc(isDone ? t("row.reopen") : t("row.complete")) + '">✓</button>' +
       '<div class="row-main">' +
         '<p class="row-title">' + esc(card.title) + '</p>' +
         '<div class="row-meta">' + meta + '</div>' +
@@ -1737,48 +2548,23 @@
       ? '<div class="rows">' + opts.cards.map(function (c) {
           return rowHtml(c, opts.rowOpts);
         }).join("") + '</div>'
-      : '<p class="panel-empty">' + esc(opts.empty || "ไม่มีงานในกลุ่มนี้") + '</p>';
+      : '<p class="panel-empty">' + esc(opts.empty || t("panel.empty")) + '</p>';
 
     return '<section class="panel' + (opts.sev ? " sev-" + opts.sev : "") + '">' +
       '<div class="panel-head"><span class="rule"></span>' +
         '<h2>' + esc(opts.title) + '</h2>' +
         (opts.sub ? '<p class="sub">' + esc(opts.sub) + '</p>' : '') +
-        '<span class="n">' + (opts.cards ? opts.cards.length : 0) + ' งาน</span>' +
+        '<span class="n">' + t("panel.count", { n: opts.cards ? opts.cards.length : 0 }) + '</span>' +
       '</div>' + (opts.extra || "") + body + '</section>';
   }
 
   /* ═══ selectors used by the summary pages ═══════════════════ */
   var PRI_ORDER = { high: 0, mid: 1, low: 2 };
 
-  function openMatching() {
-    return openCards().filter(matches);
-  }
+  function openMatching() { return openCards().filter(matches); }
 
   function byBucket(cards, test) {
-    return cards.filter(function (c) {
-      var n = daysUntil(c.due);
-      return test(n, c);
-    });
-  }
-
-  function sortCards(list, mode) {
-    var out = list.slice();
-    if (mode === "pri") {
-      out.sort(function (a, b) {
-        var d = PRI_ORDER[a.pri] - PRI_ORDER[b.pri];
-        if (d) return d;
-        return dueRank(a) - dueRank(b);
-      });
-    } else if (mode === "new") {
-      out.sort(function (a, b) { return b.created - a.created; });
-    } else {
-      out.sort(function (a, b) {
-        var d = dueRank(a) - dueRank(b);
-        if (d) return d;
-        return PRI_ORDER[a.pri] - PRI_ORDER[b.pri];
-      });
-    }
-    return out;
+    return cards.filter(function (c) { return test(daysUntil(c.due), c); });
   }
 
   function dueRank(c) {
@@ -1786,7 +2572,25 @@
     return n === null ? 1e6 : n;
   }
 
-  /* ═══ page: สรุปวันนี้ ═══════════════════════════════════════ */
+  function sortCards(list, mode) {
+    var out = list.slice();
+    if (mode === "pri") {
+      out.sort(function (a, b) {
+        var d = PRI_ORDER[a.pri] - PRI_ORDER[b.pri];
+        return d ? d : dueRank(a) - dueRank(b);
+      });
+    } else if (mode === "new") {
+      out.sort(function (a, b) { return b.created - a.created; });
+    } else {
+      out.sort(function (a, b) {
+        var d = dueRank(a) - dueRank(b);
+        return d ? d : PRI_ORDER[a.pri] - PRI_ORDER[b.pri];
+      });
+    }
+    return out;
+  }
+
+  /* ═══ page: today ═══════════════════════════════════════════ */
   function renderToday() {
     var cards = openMatching();
     var overdue = sortCards(byBucket(cards, function (n) { return n !== null && n < 0; }), "due");
@@ -1806,45 +2610,41 @@
 
     if (overdue.length) {
       html += panelHtml({
-        sev: "over", title: "เลยกำหนดแล้ว", sub: "เคลียร์กลุ่มนี้ก่อน",
+        sev: "over", title: t("today.overdue.title"), sub: t("today.overdue.sub"),
         cards: overdue
       });
     }
 
     html += panelHtml({
-      sev: "today", title: "ครบกำหนดวันนี้",
-      sub: new Date().toLocaleDateString("th-TH", { weekday: "long", day: "numeric", month: "long" }),
+      sev: "today", title: t("today.due.title"),
+      sub: localeDate(Date.now(), { weekday: "long", day: "numeric", month: "long" }),
       cards: today,
-      empty: overdue.length
-        ? "วันนี้ไม่มีงานครบกำหนดเพิ่ม — เหลือแค่ของค้างด้านบน"
-        : "วันนี้ไม่มีงานครบกำหนด สบายไป"
+      empty: overdue.length ? t("today.due.emptyA") : t("today.due.emptyB")
     });
 
     if (tomorrow.length) {
       html += panelHtml({
-        sev: "next", title: "พรุ่งนี้", sub: "เตรียมไว้ล่วงหน้า", cards: tomorrow
+        sev: "next", title: t("today.tomorrow.title"), sub: t("today.tomorrow.sub"),
+        cards: tomorrow
       });
     }
 
     if (rotting.length) {
       html += panelHtml({
-        title: "สำคัญแต่ยังไม่ได้ตั้งวันส่ง",
-        sub: "งานกลุ่มนี้ลืมง่ายที่สุด เพราะไม่มีวันมาเตือน",
-        cards: rotting,
-        rowOpts: { showExact: false }
+        title: t("today.rot.title"), sub: t("today.rot.sub"),
+        cards: rotting, rowOpts: { showExact: false }
       });
     }
 
     html += panelHtml({
-      sev: "done", title: "ปิดไปแล้ววันนี้", cards: closed,
-      empty: "ยังไม่ได้ปิดงานไหนวันนี้",
-      rowOpts: { showExact: false }
+      sev: "done", title: t("today.closed.title"), cards: closed,
+      empty: t("today.closed.empty"), rowOpts: { showExact: false }
     });
 
     return html;
   }
 
-  /* ═══ page: งานที่เหลือ ═════════════════════════════════════ */
+  /* ═══ page: remaining ═══════════════════════════════════════ */
   function renderRemain() {
     var cards = openMatching();
 
@@ -1858,39 +2658,37 @@
     } else if (view.groupBy === "pri") {
       ["high", "mid", "low"].forEach(function (p) {
         var inPri = cards.filter(function (c) { return c.pri === p; });
-        if (inPri.length) groups.push({ label: "ความสำคัญ" + PRI_LABEL[p], cards: inPri });
+        if (inPri.length) groups.push({ label: priLabel(p), cards: inPri });
       });
     } else {
       var byTag = {};
       var untagged = [];
       cards.forEach(function (c) {
         if (!c.tags.length) { untagged.push(c); return; }
-        c.tags.forEach(function (t) {
-          (byTag[t] = byTag[t] || []).push(c);
-        });
+        c.tags.forEach(function (x) { (byTag[x] = byTag[x] || []).push(c); });
       });
-      Object.keys(byTag).sort().forEach(function (t) {
-        groups.push({ label: t, cards: byTag[t] });
+      Object.keys(byTag).sort().forEach(function (x) {
+        groups.push({ label: x, cards: byTag[x] });
       });
-      if (untagged.length) groups.push({ label: "ไม่มีป้ายกำกับ", cards: untagged });
+      if (untagged.length) groups.push({ label: t("group.untagged"), cards: untagged });
     }
 
     var controls =
       '<div class="controls">' +
-        '<div class="control-group"><span>จัดกลุ่ม</span><div class="seg">' +
-          seg("group", "col", "ตามคอลัมน์") + seg("group", "pri", "ตามความสำคัญ") + seg("group", "tag", "ตามป้าย") +
+        '<div class="control-group"><span>' + esc(t("remain.groupLabel")) + '</span><div class="seg">' +
+          seg("group", "col", t("group.col")) + seg("group", "pri", t("group.pri")) +
+          seg("group", "tag", t("group.tag")) +
         '</div></div>' +
-        '<div class="control-group"><span>เรียงโดย</span><div class="seg">' +
-          seg("sort", "due", "กำหนดส่ง") + seg("sort", "pri", "ความสำคัญ") + seg("sort", "new", "เพิ่มล่าสุด") +
+        '<div class="control-group"><span>' + esc(t("remain.sortLabel")) + '</span><div class="seg">' +
+          seg("sort", "due", t("sort.due")) + seg("sort", "pri", t("sort.pri")) +
+          seg("sort", "new", t("sort.new")) +
         '</div></div>' +
       '</div>';
 
-    var body = "";
+    var body;
     if (!groups.length) {
       body = '<p class="panel-empty">' +
-        (view.query || view.filter !== "all"
-          ? "ไม่มีงานที่ตรงกับตัวกรองที่เลือกอยู่"
-          : "ไม่มีงานค้างเลย กระดานโล่ง") + '</p>';
+        esc(view.query || view.filter !== "all" ? t("remain.noMatch") : t("remain.none")) + '</p>';
     } else {
       body = '<div class="rows">' + groups.map(function (g) {
         return '<div class="group-head">' + esc(g.label) +
@@ -1903,9 +2701,9 @@
 
     return '<section class="panel">' +
       '<div class="panel-head"><span class="rule"></span>' +
-        '<h2>งานที่ยังเหลือ</h2>' +
-        '<p class="sub">ทุกอย่างที่ยังไม่ได้ปิด</p>' +
-        '<span class="n">' + cards.length + ' งาน</span>' +
+        '<h2>' + esc(t("remain.title")) + '</h2>' +
+        '<p class="sub">' + esc(t("remain.sub")) + '</p>' +
+        '<span class="n">' + t("panel.count", { n: cards.length }) + '</span>' +
       '</div>' + controls + body + '</section>';
   }
 
@@ -1915,14 +2713,14 @@
       esc(label) + '</button>';
   }
 
-  /* ═══ page: กำหนดส่ง ════════════════════════════════════════ */
+  /* ═══ page: due dates ═══════════════════════════════════════ */
   var DUE_BUCKETS = [
-    { key: "over", label: "เลยกำหนดแล้ว", when: "ควรจัดการทันที", test: function (n) { return n < 0; } },
-    { key: "today", label: "วันนี้", when: "", test: function (n) { return n === 0; } },
-    { key: "tmr", label: "พรุ่งนี้", when: "", test: function (n) { return n === 1; } },
-    { key: "week", label: "ภายใน 7 วัน", when: "", test: function (n) { return n >= 2 && n <= 7; } },
-    { key: "month", label: "ภายใน 30 วัน", when: "", test: function (n) { return n >= 8 && n <= 30; } },
-    { key: "later", label: "หลังจากนั้น", when: "", test: function (n) { return n > 30; } }
+    { key: "over", when: "bucket.overWhen", test: function (n) { return n < 0; } },
+    { key: "today", when: "", test: function (n) { return n === 0; } },
+    { key: "tmr", when: "", test: function (n) { return n === 1; } },
+    { key: "week", when: "", test: function (n) { return n >= 2 && n <= 7; } },
+    { key: "month", when: "", test: function (n) { return n >= 8 && n <= 30; } },
+    { key: "later", when: "", test: function (n) { return n > 30; } }
   ];
 
   function renderDue() {
@@ -1934,15 +2732,15 @@
     DUE_BUCKETS.forEach(function (b) {
       var inB = sortCards(dated.filter(function (c) { return b.test(daysUntil(c.due)); }), "due");
       if (!inB.length) return;
-      body += '<div class="group-head">' + esc(b.label) +
-        (b.when ? '<span class="when">' + esc(b.when) + '</span>' : "") +
+      body += '<div class="group-head">' + esc(t("bucket." + b.key)) +
+        (b.when ? '<span class="when">' + esc(t(b.when)) + '</span>' : "") +
         '<span class="n">' + inB.length + '</span></div>' +
         inB.map(function (c) { return rowHtml(c); }).join("");
     });
 
     if (undated.length) {
-      body += '<div class="group-head">ยังไม่ได้ตั้งวันส่ง' +
-        '<span class="when">เปิดการ์ดแล้วใส่วันได้</span>' +
+      body += '<div class="group-head">' + esc(t("bucket.undated")) +
+        '<span class="when">' + esc(t("bucket.undatedWhen")) + '</span>' +
         '<span class="n">' + undated.length + '</span></div>' +
         sortCards(undated, "pri").map(function (c) {
           return rowHtml(c, { showExact: false });
@@ -1951,14 +2749,14 @@
 
     var list = body
       ? '<div class="rows">' + body + '</div>'
-      : '<p class="panel-empty">ยังไม่มีงานที่ตรงกับตัวกรองที่เลือกอยู่</p>';
+      : '<p class="panel-empty">' + esc(t("due.noMatch")) + '</p>';
 
     return loadStripHtml(dated) +
       '<section class="panel">' +
         '<div class="panel-head"><span class="rule"></span>' +
-          '<h2>ตารางกำหนดส่ง</h2>' +
-          '<p class="sub">เรียงจากใกล้ที่สุดไปไกลที่สุด</p>' +
-          '<span class="n">' + cards.length + ' งาน</span>' +
+          '<h2>' + esc(t("due.title")) + '</h2>' +
+          '<p class="sub">' + esc(t("due.sub")) + '</p>' +
+          '<span class="n">' + t("panel.count", { n: cards.length }) + '</span>' +
         '</div>' + list +
       '</section>';
   }
@@ -1975,14 +2773,14 @@
       var due = dated.filter(function (c) { return c.due === iso; });
       var p = iso.split("-").map(Number);
       var dow = new Date(p[0], p[1] - 1, p[2]).getDay();
-      days.push({ iso: iso, day: p[2], dow: dow, cards: due, offset: i });
+      days.push({ iso: iso, day: p[2], dow: dow, cards: due });
       if (due.length > max) max = due.length;
     }
 
     if (!max) {
       return '<section class="panel"><div class="panel-head"><span class="rule"></span>' +
-        '<h2>ภาระงาน 14 วันข้างหน้า</h2></div>' +
-        '<p class="panel-empty">ไม่มีงานที่ครบกำหนดใน 14 วันข้างหน้า</p></section>';
+        '<h2>' + esc(t("chart.title")) + '</h2></div>' +
+        '<p class="panel-empty">' + esc(t("chart.empty")) + '</p></section>';
     }
 
     // Label only today and the busiest day — never a value on every bar.
@@ -1998,23 +2796,22 @@
         (i === 0 ? " is-today" : "") +
         (d.dow === 0 || d.dow === 6 ? " weekend" : "") +
         '" type="button" data-day="' + d.iso + '" ' +
-        'aria-label="' + esc(exactDate(d.iso)) + ' — ' + d.cards.length + ' งาน">' +
+        'aria-label="' + esc(t("chart.dayAria", { d: exactDate(d.iso), n: d.cards.length })) + '">' +
         label + '<span class="bar" style="height:' + h + 'px"></span></button>';
     }).join("");
 
     var axis = days.map(function (d, i) {
       return '<span class="tick-lbl' + (i === 0 ? " is-today" : "") + '">' + d.day +
-        (i === 0 ? '<small>วันนี้</small>' : '<small>' + TH_DOW[d.dow] + '</small>') + '</span>';
+        '<small>' + esc(i === 0 ? t("chart.today") : L().dow[d.dow]) + '</small></span>';
     }).join("");
 
-    var busy = days[peak];
     var sub = max === 1
-      ? "กระจายตัวดี ไม่มีวันไหนกองกันเกินหนึ่งงาน"
-      : "หนักสุด " + exactDate(busy.iso) + " — " + max + " งานครบกำหนดวันเดียวกัน";
+      ? t("chart.spread")
+      : t("chart.peak", { d: exactDate(days[peak].iso), n: max });
 
     return '<section class="panel panel-chart">' +
       '<div class="chart-wrap">' +
-        '<div class="chart-caption"><strong>ภาระงาน 14 วันข้างหน้า</strong>' +
+        '<div class="chart-caption"><strong>' + esc(t("chart.title")) + '</strong>' +
           '<span>' + esc(sub) + '</span></div>' +
         '<div class="plot" id="plot">' + bars + '<div class="tip" id="tip" hidden></div></div>' +
         '<div class="axis">' + axis + '</div>' +
@@ -2030,12 +2827,7 @@
       "--col-max", Math.max(240, window.innerHeight - top - 34) + "px");
   }
 
-  var PAGES = [
-    { k: "board", label: "กระดาน" },
-    { k: "today", label: "สรุปวันนี้" },
-    { k: "remain", label: "งานที่เหลือ" },
-    { k: "due", label: "กำหนดส่ง" }
-  ];
+  var PAGES = ["board", "today", "remain", "due"];
 
   function renderNav() {
     var overdue = openCards().filter(function (c) {
@@ -2043,13 +2835,37 @@
       return n !== null && n < 0;
     }).length;
 
-    $("nav").innerHTML = PAGES.map(function (p) {
-      var on = view.page === p.k;
-      return '<button type="button" data-page="' + p.k + '"' +
-        (on ? ' aria-current="page"' : "") + '>' + p.label +
-        (p.k === "today" && overdue ? '<span class="badge">' + overdue + '</span>' : "") +
+    $("nav").innerHTML = PAGES.map(function (k) {
+      var on = view.page === k;
+      return '<button type="button" data-page="' + k + '"' +
+        (on ? ' aria-current="page"' : "") + '>' + esc(t("page." + k)) +
+        (k === "today" && overdue ? '<span class="badge">' + overdue + '</span>' : "") +
         '</button>';
     }).join("");
+  }
+
+  /* text that lives in the static markup rather than a render pass */
+  function applyStatic() {
+    document.documentElement.lang = view.lang;
+    document.documentElement.dataset.font = view.font;
+
+    $("mastTitle").textContent = t("mast.title");
+    $("mastSub").textContent = t("mast.sub");
+    $("btnSettings").textContent = t("btn.settings");
+    $("btnExport").textContent = t("btn.export");
+    $("btnImport").textContent = t("btn.import");
+    $("btnReset").textContent = t("btn.reset");
+    $("nav").setAttribute("aria-label", t("nav.aria"));
+    $("pulseBand").setAttribute("aria-label", t("pulse.aria"));
+
+    var s = $("search");
+    s.placeholder = t("search.ph");
+    s.setAttribute("aria-label", t("search.aria"));
+    $("clearSearch").setAttribute("aria-label", t("search.clear"));
+
+    $("todayStamp").textContent = localeDate(Date.now(), {
+      weekday: "short", day: "numeric", month: "short"
+    });
   }
 
   function render() {
@@ -2070,7 +2886,6 @@
     }
 
     var filtering = view.filter !== "all" || view.query.trim() !== "";
-    var board = $("board");
     var html = "";
 
     state.columns.forEach(function (col, ci) {
@@ -2084,7 +2899,8 @@
           '<h2 title="' + esc(col.title) + '">' + esc(col.title) + '</h2>' +
           '<span class="count">' + (filtering ? visible.length + "/" + col.cards.length : col.cards.length) + '</span>' +
           '<div class="col-menu">' +
-            '<button class="icon-btn" type="button" data-menu="' + col.id + '" aria-label="ตัวเลือกคอลัมน์ ' + esc(col.title) + '">⋯</button>' +
+            '<button class="icon-btn" type="button" data-menu="' + col.id + '" ' +
+              'aria-label="' + esc(t("col.menuAria", { t: col.title })) + '">⋯</button>' +
             (view.menuFor === col.id ? menuHtml(col) : "") +
           '</div>' +
         '</div>' +
@@ -2093,34 +2909,37 @@
       if (visible.length) {
         visible.forEach(function (c) { html += cardHtml(c, col, ci); });
       } else if (filtering && col.cards.length) {
-        html += '<p class="col-empty">ซ่อนอยู่ ' + col.cards.length + ' งาน (ไม่ตรงตัวกรอง)</p>';
+        html += '<p class="col-empty">' + esc(t("col.hidden", { n: col.cards.length })) + '</p>';
       } else {
-        html += '<p class="col-empty">ว่าง</p>';
+        html += '<p class="col-empty">' + esc(t("col.empty")) + '</p>';
       }
 
       if (view.composing === col.id) {
         html += '<div class="composer">' +
-          '<textarea id="composerInput" placeholder="พิมพ์ชื่องาน แล้วกด Enter" rows="2"></textarea>' +
+          '<textarea id="composerInput" placeholder="' + esc(t("compose.ph")) + '" rows="2"></textarea>' +
           '<div class="composer-row">' +
-            '<button class="btn btn-primary" type="button" data-compose-save="' + col.id + '">เพิ่ม</button>' +
-            '<button class="btn btn-ghost" type="button" data-compose-cancel="1">ยกเลิก</button>' +
-            '<span class="hint">Esc เพื่อปิด</span>' +
+            '<button class="btn btn-primary" type="button" data-compose-save="' + col.id + '">' +
+              esc(t("compose.add")) + '</button>' +
+            '<button class="btn btn-ghost" type="button" data-compose-cancel="1">' +
+              esc(t("common.cancel")) + '</button>' +
+            '<span class="hint">' + esc(t("compose.hint")) + '</span>' +
           '</div></div>';
       }
 
       html += '</div><div class="col-foot">' +
-        '<button class="btn add-card" type="button" data-add="' + col.id + '">+&nbsp; เพิ่มงาน</button>' +
+        '<button class="btn add-card" type="button" data-add="' + col.id + '">+&nbsp; ' +
+          esc(t("board.addCard")) + '</button>' +
         '</div></section>';
     });
 
-    html += '<button class="add-col" type="button" id="addCol">+&nbsp; เพิ่มคอลัมน์</button>';
-    board.innerHTML = html;
+    html += '<button class="add-col" type="button" id="addCol">+&nbsp; ' +
+      esc(t("board.addCol")) + '</button>';
+    $("board").innerHTML = html;
 
-    // empty-board panel
     var total = Object.keys(state.cards).length;
     $("blankSlot").innerHTML = total === 0
-      ? '<div class="blank"><h3>กระดานว่างอยู่</h3>' +
-        '<p>กด “+ เพิ่มงาน” ใต้คอลัมน์ไหนก็ได้เพื่อเริ่ม งานที่เพิ่มจะถูกเก็บไว้ในเบราว์เซอร์เครื่องนี้ เปิดใหม่ครั้งหน้าก็ยังอยู่</p></div>'
+      ? '<div class="blank"><h3>' + esc(t("blank.title")) + '</h3>' +
+        '<p>' + esc(t("blank.body")) + '</p></div>'
       : "";
 
     renderFilterPill();
@@ -2134,22 +2953,25 @@
   }
 
   function renderFilterPill() {
-    var names = { overdue: "เลยกำหนดแล้ว", today: "ครบวันนี้", week: "ภายใน 7 วัน" };
+    var names = { overdue: t("tile.overdue"), today: t("tile.today"), week: t("tile.week") };
     $("filterTagSlot").innerHTML = view.filter !== "all"
-      ? '<span class="filter-tag">กรอง: ' + names[view.filter] +
-        '<button class="icon-btn" type="button" id="clearFilter" aria-label="ล้างตัวกรอง">✕</button></span>'
+      ? '<span class="filter-tag">' + esc(t("filter.label") + names[view.filter]) +
+        '<button class="icon-btn" type="button" id="clearFilter" ' +
+        'aria-label="' + esc(t("filter.clear")) + '">✕</button></span>'
       : "";
   }
 
   function menuHtml(col) {
     return '<div class="menu" data-menu-panel="1">' +
-      '<button type="button" data-act="rename" data-col="' + col.id + '">เปลี่ยนชื่อคอลัมน์</button>' +
-      '<button type="button" data-act="sort" data-col="' + col.id + '">เรียงตามกำหนดส่ง</button>' +
+      '<button type="button" data-act="rename" data-col="' + col.id + '">' + esc(t("menu.rename")) + '</button>' +
+      '<button type="button" data-act="sort" data-col="' + col.id + '">' + esc(t("menu.sort")) + '</button>' +
       '<button type="button" data-act="toggle-done" data-col="' + col.id + '">' +
-        (col.done ? "เลิกนับว่าเป็นงานที่เสร็จแล้ว" : "นับคอลัมน์นี้ว่าเสร็จแล้ว") + '</button>' +
+        esc(col.done ? t("menu.unmarkDone") : t("menu.markDone")) + '</button>' +
       '<hr />' +
-      (col.done ? '<button type="button" class="danger" data-act="clear" data-col="' + col.id + '">ล้างการ์ดในคอลัมน์นี้</button>' : '') +
-      '<button type="button" class="danger" data-act="del-col" data-col="' + col.id + '">ลบคอลัมน์</button>' +
+      (col.done ? '<button type="button" class="danger" data-act="clear" data-col="' + col.id + '">' +
+        esc(t("menu.clear")) + '</button>' : '') +
+      '<button type="button" class="danger" data-act="del-col" data-col="' + col.id + '">' +
+        esc(t("menu.delete")) + '</button>' +
       '</div>';
   }
 
@@ -2164,13 +2986,14 @@
   function askText(opts) {
     $("sheet").innerHTML =
       '<h2 id="sheetTitle">' + esc(opts.title) + '</h2>' +
-      (opts.sub ? '<p class="sub">' + esc(opts.sub) + '</p>' : '<p class="sub"></p>') +
+      '<p class="sub"></p>' +
       '<div class="field"><label for="askInput">' + esc(opts.label) + '</label>' +
         '<input type="text" id="askInput" value="' + esc(opts.value || "") + '" ' +
         'placeholder="' + esc(opts.placeholder || "") + '" /></div>' +
       '<div class="sheet-foot"><span class="spacer"></span>' +
-        '<button class="btn" type="button" id="askCancel">ยกเลิก</button>' +
-        '<button class="btn btn-primary" type="button" id="askOk">' + esc(opts.ok || "ตกลง") + '</button>' +
+        '<button class="btn" type="button" id="askCancel">' + esc(t("common.cancel")) + '</button>' +
+        '<button class="btn btn-primary" type="button" id="askOk">' +
+          esc(opts.ok || t("common.ok")) + '</button>' +
       '</div>';
     $("backdrop").hidden = false;
 
@@ -2194,14 +3017,44 @@
       '<p class="sub"></p>' +
       '<p style="margin:0;color:var(--ink-2);font-size:14px;">' + esc(opts.body || "") + '</p>' +
       '<div class="sheet-foot"><span class="spacer"></span>' +
-        '<button class="btn" type="button" id="cfCancel">ยกเลิก</button>' +
+        '<button class="btn" type="button" id="cfCancel">' + esc(t("common.cancel")) + '</button>' +
         '<button class="btn ' + (opts.danger ? "btn-danger" : "btn-primary") +
-          '" type="button" id="cfOk">' + esc(opts.ok || "ยืนยัน") + '</button>' +
+          '" type="button" id="cfOk">' + esc(opts.ok || t("common.ok")) + '</button>' +
       '</div>';
     $("backdrop").hidden = false;
     $("cfOk").onclick = function () { closeSheet(); opts.onOk(); };
     $("cfCancel").onclick = closeSheet;
     window.setTimeout(function () { $("cfCancel").focus(); }, 20);
+  }
+
+  function openSettings() {
+    var langs = [["th", "ไทย"], ["en", "English"]];
+    $("sheet").innerHTML =
+      '<h2 id="sheetTitle">' + esc(t("set.title")) + '</h2>' +
+      '<p class="sub"></p>' +
+      '<div class="field"><label>' + esc(t("set.lang")) + '</label>' +
+        '<div class="segmented" id="langPick">' +
+          langs.map(function (l) {
+            return '<button type="button" data-lang="' + l[0] + '" aria-pressed="' +
+              (view.lang === l[0]) + '">' + esc(l[1]) + '</button>';
+          }).join("") +
+        '</div></div>' +
+      '<div class="field"><label>' + esc(t("set.font")) + '</label>' +
+        '<div class="font-opts">' +
+          FONTS.map(function (f) {
+            return '<button class="font-opt" type="button" data-font-opt="' + f + '" ' +
+              'aria-pressed="' + (view.font === f) + '">' +
+              '<span class="name">' + esc(t("font." + f)) + '</span>' +
+              '<span class="sample">' + esc(t("font.sample")) + '</span></button>';
+          }).join("") +
+        '</div>' +
+        '<span class="help">' + esc(t("set.fontHint")) + '</span></div>' +
+      '<div class="sheet-foot"><span class="spacer"></span>' +
+        '<button class="btn btn-primary" type="button" id="setClose">' +
+          esc(t("set.close")) + '</button>' +
+      '</div>';
+    $("backdrop").hidden = false;
+    $("setClose").onclick = closeSheet;
   }
 
   function openEditor(cardId) {
@@ -2211,47 +3064,57 @@
     var here = colOf(cardId);
 
     var opts = state.columns.map(function (c) {
-      return '<option value="' + c.id + '"' + (c.id === here.id ? " selected" : "") + '>' + esc(c.title) + '</option>';
+      return '<option value="' + c.id + '"' + (c.id === here.id ? " selected" : "") + '>' +
+        esc(c.title) + '</option>';
     }).join("");
 
     $("sheet").innerHTML =
-      '<h2 id="sheetTitle">แก้ไขงาน</h2>' +
-      '<p class="sub">สร้างเมื่อ ' + new Date(card.created).toLocaleDateString("th-TH", { day: "numeric", month: "short", year: "numeric" }) + '</p>' +
-      '<div class="field"><label for="fTitle">ชื่องาน</label>' +
+      '<h2 id="sheetTitle">' + esc(t("ed.title")) + '</h2>' +
+      '<p class="sub">' + esc(t("ed.created", {
+        d: localeDate(card.created, { day: "numeric", month: "short", year: "numeric" })
+      })) + '</p>' +
+      '<div class="field"><label for="fTitle">' + esc(t("ed.fTitle")) + '</label>' +
         '<textarea id="fTitle" rows="2">' + esc(card.title) + '</textarea></div>' +
-      '<div class="field"><label for="fNote">รายละเอียด</label>' +
-        '<textarea id="fNote" rows="3" placeholder="โน้ตกันลืม เช่น ต้องเตรียมอะไร ติดอยู่ตรงไหน">' + esc(card.note) + '</textarea></div>' +
+      '<div class="field"><label for="fNote">' + esc(t("ed.fNote")) + '</label>' +
+        '<textarea id="fNote" rows="3" placeholder="' + esc(t("ed.fNotePh")) + '">' +
+        esc(card.note) + '</textarea></div>' +
       '<div class="row-2">' +
-        '<div class="field"><label for="fDue">กำหนดส่ง</label>' +
+        '<div class="field"><label for="fDue">' + esc(t("ed.fDue")) + '</label>' +
           '<input type="date" id="fDue" value="' + esc(card.due) + '" />' +
           '<div class="quick-dates">' +
-            '<button type="button" data-quick="0">วันนี้</button>' +
-            '<button type="button" data-quick="1">พรุ่งนี้</button>' +
-            '<button type="button" data-quick="7">+7 วัน</button>' +
-            '<button type="button" data-quick="clear">ไม่กำหนด</button>' +
+            '<button type="button" data-quick="0">' + esc(t("quick.today")) + '</button>' +
+            '<button type="button" data-quick="1">' + esc(t("quick.tomorrow")) + '</button>' +
+            '<button type="button" data-quick="7">' + esc(t("quick.plus7")) + '</button>' +
+            '<button type="button" data-quick="clear">' + esc(t("quick.clear")) + '</button>' +
           '</div></div>' +
-        '<div class="field"><label>ความสำคัญ</label>' +
+        '<div class="field"><label>' + esc(t("ed.fPri")) + '</label>' +
           '<div class="segmented" id="fPri">' +
-            '<button type="button" data-v="high" aria-pressed="' + (card.pri === "high") + '"><span class="pip"></span>สูง</button>' +
-            '<button type="button" data-v="mid" aria-pressed="' + (card.pri === "mid") + '"><span class="pip"></span>กลาง</button>' +
-            '<button type="button" data-v="low" aria-pressed="' + (card.pri === "low") + '"><span class="pip"></span>ต่ำ</button>' +
+            ["high", "mid", "low"].map(function (p) {
+              return '<button type="button" data-v="' + p + '" aria-pressed="' +
+                (card.pri === p) + '"><span class="pip"></span>' +
+                esc(t("pri." + p + ".short")) + '</button>';
+            }).join("") +
           '</div></div>' +
       '</div>' +
       '<div class="row-2">' +
-        '<div class="field"><label for="fTags">ป้ายกำกับ</label>' +
-          '<input type="text" id="fTags" value="' + esc(card.tags.join(", ")) + '" placeholder="งาน, บ้าน, เงิน" />' +
-          '<span class="help">คั่นด้วยเครื่องหมายจุลภาค</span></div>' +
-        '<div class="field"><label for="fCol">อยู่ในคอลัมน์</label>' +
+        '<div class="field"><label for="fTags">' + esc(t("ed.fTags")) + '</label>' +
+          '<input type="text" id="fTags" value="' + esc(card.tags.join(", ")) + '" ' +
+          'placeholder="' + esc(t("ed.tagsPh")) + '" />' +
+          '<span class="help">' + esc(t("ed.tagsHelp")) + '</span></div>' +
+        '<div class="field"><label for="fCol">' + esc(t("ed.fCol")) + '</label>' +
           '<select id="fCol">' + opts + '</select></div>' +
       '</div>' +
+      '<div class="log" id="logSection">' + logSectionHtml(card) + '</div>' +
       '<div class="sheet-foot">' +
-        '<button class="btn btn-danger" type="button" id="fDelete">ลบงานนี้</button>' +
+        '<button class="btn btn-danger" type="button" id="fDelete">' + esc(t("ed.delete")) + '</button>' +
         '<span class="spacer"></span>' +
-        '<button class="btn" type="button" id="fCancel">ยกเลิก</button>' +
-        '<button class="btn btn-primary" type="button" id="fSave">บันทึก</button>' +
+        '<button class="btn" type="button" id="fCancel">' + esc(t("common.cancel")) + '</button>' +
+        '<button class="btn btn-primary" type="button" id="fSave">' + esc(t("common.save")) + '</button>' +
       '</div>';
 
     $("backdrop").hidden = false;
+    var list = $("sheet").querySelector(".log-list");
+    if (list) list.scrollTop = list.scrollHeight;
     window.setTimeout(function () { $("fTitle").focus(); }, 20);
   }
 
@@ -2268,9 +3131,15 @@
     card.due = $("fDue").value || "";
     card.pri = editing.pri;
     card.tags = $("fTags").value.split(",")
-      .map(function (t) { return t.trim(); })
-      .filter(function (t) { return t; })
+      .map(function (x) { return x.trim(); })
+      .filter(function (x) { return x; })
       .slice(0, 8);
+
+    // an update typed but not yet added shouldn't be lost on save
+    var pending = $("logInput");
+    if (pending && pending.value.trim()) {
+      logOf(card).push({ id: uid("g"), text: pending.value.trim(), at: Date.now() });
+    }
 
     var target = $("fCol").value;
     var here = colOf(card.id);
@@ -2360,11 +3229,32 @@
 
   /* ═══ events ════════════════════════════════════════════════ */
   document.addEventListener("click", function (e) {
-    var t = e.target;
+    var target = e.target;
     var hit;
 
+    // settings
+    if (target.closest("#btnSettings")) { openSettings(); return; }
+    hit = target.closest("[data-lang]");
+    if (hit) {
+      view.lang = hit.dataset.lang;
+      saveUi();
+      applyStatic();
+      render();
+      openSettings();
+      return;
+    }
+    hit = target.closest("[data-font-opt]");
+    if (hit) {
+      view.font = hit.dataset.fontOpt;
+      saveUi();
+      applyStatic();
+      openSettings();
+      return;
+    }
+    if (target.closest("#setClose")) { closeSheet(); return; }
+
     // view tabs
-    hit = t.closest("[data-page]");
+    hit = target.closest("[data-page]");
     if (hit) {
       view.page = hit.dataset.page;
       view.menuFor = null;
@@ -2376,21 +3266,26 @@
     }
 
     // group / sort controls on the remaining page
-    hit = t.closest("[data-group]");
+    hit = target.closest("[data-group]");
     if (hit) { view.groupBy = hit.dataset.group; saveUi(); render(); return; }
-    hit = t.closest("[data-sort]");
+    hit = target.closest("[data-sort]");
     if (hit) { view.sortBy = hit.dataset.sort; saveUi(); render(); return; }
 
+    // activity log
+    if (target.closest("#logAdd")) { submitLog(); return; }
+    hit = target.closest("[data-log-del]");
+    if (hit && editing) { deleteLogEntry(editing.id, hit.dataset.logDel); return; }
+
     // tick a task off from a summary row
-    hit = t.closest("[data-complete]");
+    hit = target.closest("[data-complete]");
     if (hit) { completeCard(hit.dataset.complete); return; }
 
     // summary row → open the same editor the board uses
-    hit = t.closest(".row[data-card]");
+    hit = target.closest(".row[data-card]");
     if (hit) { openEditor(hit.dataset.card); return; }
 
     // pulse filters
-    hit = t.closest("[data-filter]");
+    hit = target.closest("[data-filter]");
     if (hit) {
       var f = hit.dataset.filter;
       view.filter = (view.filter === f || f === "all") ? "all" : f;
@@ -2398,40 +3293,40 @@
       return;
     }
 
-    if (t.closest("#clearFilter")) { view.filter = "all"; render(); return; }
+    if (target.closest("#clearFilter")) { view.filter = "all"; render(); return; }
 
     // column menu
-    hit = t.closest("[data-menu]");
+    hit = target.closest("[data-menu]");
     if (hit) {
       view.menuFor = view.menuFor === hit.dataset.menu ? null : hit.dataset.menu;
       render();
       return;
     }
 
-    hit = t.closest("[data-act]");
+    hit = target.closest("[data-act]");
     if (hit) { runColAction(hit.dataset.act, hit.dataset.col); return; }
 
-    if (view.menuFor && !t.closest("[data-menu-panel]")) { view.menuFor = null; render(); }
+    if (view.menuFor && !target.closest("[data-menu-panel]")) { view.menuFor = null; render(); }
 
     // composer
-    hit = t.closest("[data-add]");
+    hit = target.closest("[data-add]");
     if (hit) { view.composing = hit.dataset.add; render(); return; }
 
-    hit = t.closest("[data-compose-save]");
+    hit = target.closest("[data-compose-save]");
     if (hit) {
       var val = $("composerInput").value.trim();
       if (val) { addCard(hit.dataset.composeSave, val); view.composing = hit.dataset.composeSave; render(); }
       return;
     }
 
-    if (t.closest("[data-compose-cancel]")) { view.composing = null; render(); return; }
+    if (target.closest("[data-compose-cancel]")) { view.composing = null; render(); return; }
 
-    if (t.closest("#addCol")) {
+    if (target.closest("#addCol")) {
       askText({
-        title: "เพิ่มคอลัมน์",
-        label: "ชื่อคอลัมน์",
-        placeholder: "เช่น สัปดาห์นี้ / ไว้ค่อยทำ",
-        ok: "เพิ่มคอลัมน์",
+        title: t("addCol.title"),
+        label: t("addCol.label"),
+        placeholder: t("addCol.ph"),
+        ok: t("addCol.title"),
         onOk: function (name) {
           state.columns.push({ id: uid("c"), title: name, done: false, cards: [] });
           commit();
@@ -2441,21 +3336,21 @@
     }
 
     // card nudge
-    hit = t.closest("[data-nudge]");
+    hit = target.closest("[data-nudge]");
     if (hit) { nudge(hit.dataset.card, Number(hit.dataset.nudge)); return; }
 
     // open card
-    hit = t.closest(".card");
+    hit = target.closest(".card");
     if (hit) { openEditor(hit.dataset.card); return; }
 
     // editor controls
-    hit = t.closest("[data-quick]");
+    hit = target.closest("[data-quick]");
     if (hit) {
       var q = hit.dataset.quick;
       $("fDue").value = q === "clear" ? "" : shiftIso(Number(q));
       return;
     }
-    hit = t.closest("#fPri [data-v]");
+    hit = target.closest("#fPri [data-v]");
     if (hit && editing) {
       editing.pri = hit.dataset.v;
       Array.prototype.forEach.call(document.querySelectorAll("#fPri [data-v]"), function (b) {
@@ -2463,41 +3358,41 @@
       });
       return;
     }
-    if (t.closest("#fSave")) { saveEditor(); return; }
-    if (t.closest("#fCancel")) { closeEditor(); return; }
-    if (t.closest("#fDelete")) {
+    if (target.closest("#fSave")) { saveEditor(); return; }
+    if (target.closest("#fCancel")) { closeEditor(); return; }
+    if (target.closest("#fDelete")) {
       var id = editing && editing.id;
       closeEditor();
       if (id) deleteCard(id);
       return;
     }
-    if (t.id === "backdrop") { closeEditor(); return; }
+    if (target.id === "backdrop") { closeSheet(); return; }
 
     // toolbar
-    if (t.closest("#clearSearch")) {
+    if (target.closest("#clearSearch")) {
       $("search").value = "";
       view.query = "";
       $("clearSearch").hidden = true;
       render();
       return;
     }
-    if (t.closest("#btnReset")) {
+    if (target.closest("#btnReset")) {
       askConfirm({
-        title: "เริ่มกระดานใหม่",
-        body: "งานทั้งหมดบนกระดานนี้จะถูกลบและแทนที่ด้วยกระดานตั้งต้น ถ้ายังไม่ได้กด “บันทึกไฟล์สำรอง” งานเดิมจะหายถาวร",
-        ok: "ลบทั้งหมดแล้วเริ่มใหม่",
+        title: t("reset.title"),
+        body: t("reset.body"),
+        ok: t("reset.ok"),
         danger: true,
         onOk: function () {
           state = seed();
           view.filter = "all";
           commit();
-          toast("เริ่มกระดานใหม่แล้ว");
+          toast(t("toast.reset"));
         }
       });
       return;
     }
-    if (t.closest("#btnExport")) { doExport(); return; }
-    if (t.closest("#btnImport")) { $("fileInput").click(); return; }
+    if (target.closest("#btnExport")) { doExport(); return; }
+    if (target.closest("#btnImport")) { $("fileInput").click(); return; }
   });
 
   function runColAction(act, colId) {
@@ -2505,15 +3400,14 @@
     var col = state.columns[i];
     if (!col) return;
     view.menuFor = null;
-
     render();
 
     if (act === "rename") {
       askText({
-        title: "เปลี่ยนชื่อคอลัมน์",
-        label: "ชื่อคอลัมน์",
+        title: t("rename.title"),
+        label: t("addCol.label"),
         value: col.title,
-        ok: "บันทึก",
+        ok: t("common.save"),
         onOk: function (name) { col.title = name; commit(); }
       });
     } else if (act === "sort") {
@@ -2525,7 +3419,7 @@
         return da < db ? -1 : da > db ? 1 : 0;
       });
       commit();
-      toast("เรียงคอลัมน์ “" + col.title + "” ตามกำหนดส่งแล้ว");
+      toast(t("toast.sorted", { t: col.title }));
     } else if (act === "toggle-done") {
       col.done = !col.done;
       col.cards.forEach(function (id) {
@@ -2533,11 +3427,11 @@
       });
       commit();
     } else if (act === "clear") {
-      if (!col.cards.length) { toast("คอลัมน์นี้ว่างอยู่แล้ว"); return; }
+      if (!col.cards.length) { toast(t("toast.colEmpty")); return; }
       askConfirm({
-        title: "ล้างคอลัมน์ “" + col.title + "”",
-        body: "การ์ด " + col.cards.length + " ใบในคอลัมน์นี้จะถูกลบถาวร",
-        ok: "ลบ " + col.cards.length + " การ์ด",
+        title: t("clearCol.title", { t: col.title }),
+        body: t("clearCol.body", { n: col.cards.length }),
+        ok: t("clearCol.ok", { n: col.cards.length }),
         danger: true,
         onOk: function () {
           col.cards.forEach(function (id) { delete state.cards[id]; });
@@ -2546,23 +3440,20 @@
         }
       });
     } else if (act === "del-col") {
-      if (state.columns.length === 1) {
-        toast("ต้องเหลือคอลัมน์อย่างน้อยหนึ่งคอลัมน์");
-        return;
-      }
-      var target = state.columns[i === 0 ? 1 : 0];
+      if (state.columns.length === 1) { toast(t("toast.needOneCol")); return; }
+      var dest = state.columns[i === 0 ? 1 : 0];
       askConfirm({
-        title: "ลบคอลัมน์ “" + col.title + "”",
+        title: t("delCol.title", { t: col.title }),
         body: col.cards.length
-          ? "การ์ด " + col.cards.length + " ใบจะย้ายไปคอลัมน์ “" + target.title + "” ไม่มีงานไหนหาย"
-          : "คอลัมน์นี้ว่างอยู่ ลบได้เลย",
-        ok: "ลบคอลัมน์",
+          ? t("delCol.bodyMove", { n: col.cards.length, to: dest.title })
+          : t("delCol.bodyEmpty"),
+        ok: t("delCol.ok"),
         danger: true,
         onOk: function () {
           var at = colIndex(col.id);
           if (at === -1) return;
-          target.cards = target.cards.concat(col.cards);
-          if (!target.done) col.cards.forEach(function (id) { state.cards[id].doneAt = 0; });
+          dest.cards = dest.cards.concat(col.cards);
+          if (!dest.done) col.cards.forEach(function (id) { state.cards[id].doneAt = 0; });
           state.columns.splice(at, 1);
           commit();
         }
@@ -2573,7 +3464,7 @@
   /* ═══ keyboard ══════════════════════════════════════════════ */
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape") {
-      if (!$("backdrop").hidden) { closeEditor(); return; }
+      if (!$("backdrop").hidden) { closeSheet(); return; }
       if (view.composing) { view.composing = null; render(); return; }
       if (view.menuFor) { view.menuFor = null; render(); return; }
     }
@@ -2585,7 +3476,14 @@
       return;
     }
 
-    if (editing && (e.key === "Enter" && (e.metaKey || e.ctrlKey))) {
+    // Ctrl+Enter in the log box adds an entry; elsewhere in the editor it saves
+    if (e.target.id === "logInput" && e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      submitLog();
+      return;
+    }
+
+    if (editing && e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
       e.preventDefault();
       saveEditor();
       return;
@@ -2607,12 +3505,12 @@
     var iso = dayBtn.dataset.day;
     var due = openMatching().filter(function (c) { return c.due === iso; });
     var titles = due.slice(0, 3).map(function (c) {
-      return esc(c.title.length > 30 ? c.title.slice(0, 29) + "…" : c.title);
+      return esc(clip(c.title, 31));
     }).join("<br />");
 
-    tip.innerHTML = '<b>' + esc(exactDate(iso)) + '</b> · ' + due.length + ' งาน' +
+    tip.innerHTML = '<b>' + esc(exactDate(iso)) + '</b> · ' + esc(t("tip.count", { n: due.length })) +
       (titles ? '<div class="t-list">' + titles +
-        (due.length > 3 ? '<br />และอีก ' + (due.length - 3) + ' งาน' : "") + '</div>' : "");
+        (due.length > 3 ? '<br />' + esc(t("tip.more", { n: due.length - 3 })) : "") + '</div>' : "");
 
     var pr = plot.getBoundingClientRect();
     var br = dayBtn.getBoundingClientRect();
@@ -2659,19 +3557,19 @@
 
   /* ═══ backup ════════════════════════════════════════════════ */
   function doExport() {
-    var name = "กระดานงาน-" + todayIso() + ".json";
     var text = JSON.stringify(state, null, 2);
+    var pretty = t("file.name") + "-" + todayIso() + ".json";
 
     if (window.claude && window.claude.downloads) {
       window.claude.downloads.save({ filename: "board-" + todayIso() + ".json", data: text })
-        .then(function () { toast("บันทึกไฟล์สำรองแล้ว"); })
+        .then(function () { toast(t("toast.saved")); })
         .catch(function (err) {
           if (err && err.code === "declined") return;
-          fallbackDownload(name, text);
+          fallbackDownload(pretty, text);
         });
       return;
     }
-    fallbackDownload(name, text);
+    fallbackDownload(pretty, text);
   }
 
   function fallbackDownload(name, text) {
@@ -2684,9 +3582,9 @@
       a.click();
       document.body.removeChild(a);
       window.setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
-      toast("บันทึกไฟล์สำรองแล้ว");
+      toast(t("toast.saved"));
     } catch (e) {
-      toast("ดาวน์โหลดไม่ได้ในหน้านี้ ลองเปิดกระดานในแท็บใหม่");
+      toast(t("toast.dlFail"));
     }
   }
 
@@ -2698,18 +3596,18 @@
       var incoming;
       try { incoming = sanitize(JSON.parse(String(reader.result))); }
       catch (err) { incoming = null; }
-      if (!incoming) { toast("ไฟล์นี้อ่านไม่ได้ ต้องเป็นไฟล์สำรองที่บันทึกจากกระดานนี้"); return; }
+      if (!incoming) { toast(t("toast.importBad")); return; }
       var n = Object.keys(incoming.cards).length;
       askConfirm({
-        title: "เปิดไฟล์สำรอง",
-        body: "ไฟล์นี้มี " + n + " งาน กระดานปัจจุบันจะถูกแทนที่ทั้งหมด",
-        ok: "แทนที่กระดาน",
+        title: t("import.title"),
+        body: t("import.body", { n: n }),
+        ok: t("import.ok"),
         danger: true,
         onOk: function () {
           state = incoming;
           view.filter = "all";
           commit();
-          toast("เปิดไฟล์สำรองแล้ว — " + n + " งาน");
+          toast(t("toast.imported", { n: n }));
         }
       });
     };
@@ -2718,16 +3616,11 @@
   });
 
   /* ═══ boot ══════════════════════════════════════════════════ */
-  $("todayStamp").textContent = new Date().toLocaleDateString("th-TH", {
-    weekday: "short", day: "numeric", month: "short"
-  });
-
-  if (!canStore) {
-    showWarn("เบราว์เซอร์นี้ไม่ให้เก็บข้อมูลลงเครื่อง — งานที่เพิ่มจะหายเมื่อปิดหน้า กด “บันทึกไฟล์สำรอง” ไว้ก่อน");
-  }
+  if (!canStore) showWarn(t("warn.noStore"));
 
   window.addEventListener("resize", sizeBoard);
 
+  applyStatic();
   save();
   render();
 })();
