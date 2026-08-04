@@ -140,9 +140,54 @@
   /* ─── base ───────────────────────────────────────────────── */
   * { box-sizing: border-box; }
 
+  /* ─── page background ────────────────────────────────────────
+     JS sets only --bg-h (a hue). The stop colours are redefined per
+     theme below, so every background style follows light/dark on its
+     own without JS having to know which theme is showing. */
+  :root {
+    --bg-h: 168;
+    --bg-a: hsl(var(--bg-h) 38% 96%);
+    --bg-b: hsl(calc(var(--bg-h) + 38) 46% 85%);
+    --bg-c: hsl(calc(var(--bg-h) - 34) 40% 90%);
+    --page-bg: var(--ground);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-a: hsl(var(--bg-h) 26% 9%);
+      --bg-b: hsl(calc(var(--bg-h) + 38) 38% 14%);
+      --bg-c: hsl(calc(var(--bg-h) - 34) 30% 12%);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg-a: hsl(var(--bg-h) 26% 9%);
+    --bg-b: hsl(calc(var(--bg-h) + 38) 38% 14%);
+    --bg-c: hsl(calc(var(--bg-h) - 34) 30% 12%);
+  }
+  :root[data-theme="light"] {
+    --bg-a: hsl(var(--bg-h) 26% 95%);
+    --bg-b: hsl(calc(var(--bg-h) + 38) 30% 88%);
+    --bg-c: hsl(calc(var(--bg-h) - 34) 26% 92%);
+  }
+
+  :root[data-bg="solid"] { --page-bg: var(--bg-a); }
+  :root[data-bg="linear"] {
+    --page-bg: linear-gradient(155deg, var(--bg-a) 0%, var(--bg-b) 100%);
+  }
+  :root[data-bg="radial"] {
+    --page-bg: radial-gradient(125% 95% at 12% -5%, var(--bg-a) 0%, var(--bg-b) 72%);
+  }
+  :root[data-bg="mesh"] {
+    --page-bg:
+      radial-gradient(58% 52% at 10% 6%, var(--bg-c) 0%, transparent 62%),
+      radial-gradient(52% 48% at 90% 10%, var(--bg-b) 0%, transparent 64%),
+      radial-gradient(68% 58% at 48% 102%, var(--bg-b) 0%, transparent 66%),
+      var(--bg-a);
+  }
+
   body {
     margin: 0;
-    background: var(--ground);
+    background: var(--page-bg);
+    background-attachment: fixed;
     color: var(--ink);
     font-family: var(--sans);
     font-size: 15px;
@@ -1295,6 +1340,188 @@
   .chip.log-count { background: transparent; border: 1px solid var(--line); color: var(--muted); }
   .chip.log-count.hot { border-color: var(--accent); color: var(--accent-ink); }
 
+  /* ─── background picker ──────────────────────────────────── */
+  .bg-kinds { display: flex; gap: 6px; flex-wrap: wrap; }
+  .bg-kind {
+    flex: 1 1 0;
+    min-width: 68px;
+    padding: 0;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-md);
+    background: var(--surface-2);
+    cursor: pointer;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .bg-kind:hover { border-color: var(--muted); }
+  .bg-kind[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .bg-kind .swatch { height: 34px; width: 100%; display: block; }
+  .bg-kind .name {
+    font-size: 11.5px;
+    padding: 5px 4px;
+    color: var(--ink-2);
+    border-top: 1px solid var(--line);
+  }
+  .bg-kind[aria-pressed="true"] .name { color: var(--ink); font-weight: 600; }
+
+  .hue-row { display: flex; align-items: center; gap: 10px; }
+  .hue-row input[type="range"] {
+    flex: 1;
+    min-width: 0;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 10px;
+    border-radius: 999px;
+    border: 1px solid var(--line-strong);
+    background: linear-gradient(90deg,
+      hsl(0 65% 60%), hsl(60 65% 60%), hsl(120 65% 60%),
+      hsl(180 65% 60%), hsl(240 65% 60%), hsl(300 65% 60%), hsl(360 65% 60%));
+  }
+  .hue-row input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 17px; height: 17px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--ink);
+    cursor: pointer;
+  }
+  .hue-row input[type="range"]::-moz-range-thumb {
+    width: 15px; height: 15px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 2px solid var(--ink);
+    cursor: pointer;
+  }
+  .hue-row .val {
+    flex: none;
+    width: 44px;
+    text-align: right;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+  }
+  .hue-row[hidden] { display: none; }
+
+  /* ─── calendar page ──────────────────────────────────────── */
+  .cal-day {
+    display: grid;
+    grid-template-columns: 82px 1fr;
+    gap: 12px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--line);
+  }
+  .rows > .cal-day:first-child { border-top: 0; }
+  .cal-day.is-today { background: var(--surface-2); }
+  .cal-day.is-weekend .cal-date { color: var(--muted); }
+
+  .cal-date { display: flex; flex-direction: column; gap: 1px; padding-top: 1px; }
+  .cal-date .d {
+    font-family: var(--mono);
+    font-size: 19px;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+    letter-spacing: -.02em;
+  }
+  .cal-day.is-today .cal-date .d { color: var(--accent); font-weight: 600; }
+  .cal-date .w { font-size: 11.5px; color: var(--muted); }
+
+  .cal-items { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+  .cal-none { font-size: 12.5px; color: var(--muted); padding-top: 3px; }
+
+  .cal-item {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 5px 9px;
+    border-radius: var(--r-sm);
+    background: var(--surface-2);
+    border-left: 3px solid var(--line-strong);
+    font-size: 13px;
+    cursor: default;
+    min-width: 0;
+  }
+  .cal-item.is-task { cursor: pointer; border-left-color: var(--accent); }
+  .cal-item.is-task:hover { background: var(--surface-3); }
+  .cal-item.is-task.p-high { border-left-color: var(--danger); }
+  .cal-item.is-task.p-mid { border-left-color: var(--warn); }
+  .cal-item.is-event { border-left-color: var(--ink-2); background: transparent; border: 1px solid var(--line); border-left: 3px solid var(--ink-2); }
+  .cal-item .t {
+    flex: none;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+  }
+  .cal-item .label {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .cal-item .kind {
+    flex: none;
+    font-size: 10.5px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  @media (max-width: 520px) {
+    .cal-day { grid-template-columns: 56px 1fr; gap: 9px; padding-inline: 12px; }
+    .cal-date .d { font-size: 16px; }
+  }
+
+  /* ─── mail panel ─────────────────────────────────────────── */
+  .mail-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 9px 16px;
+    border-top: 1px solid var(--line);
+    min-width: 0;
+  }
+  .rows > .mail-row:first-child { border-top: 0; }
+  .mail-row .unread {
+    flex: none;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    align-self: center;
+  }
+  .mail-row .unread.read { background: transparent; border: 1px solid var(--line-strong); }
+  .mail-main { flex: 1; min-width: 0; }
+  .mail-from {
+    font-size: 12px;
+    color: var(--muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .mail-subject {
+    font-size: 13.5px;
+    margin: 1px 0 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .mail-row.is-unread .mail-subject { font-weight: 600; }
+  .mail-time {
+    flex: none;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+  }
+  .panel-foot {
+    padding: 10px 16px;
+    border-top: 1px solid var(--line);
+    font-size: 12.5px;
+  }
+  .panel-foot a { color: var(--accent); }
+
   /* ─── Drive sync ─────────────────────────────────────────── */
   .sync-box {
     display: flex;
@@ -1715,6 +1942,34 @@
 
       "warn.noStore": "เบราว์เซอร์นี้ไม่ให้เก็บข้อมูลลงเครื่อง — งานที่เพิ่มจะหายเมื่อปิดหน้า กด “บันทึกไฟล์สำรอง” ไว้ก่อน",
       "warn.full": "บันทึกลงเครื่องไม่สำเร็จ (พื้นที่เก็บข้อมูลเต็ม) — กด “บันทึกไฟล์สำรอง” ไว้ก่อนปิดหน้านี้",
+      "set.bg": "พื้นหลัง",
+      "set.bgHint": "เลือกแบบแล้วเลื่อนแถบสีเพื่อปรับโทน ปรับตามธีมสว่าง/มืดให้เองอัตโนมัติ",
+      "bg.default": "ตามธีม",
+      "bg.solid": "สีทึบ",
+      "bg.linear": "ไล่สี",
+      "bg.radial": "รัศมี",
+      "bg.mesh": "เมช",
+      "bg.hue": "โทนสี",
+      "page.cal": "ปฏิทิน",
+      "cal.title": "ปฏิทิน 14 วันข้างหน้า",
+      "cal.sub": "กำหนดส่งของงาน รวมกับนัดใน Google Calendar",
+      "cal.subNoConn": "กำหนดส่งของงานบนกระดานนี้",
+      "cal.none": "ว่าง",
+      "cal.task": "งาน",
+      "cal.event": "นัด",
+      "cal.allDay": "ทั้งวัน",
+      "cal.loading": "กำลังโหลดปฏิทิน…",
+      "cal.connect": "ต่อ Google Calendar ที่ claude.ai แล้วเข้า Settings → Connectors เพื่อให้นัดขึ้นมาด้วย",
+      "cal.count": "{n} รายการ",
+      "cal.count.one": "1 รายการ",
+      "mail.title": "เมลวันนี้",
+      "mail.sub": "กล่องขาเข้า 24 ชั่วโมงล่าสุด",
+      "mail.loading": "กำลังโหลดเมล…",
+      "mail.none": "วันนี้ยังไม่มีเมลเข้ากล่องขาเข้า",
+      "mail.open": "เปิด Gmail",
+      "mail.unreadN": "ยังไม่ได้อ่าน {n} ฉบับ",
+      "mail.unreadN.one": "ยังไม่ได้อ่าน 1 ฉบับ",
+      "mail.off": "หน้านี้เรียก Gmail ไม่ได้",
       "sync.title": "ซิงก์กับ Google Drive",
       "sync.push": "ส่งขึ้น Drive",
       "sync.pushing": "กำลังส่ง…",
@@ -1735,14 +1990,14 @@
       "sync.conflict.body": "ใน Drive มี {dn} งาน บันทึกไว้เมื่อ {dd} ส่วนเครื่องนี้มี {ln} งาน และถูกแก้หลังจากส่งขึ้นครั้งล่าสุด เลือกได้ว่าจะใช้อันไหน",
       "sync.conflict.useDrive": "ใช้ของใน Drive",
       "sync.conflict.keepLocal": "เก็บของในเครื่องไว้",
-      "sync.err.reauth": "Google Drive ต้องเชื่อมต่อใหม่ — ไปที่ claude.ai แล้วเข้า Settings → Connectors",
-      "sync.err.notConnected": "ยังไม่ได้เพิ่ม Google Drive — เพิ่มได้ที่ claude.ai แล้วเข้า Settings → Connectors",
-      "sync.err.selection": "คุณมี Google Drive มากกว่าหนึ่งอัน เลือกอันที่จะใช้ก่อนแล้วลองใหม่",
-      "sync.err.policy": "องค์กรของคุณไม่อนุญาตให้หน้านี้เรียก Google Drive",
-      "sync.err.unavailable": "Google Drive ไม่ตอบตอนนี้ ลองกดใหม่อีกครั้ง",
+      "sync.err.reauth": "{s} ต้องเชื่อมต่อใหม่ — ไปที่ claude.ai แล้วเข้า Settings → Connectors",
+      "sync.err.notConnected": "ยังไม่ได้เพิ่ม {s} — เพิ่มได้ที่ claude.ai แล้วเข้า Settings → Connectors",
+      "sync.err.selection": "คุณมี {s} มากกว่าหนึ่งอัน เลือกอันที่จะใช้ก่อนแล้วลองใหม่",
+      "sync.err.policy": "องค์กรของคุณไม่อนุญาตให้หน้านี้เรียก {s}",
+      "sync.err.unavailable": "{s} ไม่ตอบตอนนี้ ลองกดใหม่อีกครั้ง",
       "sync.err.writeUnknown": "ไม่แน่ใจว่าส่งสำเร็จหรือไม่ — เช็กใน Drive ก่อนกดส่งซ้ำ กันไฟล์ซ้ำ",
-      "sync.err.tool": "Google Drive แจ้งข้อผิดพลาด: {m}",
-      "sync.err.other": "ติดต่อ Google Drive ไม่สำเร็จ",
+      "sync.err.tool": "{s} แจ้งข้อผิดพลาด: {m}",
+      "sync.err.other": "ติดต่อ {s} ไม่สำเร็จ",
       "sync.err.badFile": "ไฟล์ล่าสุดใน Drive อ่านไม่ออก ข้ามไปก่อน",
       "file.name": "กระดานงาน"
     },
@@ -1964,6 +2219,34 @@
 
       "warn.noStore": "This browser won't let the board store data — anything you add is lost when the page closes. Press “Save backup” first.",
       "warn.full": "Couldn't save to this device (storage is full) — press “Save backup” before closing the page",
+      "set.bg": "Background",
+      "set.bgHint": "Pick a style, then slide the hue to set the tone. It follows the light and dark themes on its own.",
+      "bg.default": "Theme default",
+      "bg.solid": "Solid",
+      "bg.linear": "Linear",
+      "bg.radial": "Radial",
+      "bg.mesh": "Mesh",
+      "bg.hue": "Hue",
+      "page.cal": "Calendar",
+      "cal.title": "The next 14 days",
+      "cal.sub": "Task due dates alongside your Google Calendar",
+      "cal.subNoConn": "Due dates from this board",
+      "cal.none": "Clear",
+      "cal.task": "task",
+      "cal.event": "event",
+      "cal.allDay": "all day",
+      "cal.loading": "Loading your calendar…",
+      "cal.connect": "Add Google Calendar at claude.ai, then Settings → Connectors, to see your events here too",
+      "cal.count": "{n} items",
+      "cal.count.one": "1 item",
+      "mail.title": "Mail today",
+      "mail.sub": "Inbox, last 24 hours",
+      "mail.loading": "Loading mail…",
+      "mail.none": "Nothing new in the inbox today",
+      "mail.open": "Open Gmail",
+      "mail.unreadN": "{n} unread",
+      "mail.unreadN.one": "1 unread",
+      "mail.off": "This page can't reach Gmail",
       "sync.title": "Google Drive sync",
       "sync.push": "Push to Drive",
       "sync.pushing": "Pushing…",
@@ -1984,20 +2267,21 @@
       "sync.conflict.body": "Drive holds {dn} tasks saved {dd}. This device holds {ln} tasks and has been edited since its last push. Pick which one to keep.",
       "sync.conflict.useDrive": "Use the Drive copy",
       "sync.conflict.keepLocal": "Keep this device's copy",
-      "sync.err.reauth": "Google Drive needs reconnecting — go to claude.ai, then Settings → Connectors",
-      "sync.err.notConnected": "Google Drive isn't added — add it at claude.ai, then Settings → Connectors",
-      "sync.err.selection": "You have more than one Google Drive connected. Choose one, then try again.",
-      "sync.err.policy": "Your organisation doesn't allow this page to call Google Drive",
-      "sync.err.unavailable": "Google Drive isn't responding right now. Try again.",
+      "sync.err.reauth": "{s} needs reconnecting — go to claude.ai, then Settings → Connectors",
+      "sync.err.notConnected": "{s} isn't added — add it at claude.ai, then Settings → Connectors",
+      "sync.err.selection": "You have more than one {s} connected. Choose one, then try again.",
+      "sync.err.policy": "Your organisation doesn't allow this page to call {s}",
+      "sync.err.unavailable": "{s} isn't responding right now. Try again.",
       "sync.err.writeUnknown": "Not sure whether that push landed — check Drive before pushing again, to avoid a duplicate file.",
-      "sync.err.tool": "Google Drive reported an error: {m}",
-      "sync.err.other": "Couldn't reach Google Drive",
+      "sync.err.tool": "{s} reported an error: {m}",
+      "sync.err.other": "Couldn't reach {s}",
       "sync.err.badFile": "The newest Drive file couldn't be read, so it was skipped",
       "file.name": "task-board"
     }
   };
 
   var FONTS = ["sans", "loop", "serif", "system", "mono"];
+  var BGS = ["default", "solid", "linear", "radial", "mesh"];
 
   function t(key, vars) {
     // English needs singular forms; Thai has no plural, so it simply has no ".one" keys
@@ -2204,7 +2488,7 @@
   /* ═══ view state ════════════════════════════════════════════ */
   var UI_KEY = KEY + ".ui";
   var view = {
-    lang: "th", font: "sans",
+    lang: "th", font: "sans", bg: "default", hue: 168,
     page: "board", filter: "all", query: "",
     composing: null, menuFor: null, groupBy: "col", sortBy: "due"
   };
@@ -2215,6 +2499,10 @@
       if (savedUi && typeof savedUi === "object") {
         if (savedUi.lang === "th" || savedUi.lang === "en") view.lang = savedUi.lang;
         if (FONTS.indexOf(savedUi.font) !== -1) view.font = savedUi.font;
+        if (BGS.indexOf(savedUi.bg) !== -1) view.bg = savedUi.bg;
+        if (typeof savedUi.hue === "number" && savedUi.hue >= 0 && savedUi.hue <= 360) {
+          view.hue = savedUi.hue;
+        }
         if (typeof savedUi.page === "string") view.page = savedUi.page;
         if (typeof savedUi.groupBy === "string") view.groupBy = savedUi.groupBy;
         if (typeof savedUi.sortBy === "string") view.sortBy = savedUi.sortBy;
@@ -2228,8 +2516,8 @@
     if (!canStore) return;
     try {
       window.localStorage.setItem(UI_KEY, JSON.stringify({
-        lang: view.lang, font: view.font, page: view.page,
-        groupBy: view.groupBy, sortBy: view.sortBy
+        lang: view.lang, font: view.font, bg: view.bg, hue: view.hue,
+        page: view.page, groupBy: view.groupBy, sortBy: view.sortBy
       }));
     } catch (e) { /* not worth warning about */ }
   }
@@ -2548,18 +2836,22 @@
   }
 
   /* Each code has a different fix, so each gets its own message. */
-  function syncErrText(err, isWrite) {
+  function syncErrText(err, isWrite, server) {
     var c = err && err.code;
-    if (c === "needs_reauth") return t("sync.err.reauth");
-    if (c === "server_not_connected") return t("sync.err.notConnected");
-    if (c === "selection_required") return t("sync.err.selection");
-    if (c === "blocked_by_policy" || c === "approval_required") return t("sync.err.policy");
+    var v = { s: server || (err && err.server) || DRIVE };
+    if (c === "needs_reauth") return t("sync.err.reauth", v);
+    if (c === "server_not_connected") return t("sync.err.notConnected", v);
+    if (c === "selection_required") return t("sync.err.selection", v);
+    if (c === "blocked_by_policy" || c === "approval_required") return t("sync.err.policy", v);
     if (c === "server_unavailable") {
       // for a write this is ambiguous: the file may or may not exist now
-      return isWrite ? t("sync.err.writeUnknown") : t("sync.err.unavailable");
+      return isWrite ? t("sync.err.writeUnknown") : t("sync.err.unavailable", v);
     }
-    if (c === "tool_error") return t("sync.err.tool", { m: clip(String(err.message || ""), 120) });
-    return t("sync.err.other");
+    if (c === "tool_error") {
+      v.m = clip(String(err.message || ""), 120);
+      return t("sync.err.tool", v);
+    }
+    return t("sync.err.other", v);
   }
 
   function driveNewest() {
@@ -2759,6 +3051,217 @@
     }
     var box = $("syncBox");
     if (box) box.innerHTML = syncBoxHtml();
+  }
+
+  /* ═══ Google Calendar (read-only) ═══════════════════════════ */
+  var CAL = "Google Calendar";
+  var GMAIL = "Gmail";
+  var CAL_DAYS = 14;
+  var cal = { state: "idle", events: [], err: "", off: false };
+  var mail = { state: "idle", threads: [], err: "", off: false };
+
+  function calFetch(force) {
+    if (!mcpReady() || cal.off) return;
+    if (cal.state === "loading") return;
+    if (cal.state === "done" && !force) { renderCalBody(); return; }
+
+    cal.state = "loading";
+    cal.err = "";
+    renderCalBody();
+
+    var from = new Date(); from.setHours(0, 0, 0, 0);
+    var to = new Date(from.getTime() + CAL_DAYS * 86400000);
+
+    window.claude.mcp.callTool(CAL, "list_events", {
+      startTime: from.toISOString(),
+      endTime: to.toISOString(),
+      orderBy: "startTime",
+      pageSize: 100
+    }, { cache: { staleTime: 60000 } }).then(function (res) {
+      // an empty range comes back as calendar metadata with no `events` key
+      var events = (res && res.payload && res.payload.events) || [];
+      cal.events = events.filter(function (e) { return e && e.status !== "cancelled"; });
+      cal.state = "done";
+      renderCalBody();
+    }).catch(function (err) {
+      cal.state = "done";
+      if (syncDead(err) || err.code === "server_not_connected") cal.off = true;
+      else cal.err = syncErrText(err, false, CAL);
+      renderCalBody();
+    });
+  }
+
+  /* Events carry either start.dateTime (timed) or start.date (all-day). */
+  function eventDay(ev) {
+    var st = ev.start || {};
+    if (st.date) return st.date;
+    if (st.dateTime) return isoOf(new Date(st.dateTime));
+    return "";
+  }
+  function eventTime(ev) {
+    var st = ev.start || {};
+    if (!st.dateTime) return t("cal.allDay");
+    return localeTime(new Date(st.dateTime).getTime());
+  }
+
+  function renderCal() {
+    return '<section class="panel">' +
+      '<div class="panel-head"><span class="rule"></span>' +
+        '<h2>' + esc(t("cal.title")) + '</h2>' +
+        '<p class="sub" id="calSub">' + esc(t("cal.sub")) + '</p>' +
+      '</div>' +
+      '<div id="calBody"></div></section>';
+  }
+
+  function renderCalBody() {
+    var host = $("calBody");
+    if (!host) return;
+
+    var sub = $("calSub");
+    if (sub) sub.textContent = (mcpReady() && !cal.off) ? t("cal.sub") : t("cal.subNoConn");
+
+    var byDay = {};
+    openMatching().forEach(function (c) {
+      if (!c.due) return;
+      (byDay[c.due] = byDay[c.due] || { tasks: [], events: [] }).tasks.push(c);
+    });
+    cal.events.forEach(function (ev) {
+      var d = eventDay(ev);
+      if (!d) return;
+      (byDay[d] = byDay[d] || { tasks: [], events: [] }).events.push(ev);
+    });
+
+    var out = "";
+    for (var i = 0; i < CAL_DAYS; i++) {
+      var iso = shiftIso(i);
+      var p = iso.split("-").map(Number);
+      var dow = new Date(p[0], p[1] - 1, p[2]).getDay();
+      var bucket = byDay[iso] || { tasks: [], events: [] };
+
+      var items = "";
+      bucket.events.slice().sort(function (a, b) {
+        return String(eventTime(a)).localeCompare(String(eventTime(b)));
+      }).forEach(function (ev) {
+        items += '<div class="cal-item is-event">' +
+          '<span class="t">' + esc(eventTime(ev)) + '</span>' +
+          '<span class="label">' + esc(ev.summary || "(no title)") + '</span>' +
+          '<span class="kind">' + esc(t("cal.event")) + '</span></div>';
+      });
+      sortCards(bucket.tasks, "pri").forEach(function (c) {
+        items += '<div class="cal-item is-task p-' + c.pri + '" data-card="' + c.id + '" ' +
+          'tabindex="0" role="button">' +
+          '<span class="label">' + esc(c.title) + '</span>' +
+          '<span class="kind">' + esc(t("cal.task")) + '</span></div>';
+      });
+
+      var showMonth = i === 0 || p[2] === 1;
+      out += '<div class="cal-day' + (i === 0 ? " is-today" : "") +
+        (dow === 0 || dow === 6 ? " is-weekend" : "") + '">' +
+        '<div class="cal-date"><span class="d">' + p[2] + '</span>' +
+          '<span class="w">' + esc(i === 0 ? t("chart.today") : L().dow[dow]) + '</span>' +
+          (showMonth ? '<span class="w">' + esc(L().month[p[1] - 1]) + '</span>' : '') +
+          '</div>' +
+        '<div class="cal-items">' +
+          (items || '<p class="cal-none">' + esc(t("cal.none")) + '</p>') +
+        '</div></div>';
+    }
+
+    var foot = "";
+    if (!mcpReady() || cal.off) {
+      foot = '<p class="panel-foot">' + esc(t("cal.connect")) + '</p>';
+    } else if (cal.state === "loading") {
+      foot = '<p class="panel-foot">' + esc(t("cal.loading")) + '</p>';
+    } else if (cal.err) {
+      foot = '<p class="sync-err" style="margin:10px 16px;">' + esc(cal.err) + '</p>';
+    }
+
+    host.innerHTML = foot + '<div class="rows">' + out + '</div>';
+  }
+
+  /* ═══ Gmail (read-only) ═════════════════════════════════════ */
+  function mailFetch(force) {
+    if (!mcpReady() || mail.off) return;
+    if (mail.state === "loading") return;
+    if (mail.state === "done" && !force) { renderMailBody(); return; }
+
+    mail.state = "loading";
+    mail.err = "";
+    renderMailBody();
+
+    window.claude.mcp.callTool(GMAIL, "search_threads", {
+      query: "in:inbox newer_than:1d",
+      pageSize: 10,
+      view: "THREAD_VIEW_MINIMAL"
+    }, { cache: { staleTime: 60000 } }).then(function (res) {
+      var threads = (res && res.payload && res.payload.threads) || [];
+      mail.threads = threads.map(function (th) {
+        var m = (th.messages || [])[0] || {};
+        return {
+          id: th.id,
+          from: m.sender || "",
+          subject: m.subject || "",
+          at: Date.parse(m.date) || 0,
+          unread: (m.labelIds || []).indexOf("UNREAD") !== -1
+        };
+      }).sort(function (a, b) { return b.at - a.at; });
+      mail.state = "done";
+      renderMailBody();
+    }).catch(function (err) {
+      mail.state = "done";
+      if (syncDead(err) || err.code === "server_not_connected") mail.off = true;
+      else mail.err = syncErrText(err, false, GMAIL);
+      renderMailBody();
+    });
+  }
+
+  /* "Adidas <adidas@th-news.adidas.com>" → "Adidas" */
+  function senderName(raw) {
+    var m = /^\s*"?([^"<]+?)"?\s*</.exec(raw);
+    if (m) return m[1].trim();
+    var at = raw.indexOf("@");
+    return at > 0 ? raw.slice(0, at) : raw;
+  }
+
+  function mailPanelHtml() {
+    var unread = mail.threads.filter(function (x) { return x.unread; }).length;
+    var body;
+
+    if (mail.state === "loading") {
+      body = '<p class="panel-empty">' + esc(t("mail.loading")) + '</p>';
+    } else if (mail.err) {
+      body = '<p class="sync-err" style="margin:12px 16px;">' + esc(mail.err) + '</p>';
+    } else if (!mail.threads.length) {
+      body = '<p class="panel-empty">' + esc(t("mail.none")) + '</p>';
+    } else {
+      body = '<div class="rows">' + mail.threads.map(function (x) {
+        return '<div class="mail-row' + (x.unread ? " is-unread" : "") + '">' +
+          '<span class="unread' + (x.unread ? "" : " read") + '"></span>' +
+          '<div class="mail-main">' +
+            '<div class="mail-from">' + esc(senderName(x.from)) + '</div>' +
+            '<p class="mail-subject">' + esc(x.subject) + '</p>' +
+          '</div>' +
+          '<span class="mail-time">' + esc(x.at ? localeTime(x.at) : "") + '</span>' +
+          '</div>';
+      }).join("") + '</div>' +
+      '<p class="panel-foot"><a href="https://mail.google.com/" target="_blank" rel="noreferrer noopener">' +
+        esc(t("mail.open")) + ' →</a></p>';
+    }
+
+    return '<section class="panel" id="mailPanel">' +
+      '<div class="panel-head"><span class="rule"></span>' +
+        '<h2>' + esc(t("mail.title")) + '</h2>' +
+        '<p class="sub">' + esc(t("mail.sub")) + '</p>' +
+        (unread ? '<span class="n">' + t("mail.unreadN", { n: unread }) + '</span>' : '') +
+      '</div>' + body + '</section>';
+  }
+
+  function renderMailBody() {
+    var host = $("mailPanel");
+    if (!host || !host.parentNode) return;
+    if (mail.off) { host.parentNode.removeChild(host); return; }
+    var holder = document.createElement("div");
+    holder.innerHTML = mailPanelHtml();
+    host.parentNode.replaceChild(holder.firstChild, host);
   }
 
   /* ═══ render: pulse strip ═══════════════════════════════════ */
@@ -2986,6 +3489,8 @@
       });
     }
 
+    if (mcpReady() && !mail.off) html += mailPanelHtml();
+
     html += panelHtml({
       sev: "done", title: t("today.closed.title"), cards: closed,
       empty: t("today.closed.empty"), rowOpts: { showExact: false }
@@ -3177,7 +3682,7 @@
       "--col-max", Math.max(240, window.innerHeight - top - 34) + "px");
   }
 
-  var PAGES = ["board", "today", "remain", "due"];
+  var PAGES = ["board", "today", "remain", "cal", "due"];
 
   function renderNav() {
     var overdue = openCards().filter(function (c) {
@@ -3198,6 +3703,8 @@
   function applyStatic() {
     document.documentElement.lang = view.lang;
     document.documentElement.dataset.font = view.font;
+    document.documentElement.dataset.bg = view.bg;
+    document.documentElement.style.setProperty("--bg-h", String(view.hue));
 
     $("mastTitle").textContent = t("mast.title");
     $("mastSub").textContent = t("mast.sub");
@@ -3231,7 +3738,10 @@
     if (!onBoard) {
       $("page").innerHTML =
         view.page === "today" ? renderToday() :
-        view.page === "remain" ? renderRemain() : renderDue();
+        view.page === "remain" ? renderRemain() :
+        view.page === "cal" ? renderCal() : renderDue();
+      if (view.page === "cal") { renderCalBody(); calFetch(); }
+      if (view.page === "today") mailFetch();
       $("blankSlot").innerHTML = "";
       renderFilterPill();
       return;
@@ -3379,6 +3889,24 @@
     window.setTimeout(function () { $("cfCancel").focus(); }, 20);
   }
 
+  /* Swatches preview the chosen hue at light-theme values — the real
+     background re-derives its stops per theme in CSS. */
+  function bgPreview(kind) {
+    var h = view.hue;
+    var a = "hsl(" + h + " 38% 96%)";
+    var b = "hsl(" + ((h + 38) % 360) + " 46% 85%)";
+    var c = "hsl(" + ((h + 326) % 360) + " 40% 90%)";
+    if (kind === "solid") return a;
+    if (kind === "linear") return "linear-gradient(155deg," + a + " 0%," + b + " 100%)";
+    if (kind === "radial") return "radial-gradient(125% 95% at 12% -5%," + a + " 0%," + b + " 72%)";
+    if (kind === "mesh") {
+      return "radial-gradient(58% 52% at 10% 6%," + c + " 0%,transparent 62%)," +
+        "radial-gradient(52% 48% at 90% 10%," + b + " 0%,transparent 64%)," +
+        "radial-gradient(68% 58% at 48% 102%," + b + " 0%,transparent 66%)," + a;
+    }
+    return "var(--ground)";
+  }
+
   function openSettings() {
     var langs = [["th", "ไทย"], ["en", "English"]];
     $("sheet").innerHTML =
@@ -3401,6 +3929,21 @@
           }).join("") +
         '</div>' +
         '<span class="help">' + esc(t("set.fontHint")) + '</span></div>' +
+      '<div class="field"><label>' + esc(t("set.bg")) + '</label>' +
+        '<div class="bg-kinds">' +
+          BGS.map(function (k) {
+            return '<button class="bg-kind" type="button" data-bg-opt="' + k + '" ' +
+              'aria-pressed="' + (view.bg === k) + '">' +
+              '<span class="swatch" style="background:' + bgPreview(k) + '"></span>' +
+              '<span class="name">' + esc(t("bg." + k)) + '</span></button>';
+          }).join("") +
+        '</div>' +
+        '<div class="hue-row"' + (view.bg === "default" ? " hidden" : "") + '>' +
+          '<input type="range" id="hue" min="0" max="360" step="1" value="' + view.hue + '" ' +
+            'aria-label="' + esc(t("bg.hue")) + '" />' +
+          '<span class="val" id="hueVal">' + view.hue + '\u00b0</span>' +
+        '</div>' +
+        '<span class="help">' + esc(t("set.bgHint")) + '</span></div>' +
       '<div class="field"><label>' + esc(t("sync.title")) + '</label>' +
         '<div id="syncBox">' + syncBoxHtml() + '</div></div>' +
       '<div class="sheet-foot"><span class="spacer"></span>' +
@@ -3609,6 +4152,18 @@
       openSettings();
       return;
     }
+    hit = target.closest("[data-bg-opt]");
+    if (hit) {
+      view.bg = hit.dataset.bgOpt;
+      saveUi();
+      applyStatic();
+      openSettings();
+      return;
+    }
+
+    // calendar task chip → the same editor
+    hit = target.closest(".cal-item.is-task");
+    if (hit) { openEditor(hit.dataset.card); return; }
     if (target.closest("#setClose")) { closeSheet(); return; }
 
     // view tabs
@@ -3905,6 +4460,21 @@
   });
   document.addEventListener("focusout", function (e) {
     if (e.target.closest && e.target.closest("[data-day]")) hideTip();
+  });
+
+  /* Hue drags live: paint on input, persist on release. */
+  document.addEventListener("input", function (e) {
+    if (e.target.id !== "hue") return;
+    view.hue = Number(e.target.value);
+    document.documentElement.style.setProperty("--bg-h", String(view.hue));
+    var val = $("hueVal");
+    if (val) val.textContent = view.hue + "°";
+  });
+  document.addEventListener("change", function (e) {
+    if (e.target.id !== "hue") return;
+    saveUi();
+    // refresh the swatches so they track the new hue
+    if ($("hue")) openSettings();
   });
 
   $("search").addEventListener("input", function (e) {
