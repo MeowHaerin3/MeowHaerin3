@@ -316,6 +316,70 @@
   }
   .icon-btn:hover { background: var(--surface-3); color: var(--ink); }
 
+  /* ─── board tabs ─────────────────────────────────────────── */
+  .boards {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+  .boards::-webkit-scrollbar { display: none; }
+
+  .board-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    flex: none;
+    padding: 5px 11px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--muted);
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background .14s, border-color .14s, color .14s;
+  }
+  .board-tab:hover { background: var(--surface-2); color: var(--ink); }
+  .board-tab[aria-current="true"] {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+    font-weight: 600;
+  }
+  .board-tab .n {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-variant-numeric: tabular-nums;
+    opacity: .75;
+  }
+
+  .board-add {
+    flex: none;
+    width: 26px; height: 26px;
+    border: 1px dashed var(--line-strong);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    line-height: 1;
+    font-size: 15px;
+  }
+  .board-add:hover { color: var(--accent); border-color: var(--accent); }
+
+  .board-menu-wrap { position: relative; flex: none; margin-left: auto; }
+  .board-menu-wrap .menu { top: 30px; }
+
+  .scope-panel { padding: 0; }
+  .scope-panel .controls { border-bottom: 0; }
+
+  .chip.repeat { background: transparent; border: 1px solid var(--accent); color: var(--accent-ink); }
+  .chip.stale { background: var(--warn-soft); color: var(--warn); }
+  .chip.from-board { background: var(--surface-3); color: var(--ink-2); font-weight: 500; }
+
   /* ─── view nav ───────────────────────────────────────────── */
   .nav {
     display: flex;
@@ -1667,8 +1731,7 @@
   <header class="masthead">
     <div class="wrap masthead-row">
       <div class="brand">
-        <h1><span class="stamp">Board · <span id="todayStamp"></span></span><span id="mastTitle"></span></h1>
-        <p id="mastSub"></p>
+        <span class="stamp" id="todayStamp"></span>
       </div>
       <div class="masthead-tools">
         <button class="btn btn-primary" id="btnPush" type="button" hidden></button>
@@ -1678,6 +1741,7 @@
         <input type="file" id="fileInput" accept=".json,application/json" class="sr-only" />
       </div>
     </div>
+    <div class="wrap boards" id="boards"></div>
     <nav class="wrap nav" id="nav"></nav>
   </header>
 
@@ -1942,6 +2006,53 @@
 
       "warn.noStore": "เบราว์เซอร์นี้ไม่ให้เก็บข้อมูลลงเครื่อง — งานที่เพิ่มจะหายเมื่อปิดหน้า กด “บันทึกไฟล์สำรอง” ไว้ก่อน",
       "warn.full": "บันทึกลงเครื่องไม่สำเร็จ (พื้นที่เก็บข้อมูลเต็ม) — กด “บันทึกไฟล์สำรอง” ไว้ก่อนปิดหน้านี้",
+      "board.untitled": "บอร์ดใหม่",
+      "board.first": "งานของฉัน",
+      "board.add": "เพิ่มบอร์ด",
+      "board.addTitle": "สร้างบอร์ดใหม่",
+      "board.name": "ชื่อบอร์ด",
+      "board.namePh": "เช่น ลูกค้า A / งานบ้าน",
+      "board.rename": "เปลี่ยนชื่อบอร์ด",
+      "board.dup": "ทำสำเนาบอร์ด",
+      "board.del": "ลบบอร์ดนี้",
+      "board.delTitle": "ลบบอร์ด “{t}”",
+      "board.delBody": "งาน {n} ชิ้นในบอร์ดนี้จะถูกลบถาวร",
+      "board.delBodyEmpty": "บอร์ดนี้ยังไม่มีงาน ลบได้เลย",
+      "board.needOne": "ต้องเหลือบอร์ดอย่างน้อยหนึ่งบอร์ด",
+      "board.created": "สร้างบอร์ด “{t}” แล้ว",
+      "board.copySuffix": "(สำเนา)",
+      "board.menu": "ตัวเลือกบอร์ด",
+      "scope.all": "ทุกบอร์ด",
+      "scope.one": "บอร์ดนี้",
+      "scope.label": "ดูจาก",
+      "cal.range": "ช่วง",
+      "cal.d7": "7 วัน",
+      "cal.d14": "14 วัน",
+      "cal.d30": "30 วัน",
+      "cal.titleN": "{n} วันข้างหน้า",
+      "repeat.label": "ทำซ้ำ",
+      "repeat.": "ไม่ซ้ำ",
+      "repeat.daily": "ทุกวัน",
+      "repeat.weekly": "ทุกสัปดาห์",
+      "repeat.biweekly": "ทุก 2 สัปดาห์",
+      "repeat.monthly": "ทุกเดือน",
+      "repeat.quarterly": "ทุก 3 เดือน",
+      "repeat.yearly": "ทุกปี",
+      "repeat.help": "พอปิดงานนี้ ระบบจะสร้างรอบถัดไปให้อัตโนมัติ",
+      "repeat.spawned": "สร้างรอบถัดไปแล้ว — {d}",
+      "repeat.chip": "ซ้ำ{t}",
+      "stale.title": "ค้างนิ่งมานาน",
+      "stale.sub": "ไม่มีกำหนดส่ง และไม่ได้ขยับมา {n} วันขึ้นไป",
+      "stale.chip": "นิ่งมา {n} วัน",
+      "cal.push": "ใส่ในปฏิทิน",
+      "cal.pushing": "กำลังใส่…",
+      "cal.pushed": "อยู่ในปฏิทินแล้ว",
+      "cal.pushedToast": "ใส่ “{t}” ลงปฏิทินแล้ว",
+      "cal.pushNeedDue": "ต้องตั้งกำหนดส่งก่อนถึงจะใส่ปฏิทินได้",
+      "cal.pushOff": "ต่อ Google Calendar ก่อนถึงจะใส่ได้",
+      "mail.source": "แหล่ง",
+      "mail.all": "ทุกแหล่ง",
+      "mail.onlyGmail": "ตอนนี้อ่านได้แค่ Gmail — ติดตั้ง Microsoft 365 ที่ claude.ai ถ้าอยากให้ดึง Outlook ด้วย",
       "set.bg": "พื้นหลัง",
       "set.bgHint": "เลือกแบบแล้วเลื่อนแถบสีเพื่อปรับโทน ปรับตามธีมสว่าง/มืดให้เองอัตโนมัติ",
       "bg.default": "ตามธีม",
@@ -2219,6 +2330,53 @@
 
       "warn.noStore": "This browser won't let the board store data — anything you add is lost when the page closes. Press “Save backup” first.",
       "warn.full": "Couldn't save to this device (storage is full) — press “Save backup” before closing the page",
+      "board.untitled": "New board",
+      "board.first": "My work",
+      "board.add": "Add board",
+      "board.addTitle": "Create a board",
+      "board.name": "Board name",
+      "board.namePh": "e.g. Client A / Home",
+      "board.rename": "Rename board",
+      "board.dup": "Duplicate board",
+      "board.del": "Delete this board",
+      "board.delTitle": "Delete board “{t}”",
+      "board.delBody": "All {n} tasks on this board will be permanently deleted",
+      "board.delBodyEmpty": "This board has no tasks and is safe to delete",
+      "board.needOne": "At least one board has to remain",
+      "board.created": "Created board “{t}”",
+      "board.copySuffix": "(copy)",
+      "board.menu": "Board options",
+      "scope.all": "All boards",
+      "scope.one": "This board",
+      "scope.label": "Showing",
+      "cal.range": "Range",
+      "cal.d7": "7 days",
+      "cal.d14": "14 days",
+      "cal.d30": "30 days",
+      "cal.titleN": "The next {n} days",
+      "repeat.label": "Repeat",
+      "repeat.": "Doesn't repeat",
+      "repeat.daily": "Every day",
+      "repeat.weekly": "Every week",
+      "repeat.biweekly": "Every 2 weeks",
+      "repeat.monthly": "Every month",
+      "repeat.quarterly": "Every 3 months",
+      "repeat.yearly": "Every year",
+      "repeat.help": "Closing this task creates the next round automatically",
+      "repeat.spawned": "Next round created — {d}",
+      "repeat.chip": "{t}",
+      "stale.title": "Sitting untouched",
+      "stale.sub": "No due date, and nothing has moved for {n}+ days",
+      "stale.chip": "{n}d untouched",
+      "cal.push": "Add to calendar",
+      "cal.pushing": "Adding…",
+      "cal.pushed": "On your calendar",
+      "cal.pushedToast": "Added “{t}” to your calendar",
+      "cal.pushNeedDue": "Set a due date first, then it can go on the calendar",
+      "cal.pushOff": "Connect Google Calendar first",
+      "mail.source": "Source",
+      "mail.all": "All sources",
+      "mail.onlyGmail": "Only Gmail can be read right now — install Microsoft 365 at claude.ai to pull Outlook in as well",
       "set.bg": "Background",
       "set.bgHint": "Pick a style, then slide the hue to set the tone. It follows the light and dark themes on its own.",
       "bg.default": "Theme default",
@@ -2282,6 +2440,9 @@
 
   var FONTS = ["sans", "loop", "serif", "system", "mono"];
   var BGS = ["default", "solid", "linear", "radial", "mesh"];
+  var REPEATS = ["", "daily", "weekly", "biweekly", "monthly", "quarterly", "yearly"];
+  var CAL_RANGES = [7, 14, 30];
+  var STALE_DAYS = 21;
 
   function t(key, vars) {
     // English needs singular forms; Thai has no plural, so it simply has no ".one" keys
@@ -2364,9 +2525,10 @@
 
   var SEED = {
     th: {
+      board: "งานของฉัน",
       cols: ["ต้องทำ", "กำลังทำ", "รอคนอื่น", "เสร็จแล้ว"],
       cards: [
-        ["จ่ายค่าไฟ + ค่าเน็ต", "ตัดจากบัญชีหลัก เช็กยอดก่อน", 2, "high", ["เงิน"]],
+        ["จ่ายค่าไฟ + ค่าเน็ต", "ตัดจากบัญชีหลัก เช็กยอดก่อน", 2, "high", ["เงิน"], "monthly"],
         ["นัดหมอฟัน ขูดหินปูน", "ทิ้งไว้มาสองรอบแล้ว", null, "mid", ["สุขภาพ"]],
         ["ซื้อของเข้าบ้าน", "กาแฟ / ผงซักฟอก / ถ่าน AA", null, "low", ["บ้าน"]],
         ["สรุป OEE รายสัปดาห์ส่งหัวหน้า", "เหลือกราฟ downtime กับสรุป 3 บรรทัด", 0, "high", ["งาน"]],
@@ -2380,9 +2542,10 @@
       ]
     },
     en: {
+      board: "My work",
       cols: ["To do", "Doing", "Waiting on others", "Done"],
       cards: [
-        ["Pay the power + internet bills", "Auto-debits from the main account — check the balance first", 2, "high", ["money"]],
+        ["Pay the power + internet bills", "Auto-debits from the main account — check the balance first", 2, "high", ["money"], "monthly"],
         ["Book a dental cleaning", "Put off twice already", null, "mid", ["health"]],
         ["Groceries run", "Coffee / detergent / AA batteries", null, "low", ["home"]],
         ["Weekly OEE summary for my manager", "Downtime chart and a 3-line summary left to do", 0, "high", ["work"]],
@@ -2404,8 +2567,8 @@
       var c = {
         id: uid("k"), title: spec[0], note: spec[1] || "",
         due: spec[2] === null ? "" : shiftIso(spec[2]),
-        pri: spec[3], tags: spec[4] || [], log: [],
-        created: Date.now(), doneAt: 0
+        pri: spec[3], tags: spec[4] || [], log: [], repeat: spec[5] || "", calEventId: "",
+        created: Date.now(), movedAt: Date.now(), doneAt: 0
       };
       cards[c.id] = c;
       return c.id;
@@ -2425,10 +2588,59 @@
       return { id: uid("g"), text: text, at: Date.now() - (S.log.length - i) * day * 2 };
     });
 
-    return { v: 2, columns: cols, cards: cards };
+    return { id: uid("b"), title: S.board, columns: cols, cards: cards, created: Date.now() };
   }
 
-  function sanitize(raw) {
+  function seedState() {
+    var first = seed();
+    return {
+      v: 3, boards: [first], activeBoard: first.id,
+      syncedAt: 0, touchedAt: 0, seenDriveAt: 0
+    };
+  }
+
+  /* The active board. Everything that used to read state.columns /
+     state.cards goes through here. */
+  function B() {
+    for (var i = 0; i < state.boards.length; i++) {
+      if (state.boards[i].id === state.activeBoard) return state.boards[i];
+    }
+    return state.boards[0];
+  }
+  function boardIndex(id) {
+    for (var i = 0; i < state.boards.length; i++) {
+      if (state.boards[i].id === id) return i;
+    }
+    return -1;
+  }
+  /* Cards from every board, tagged with the board they came from —
+     what the summary pages use when scope is "all boards". */
+  /* Tag a card with the board it came from WITHOUT making it serialisable —
+     board.cards[id].__board === board is a cycle that would break every
+     JSON.stringify (saving, Drive push, duplicating a board). */
+  function tagBoard(card, bd) {
+    Object.defineProperty(card, "__board", {
+      value: bd, enumerable: false, configurable: true, writable: true
+    });
+    return card;
+  }
+
+  function everyBoardOpenCards() {
+    var out = [];
+    state.boards.forEach(function (bd) {
+      bd.columns.forEach(function (col) {
+        if (col.done) return;
+        col.cards.forEach(function (id) {
+          var c = bd.cards[id];
+          if (c) out.push(tagBoard(c, bd));
+        });
+      });
+    });
+    return out;
+  }
+
+  /* One board's worth of data, defensively rebuilt field by field. */
+  function sanitizeBoard(raw, fallbackTitle) {
     if (!raw || typeof raw !== "object") return null;
     if (!Array.isArray(raw.columns) || !raw.cards || typeof raw.cards !== "object") return null;
     var cards = {};
@@ -2451,7 +2663,10 @@
             at: typeof g.at === "number" ? g.at : Date.now()
           };
         }) : [],
+        repeat: REPEATS.indexOf(c.repeat) > 0 ? c.repeat : "",
+        calEventId: typeof c.calEventId === "string" ? c.calEventId : "",
         created: typeof c.created === "number" ? c.created : Date.now(),
+        movedAt: typeof c.movedAt === "number" ? c.movedAt : (typeof c.created === "number" ? c.created : Date.now()),
         doneAt: typeof c.doneAt === "number" ? c.doneAt : 0
       };
     });
@@ -2475,9 +2690,40 @@
     Object.keys(cards).forEach(function (id) {
       if (!seen[id]) columns[0].cards.push(id);
     });
-    var num = function (x) { return typeof x === "number" ? x : 0; };
     return {
-      v: 2, columns: columns, cards: cards,
+      id: typeof raw.id === "string" ? raw.id : uid("b"),
+      title: typeof raw.title === "string" && raw.title ? raw.title : (fallbackTitle || t("board.untitled")),
+      columns: columns,
+      cards: cards,
+      created: typeof raw.created === "number" ? raw.created : Date.now()
+    };
+  }
+
+  /* Accepts both shapes: v3 carries a boards array, v2 was a single
+     board at the top level and gets wrapped so old data still opens. */
+  function sanitize(raw) {
+    if (!raw || typeof raw !== "object") return null;
+    var num = function (x) { return typeof x === "number" ? x : 0; };
+    var boards = [];
+
+    if (Array.isArray(raw.boards)) {
+      raw.boards.forEach(function (bd, i) {
+        var clean = sanitizeBoard(bd, t("board.untitled") + " " + (i + 1));
+        if (clean) boards.push(clean);
+      });
+    } else {
+      var only = sanitizeBoard(raw, null);
+      if (only) boards.push(only);
+    }
+    if (!boards.length) return null;
+
+    var active = raw.activeBoard;
+    var known = boards.some(function (bd) { return bd.id === active; });
+
+    return {
+      v: 3,
+      boards: boards,
+      activeBoard: known ? active : boards[0].id,
       // sync bookkeeping, kept so it survives a reload
       syncedAt: num(raw.syncedAt),
       touchedAt: num(raw.touchedAt),
@@ -2489,6 +2735,7 @@
   var UI_KEY = KEY + ".ui";
   var view = {
     lang: "th", font: "sans", bg: "default", hue: 168,
+    scope: "all", calDays: 14, boardMenu: false,
     page: "board", filter: "all", query: "",
     composing: null, menuFor: null, groupBy: "col", sortBy: "due"
   };
@@ -2506,6 +2753,8 @@
         if (typeof savedUi.page === "string") view.page = savedUi.page;
         if (typeof savedUi.groupBy === "string") view.groupBy = savedUi.groupBy;
         if (typeof savedUi.sortBy === "string") view.sortBy = savedUi.sortBy;
+        if (savedUi.scope === "all" || savedUi.scope === "one") view.scope = savedUi.scope;
+        if (CAL_RANGES.indexOf(savedUi.calDays) !== -1) view.calDays = savedUi.calDays;
       } else if (/^en\b/i.test(navigator.language || "")) {
         view.lang = "en";
       }
@@ -2517,7 +2766,8 @@
     try {
       window.localStorage.setItem(UI_KEY, JSON.stringify({
         lang: view.lang, font: view.font, bg: view.bg, hue: view.hue,
-        page: view.page, groupBy: view.groupBy, sortBy: view.sortBy
+        page: view.page, groupBy: view.groupBy, sortBy: view.sortBy,
+        scope: view.scope, calDays: view.calDays
       }));
     } catch (e) { /* not worth warning about */ }
   }
@@ -2529,7 +2779,7 @@
         if (parsed) return parsed;
       } catch (e) { /* fall through to seed */ }
     }
-    return seed();
+    return seedState();
   })();
 
   var storeBroken = false;
@@ -2557,22 +2807,32 @@
       .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
   }
   function colOf(cardId) {
-    for (var i = 0; i < state.columns.length; i++) {
-      if (state.columns[i].cards.indexOf(cardId) !== -1) return state.columns[i];
+    for (var i = 0; i < B().columns.length; i++) {
+      if (B().columns[i].cards.indexOf(cardId) !== -1) return B().columns[i];
     }
     return null;
   }
+  /* colOf only knows the active board. In cross-board scope a card
+     belongs to another one, so resolve the column on its own board. */
+  function homeColumn(card) {
+    var bd = card.__board || B();
+    for (var i = 0; i < bd.columns.length; i++) {
+      if (bd.columns[i].cards.indexOf(card.id) !== -1) return bd.columns[i];
+    }
+    return null;
+  }
+
   function colIndex(colId) {
-    for (var i = 0; i < state.columns.length; i++) {
-      if (state.columns[i].id === colId) return i;
+    for (var i = 0; i < B().columns.length; i++) {
+      if (B().columns[i].id === colId) return i;
     }
     return -1;
   }
   function openCards() {
     var out = [];
-    state.columns.forEach(function (col) {
+    B().columns.forEach(function (col) {
       if (col.done) return;
-      col.cards.forEach(function (id) { if (state.cards[id]) out.push(state.cards[id]); });
+      col.cards.forEach(function (id) { if (B().cards[id]) out.push(B().cards[id]); });
     });
     return out;
   }
@@ -2623,29 +2883,80 @@
   function commit() { markTouched(); save(); render(); renderSync(); }
 
   function addCard(colId, title) {
-    var col = state.columns[colIndex(colId)];
+    var col = B().columns[colIndex(colId)];
     if (!col) return;
     var card = {
       id: uid("k"), title: title.trim(), note: "", due: "", pri: "low",
-      tags: [], log: [], created: Date.now(), doneAt: col.done ? Date.now() : 0
+      tags: [], log: [], repeat: "", calEventId: "",
+      created: Date.now(), movedAt: Date.now(), doneAt: col.done ? Date.now() : 0
     };
-    state.cards[card.id] = card;
+    B().cards[card.id] = card;
     col.cards.push(card.id);
     commit();
   }
 
   function place(cardId, toColId, resolveIndex) {
     var from = colOf(cardId);
-    var to = state.columns[colIndex(toColId)];
+    var to = B().columns[colIndex(toColId)];
     if (!from || !to) return;
     from.cards.splice(from.cards.indexOf(cardId), 1);
     var index = resolveIndex(to);
     if (index === null || index < 0 || index > to.cards.length) index = to.cards.length;
     to.cards.splice(index, 0, cardId);
-    var card = state.cards[cardId];
-    if (to.done) { if (!card.doneAt) card.doneAt = Date.now(); }
-    else card.doneAt = 0;
+    var card = B().cards[cardId];
+    card.movedAt = Date.now();
+    if (to.done) {
+      if (!card.doneAt) card.doneAt = Date.now();
+      if (!from.done) spawnNextRound(card, from);
+    } else card.doneAt = 0;
     commit();
+  }
+
+  /* A repeating task that lands in a done column leaves a fresh copy
+     behind in the column it came from, with the date rolled forward. */
+  function ROLL(iso, kind) {
+    var base = iso ? new Date(iso.split("-")[0], Number(iso.split("-")[1]) - 1, iso.split("-")[2]) : new Date();
+    base.setHours(12, 0, 0, 0);
+    // never schedule the next round in the past
+    var today = new Date(); today.setHours(12, 0, 0, 0);
+    var guard = 0;
+    do {
+      if (kind === "daily") base.setDate(base.getDate() + 1);
+      else if (kind === "weekly") base.setDate(base.getDate() + 7);
+      else if (kind === "biweekly") base.setDate(base.getDate() + 14);
+      else if (kind === "monthly") base.setMonth(base.getMonth() + 1);
+      else if (kind === "quarterly") base.setMonth(base.getMonth() + 3);
+      else if (kind === "yearly") base.setFullYear(base.getFullYear() + 1);
+      else return "";
+      guard++;
+    } while (base <= today && guard < 400);
+    return isoOf(base);
+  }
+
+  function spawnNextRound(card, homeCol) {
+    if (!card.repeat || REPEATS.indexOf(card.repeat) < 1) return;
+    var nextDue = ROLL(card.due, card.repeat);
+    if (!nextDue) return;
+    var copy = {
+      id: uid("k"), title: card.title, note: card.note, due: nextDue,
+      pri: card.pri, tags: card.tags.slice(), log: [], repeat: card.repeat,
+      calEventId: "", created: Date.now(), movedAt: Date.now(), doneAt: 0
+    };
+    B().cards[copy.id] = copy;
+    var target = homeCol && !homeCol.done ? homeCol : B().columns[0];
+    target.cards.push(copy.id);
+    // the finished one stops repeating so the chain never forks
+    card.repeat = "";
+    window.setTimeout(function () {
+      toast(t("repeat.spawned", { d: exactDate(nextDue) }));
+    }, 30);
+  }
+
+  function staleDays(card) {
+    if (card.due || card.doneAt) return 0;
+    var since = card.movedAt || card.created || 0;
+    if (!since) return 0;
+    return Math.floor((Date.now() - since) / 86400000);
   }
 
   function moveCard(cardId, toColId, index) {
@@ -2663,21 +2974,26 @@
   function nudge(cardId, dir) {
     var from = colOf(cardId);
     if (!from) return;
-    var target = state.columns[colIndex(from.id) + dir];
+    var target = B().columns[colIndex(from.id) + dir];
     if (!target) return;
     moveCard(cardId, target.id, target.cards.length);
   }
 
   function doneColumn() {
-    for (var i = state.columns.length - 1; i >= 0; i--) {
-      if (state.columns[i].done) return state.columns[i];
+    for (var i = B().columns.length - 1; i >= 0; i--) {
+      if (B().columns[i].done) return B().columns[i];
     }
     return null;
   }
 
   /* Tick a task off from any of the summary views. */
   function completeCard(cardId) {
-    var card = state.cards[cardId];
+    if (!B().cards[cardId]) {
+      for (var i = 0; i < state.boards.length; i++) {
+        if (state.boards[i].cards[cardId]) { state.activeBoard = state.boards[i].id; break; }
+      }
+    }
+    var card = B().cards[cardId];
     var from = colOf(cardId);
     if (!card || !from) return;
 
@@ -2697,14 +3013,14 @@
     var col = colOf(cardId);
     if (!col) return;
     var idx = col.cards.indexOf(cardId);
-    undoBuf = { card: state.cards[cardId], colId: col.id, index: idx };
+    undoBuf = { card: B().cards[cardId], colId: col.id, index: idx };
     col.cards.splice(idx, 1);
-    delete state.cards[cardId];
+    delete B().cards[cardId];
     commit();
     toast(t("toast.deleted", { t: clip(undoBuf.card.title, 29) }), t("toast.undo"), function () {
       if (!undoBuf) return;
-      var c = state.columns[colIndex(undoBuf.colId)] || state.columns[0];
-      state.cards[undoBuf.card.id] = undoBuf.card;
+      var c = B().columns[colIndex(undoBuf.colId)] || B().columns[0];
+      B().cards[undoBuf.card.id] = undoBuf.card;
       c.cards.splice(Math.min(undoBuf.index, c.cards.length), 0, undoBuf.card.id);
       undoBuf = null;
       commit();
@@ -2715,7 +3031,7 @@
   function logOf(card) { return card.log || (card.log = []); }
 
   function addLogEntry(cardId, text) {
-    var card = state.cards[cardId];
+    var card = B().cards[cardId];
     if (!card || !text.trim()) return;
     logOf(card).push({ id: uid("g"), text: text.trim(), at: Date.now() });
     markTouched();
@@ -2726,7 +3042,7 @@
   }
 
   function deleteLogEntry(cardId, entryId) {
-    var card = state.cards[cardId];
+    var card = B().cards[cardId];
     if (!card) return;
     var log = logOf(card);
     var i = -1;
@@ -2740,7 +3056,7 @@
     renderSync();
     renderLogSection(cardId);
     toast(t("toast.logDeleted"), t("toast.undo"), function () {
-      var c = state.cards[cardId];
+      var c = B().cards[cardId];
       if (!c) return;
       logOf(c).splice(Math.min(i, logOf(c).length), 0, removed);
       save();
@@ -2793,7 +3109,7 @@
 
   function renderLogSection(cardId, focus) {
     var host = $("logSection");
-    var card = state.cards[cardId];
+    var card = B().cards[cardId];
     if (!host || !card) return;
     host.innerHTML = logSectionHtml(card);
     var list = host.querySelector(".log-list");
@@ -2898,12 +3214,17 @@
     save();
     render();
     renderSync();
-    toast(t("sync.pulled", { n: Object.keys(state.cards).length }));
+    toast(t("sync.pulled", {
+      n: state.boards.reduce(function (n, bd) { return n + Object.keys(bd.cards).length; }, 0)
+    }));
   }
 
   function askSyncConflict(loaded) {
-    var dn = Object.keys(loaded.state.cards).length;
-    var ln = Object.keys(state.cards).length;
+    var countAll = function (st) {
+      return st.boards.reduce(function (n, bd) { return n + Object.keys(bd.cards).length; }, 0);
+    };
+    var dn = countAll(loaded.state);
+    var ln = countAll(state);
     $("sheet").innerHTML =
       '<h2 id="sheetTitle">' + esc(t("sync.conflict.title")) + '</h2>' +
       '<p class="sub"></p>' +
@@ -2987,7 +3308,7 @@
     window.claude.mcp.callTool(DRIVE, "create_file", {
       title: name,
       textContent: JSON.stringify({
-        v: 2, savedAt: savedAt, columns: state.columns, cards: state.cards
+        v: 3, savedAt: savedAt, boards: state.boards, activeBoard: state.activeBoard
       }),
       contentMimeType: "application/json",
       disableConversionToGoogleType: true
@@ -3056,7 +3377,6 @@
   /* ═══ Google Calendar (read-only) ═══════════════════════════ */
   var CAL = "Google Calendar";
   var GMAIL = "Gmail";
-  var CAL_DAYS = 14;
   var cal = { state: "idle", events: [], err: "", off: false };
   var mail = { state: "idle", threads: [], err: "", off: false };
 
@@ -3070,7 +3390,7 @@
     renderCalBody();
 
     var from = new Date(); from.setHours(0, 0, 0, 0);
-    var to = new Date(from.getTime() + CAL_DAYS * 86400000);
+    var to = new Date(from.getTime() + view.calDays * 86400000);
 
     window.claude.mcp.callTool(CAL, "list_events", {
       startTime: from.toISOString(),
@@ -3107,9 +3427,16 @@
   function renderCal() {
     return '<section class="panel">' +
       '<div class="panel-head"><span class="rule"></span>' +
-        '<h2>' + esc(t("cal.title")) + '</h2>' +
+        '<h2>' + esc(t("cal.titleN", { n: view.calDays })) + '</h2>' +
         '<p class="sub" id="calSub">' + esc(t("cal.sub")) + '</p>' +
       '</div>' +
+      '<div class="controls"><div class="control-group">' +
+        '<span>' + esc(t("cal.range")) + '</span><div class="seg">' +
+          CAL_RANGES.map(function (d) {
+            return '<button type="button" data-caldays="' + d + '" aria-pressed="' +
+              (view.calDays === d) + '">' + esc(t("cal.d" + d)) + '</button>';
+          }).join("") +
+        '</div></div></div>' +
       '<div id="calBody"></div></section>';
   }
 
@@ -3132,7 +3459,7 @@
     });
 
     var out = "";
-    for (var i = 0; i < CAL_DAYS; i++) {
+    for (var i = 0; i < view.calDays; i++) {
       var iso = shiftIso(i);
       var p = iso.split("-").map(Number);
       var dow = new Date(p[0], p[1] - 1, p[2]).getDay();
@@ -3151,6 +3478,7 @@
         items += '<div class="cal-item is-task p-' + c.pri + '" data-card="' + c.id + '" ' +
           'tabindex="0" role="button">' +
           '<span class="label">' + esc(c.title) + '</span>' +
+          (crossBoard() && c.__board ? '<span class="kind">' + esc(c.__board.title) + '</span>' : '') +
           '<span class="kind">' + esc(t("cal.task")) + '</span></div>';
       });
 
@@ -3178,7 +3506,65 @@
     host.innerHTML = foot + '<div class="rows">' + out + '</div>';
   }
 
+  /* Put a task's due date on the real calendar, so it can nag from a
+     phone instead of waiting for this page to be opened. */
+  function calPush(cardId) {
+    var card = B().cards[cardId];
+    if (!card) return;
+    if (!card.due) { toast(t("cal.pushNeedDue")); return; }
+    if (!mcpReady() || cal.off) { toast(t("cal.pushOff")); return; }
+
+    var btn = $("calPush");
+    if (btn) { btn.disabled = true; btn.textContent = t("cal.pushing"); }
+
+    var start = card.due + "T09:00:00";
+    var end = card.due + "T09:30:00";
+
+    window.claude.mcp.callTool(CAL, "create_event", {
+      summary: card.title,
+      startTime: start,
+      endTime: end,
+      description: card.note || "",
+      availability: "AVAILABILITY_FREE",
+      notificationLevel: "NONE"
+    }).then(function (res) {
+      var id = res && res.payload && res.payload.id;
+      card.calEventId = typeof id === "string" ? id : "yes";
+      save();
+      render();
+      if ($("calPush")) {
+        $("calPush").disabled = true;
+        $("calPush").textContent = t("cal.pushed");
+      }
+      cal.state = "idle";
+      toast(t("cal.pushedToast", { t: clip(card.title, 26) }));
+    }).catch(function (err) {
+      if (btn) { btn.disabled = false; btn.textContent = t("cal.push"); }
+      if (syncDead(err)) { cal.off = true; return; }
+      toast(syncErrText(err, true, CAL));
+    });
+  }
+
   /* ═══ Gmail (read-only) ═════════════════════════════════════ */
+  /* One entry per readable mail connector. Only sources whose request
+     and response shapes have actually been observed belong here. */
+  var MAIL_SOURCES = [{
+    server: GMAIL,
+    tool: "search_threads",
+    input: { query: "in:inbox newer_than:1d", pageSize: 10, view: "THREAD_VIEW_MINIMAL" },
+    parse: function (payload) {
+      return (payload.threads || []).map(function (th) {
+        var m = (th.messages || [])[0] || {};
+        return {
+          id: th.id, source: GMAIL,
+          from: m.sender || "", subject: m.subject || "",
+          at: Date.parse(m.date) || 0,
+          unread: (m.labelIds || []).indexOf("UNREAD") !== -1
+        };
+      });
+    }
+  }];
+
   function mailFetch(force) {
     if (!mcpReady() || mail.off) return;
     if (mail.state === "loading") return;
@@ -3188,29 +3574,32 @@
     mail.err = "";
     renderMailBody();
 
-    window.claude.mcp.callTool(GMAIL, "search_threads", {
-      query: "in:inbox newer_than:1d",
-      pageSize: 10,
-      view: "THREAD_VIEW_MINIMAL"
-    }, { cache: { staleTime: 60000 } }).then(function (res) {
-      var threads = (res && res.payload && res.payload.threads) || [];
-      mail.threads = threads.map(function (th) {
-        var m = (th.messages || [])[0] || {};
-        return {
-          id: th.id,
-          from: m.sender || "",
-          subject: m.subject || "",
-          at: Date.parse(m.date) || 0,
-          unread: (m.labelIds || []).indexOf("UNREAD") !== -1
-        };
-      }).sort(function (a, b) { return b.at - a.at; });
-      mail.state = "done";
-      renderMailBody();
-    }).catch(function (err) {
-      mail.state = "done";
-      if (syncDead(err) || err.code === "server_not_connected") mail.off = true;
-      else mail.err = syncErrText(err, false, GMAIL);
-      renderMailBody();
+    // each source is fetched independently so one failing never blanks the rest
+    var results = [];
+    var errs = [];
+    var left = MAIL_SOURCES.length;
+
+    MAIL_SOURCES.forEach(function (src) {
+      window.claude.mcp.callTool(src.server, src.tool, src.input, {
+        cache: { staleTime: 60000 }
+      }).then(function (res) {
+        try { results = results.concat(src.parse((res && res.payload) || {})); }
+        catch (e) { errs.push({ server: src.server, err: { code: "tool_error", message: String(e) } }); }
+      }).catch(function (err) {
+        errs.push({ server: src.server, err: err });
+      }).then(function () {
+        left--;
+        if (left) return;
+        mail.threads = results.sort(function (a, b) { return b.at - a.at; });
+        mail.state = "done";
+        // only give up on the panel when every source is unusable
+        var dead = errs.filter(function (e) {
+          return syncDead(e.err) || e.err.code === "server_not_connected";
+        });
+        if (dead.length === MAIL_SOURCES.length) mail.off = true;
+        else if (errs.length) mail.err = syncErrText(errs[0].err, false, errs[0].server);
+        renderMailBody();
+      });
     });
   }
 
@@ -3244,7 +3633,9 @@
           '</div>';
       }).join("") + '</div>' +
       '<p class="panel-foot"><a href="https://mail.google.com/" target="_blank" rel="noreferrer noopener">' +
-        esc(t("mail.open")) + ' →</a></p>';
+        esc(t("mail.open")) + ' →</a>' +
+        (MAIL_SOURCES.length === 1 ? '<br /><span style="color:var(--muted)">' +
+          esc(t("mail.onlyGmail")) + '</span>' : '') + '</p>';
     }
 
     return '<section class="panel" id="mailPanel">' +
@@ -3266,7 +3657,7 @@
 
   /* ═══ render: pulse strip ═══════════════════════════════════ */
   function renderPulse() {
-    var cards = openCards();
+    var cards = scopedOpenCards();
     var over = 0, today = 0, week = 0;
     cards.forEach(function (c) {
       var n = daysUntil(c.due);
@@ -3293,8 +3684,11 @@
 
     var doneToday = 0;
     var start = new Date(); start.setHours(0, 0, 0, 0);
-    Object.keys(state.cards).forEach(function (id) {
-      if (state.cards[id].doneAt >= start.getTime()) doneToday++;
+    var scan = crossBoard() ? state.boards : [B()];
+    scan.forEach(function (bd) {
+      Object.keys(bd.cards).forEach(function (id) {
+        if (bd.cards[id].doneAt >= start.getTime()) doneToday++;
+      });
     });
 
     var tail = doneToday ? t("note.tail", { n: doneToday }) : "";
@@ -3338,6 +3732,9 @@
       chips += '<span class="chip">' + esc(priLabel(card.pri)) + '</span>';
     }
     chips += logChip(card);
+    if (card.repeat) chips += '<span class="chip repeat">' + esc(t("repeat.chip", { t: t("repeat." + card.repeat) })) + '</span>';
+    var sd = staleDays(card);
+    if (sd >= STALE_DAYS) chips += '<span class="chip stale">' + esc(t("stale.chip", { n: sd })) + '</span>';
     card.tags.forEach(function (x) {
       chips += '<span class="chip tag">' + esc(x) + '</span>';
     });
@@ -3346,7 +3743,7 @@
     }
 
     var atFirst = ci === 0;
-    var atLast = ci === state.columns.length - 1;
+    var atLast = ci === B().columns.length - 1;
 
     return '<article class="card p-' + card.pri + (col.done ? " is-done" : "") +
       '" draggable="true" data-card="' + card.id + '" tabindex="0" ' +
@@ -3365,7 +3762,7 @@
   /* ═══ render: shared task row ═══════════════════════════════ */
   function rowHtml(card, opts) {
     opts = opts || {};
-    var col = colOf(card.id);
+    var col = homeColumn(card);
     var isDone = col && col.done;
 
     var meta = '<span class="pri-dot p-' + card.pri + '" title="' +
@@ -3373,6 +3770,12 @@
     if (opts.showColumn !== false && col) meta += '<span>' + esc(col.title) + '</span>';
     if (card.note) meta += '<span>· ' + esc(clip(card.note.split("\n")[0], 55)) + '</span>';
     meta += logChip(card);
+    if (crossBoard() && card.__board) {
+      meta += '<span class="chip from-board">' + esc(card.__board.title) + '</span>';
+    }
+    if (card.repeat) meta += '<span class="chip repeat">' + esc(t("repeat.chip", { t: t("repeat." + card.repeat) })) + '</span>';
+    var sdr = staleDays(card);
+    if (sdr >= STALE_DAYS) meta += '<span class="chip stale">' + esc(t("stale.chip", { n: sdr })) + '</span>';
     card.tags.forEach(function (x) { meta += '<span class="chip tag">' + esc(x) + '</span>'; });
 
     var when = "";
@@ -3414,7 +3817,27 @@
   /* ═══ selectors used by the summary pages ═══════════════════ */
   var PRI_ORDER = { high: 0, mid: 1, low: 2 };
 
-  function openMatching() { return openCards().filter(matches); }
+  /* Summary views can span every board — the point of the scope switch is
+     that a forgetful person shouldn't have to open each project to find
+     out what is due today. The board view itself is always single-board. */
+  function scopedOpenCards() {
+    if (view.scope === "all" && state.boards.length > 1) return everyBoardOpenCards();
+    return openCards();
+  }
+  function openMatching() { return scopedOpenCards().filter(matches); }
+
+  function crossBoard() { return view.scope === "all" && state.boards.length > 1; }
+
+  function scopeBarHtml() {
+    if (state.boards.length < 2) return "";
+    return '<div class="controls"><div class="control-group">' +
+      '<span>' + esc(t("scope.label")) + '</span><div class="seg">' +
+        '<button type="button" data-scope="all" aria-pressed="' + (view.scope === "all") + '">' +
+          esc(t("scope.all")) + '</button>' +
+        '<button type="button" data-scope="one" aria-pressed="' + (view.scope === "one") + '">' +
+          esc(t("scope.one")) + '</button>' +
+      '</div></div></div>';
+  }
 
   function byBucket(cards, test) {
     return cards.filter(function (c) { return test(daysUntil(c.due), c); });
@@ -3454,10 +3877,14 @@
     }), "pri");
 
     var start = new Date(); start.setHours(0, 0, 0, 0);
-    var closed = Object.keys(state.cards)
-      .map(function (id) { return state.cards[id]; })
-      .filter(function (c) { return c.doneAt >= start.getTime(); })
-      .sort(function (a, b) { return b.doneAt - a.doneAt; });
+    var closed = [];
+    (crossBoard() ? state.boards : [B()]).forEach(function (bd) {
+      Object.keys(bd.cards).forEach(function (id) {
+        var c = bd.cards[id];
+        if (c.doneAt >= start.getTime()) closed.push(tagBoard(c, bd));
+      });
+    });
+    closed.sort(function (a, b) { return b.doneAt - a.doneAt; });
 
     var html = "";
 
@@ -3489,6 +3916,15 @@
       });
     }
 
+    var stale = openMatching().filter(function (c) { return staleDays(c) >= STALE_DAYS; })
+      .sort(function (a, b) { return staleDays(b) - staleDays(a); });
+    if (stale.length) {
+      html += panelHtml({
+        title: t("stale.title"), sub: t("stale.sub", { n: STALE_DAYS }),
+        cards: stale, rowOpts: { showExact: false }
+      });
+    }
+
     if (mcpReady() && !mail.off) html += mailPanelHtml();
 
     html += panelHtml({
@@ -3505,11 +3941,15 @@
 
     var groups = [];
     if (view.groupBy === "col") {
-      state.columns.forEach(function (col) {
-        if (col.done) return;
-        var inCol = cards.filter(function (c) { return colOf(c.id) === col; });
-        if (inCol.length) groups.push({ label: col.title, cards: inCol });
+      var order = [];
+      var byCol = {};
+      cards.forEach(function (c) {
+        var col = homeColumn(c);
+        var key = col ? col.title : t("col.empty");
+        if (!byCol[key]) { byCol[key] = []; order.push(key); }
+        byCol[key].push(c);
       });
+      order.forEach(function (key) { groups.push({ label: key, cards: byCol[key] }); });
     } else if (view.groupBy === "pri") {
       ["high", "mid", "low"].forEach(function (p) {
         var inPri = cards.filter(function (c) { return c.pri === p; });
@@ -3684,8 +4124,89 @@
 
   var PAGES = ["board", "today", "remain", "cal", "due"];
 
+  function renderBoards() {
+    var host = $("boards");
+    if (!host) return;
+    host.innerHTML = state.boards.map(function (bd) {
+      var on = bd.id === state.activeBoard;
+      var open = 0;
+      bd.columns.forEach(function (col) { if (!col.done) open += col.cards.length; });
+      return '<button class="board-tab" type="button" data-board="' + bd.id + '"' +
+        (on ? ' aria-current="true"' : '') + '>' + esc(bd.title) +
+        '<span class="n">' + open + '</span></button>';
+    }).join("") +
+      '<button class="board-add" type="button" id="boardAdd" ' +
+        'aria-label="' + esc(t("board.add")) + '">+</button>' +
+      '<div class="board-menu-wrap">' +
+        '<button class="icon-btn" type="button" id="boardMenu" ' +
+          'aria-label="' + esc(t("board.menu")) + '">⋯</button>' +
+        (view.boardMenu ? boardMenuHtml() : '') +
+      '</div>';
+  }
+
+  function boardMenuHtml() {
+    return '<div class="menu" data-menu-panel="1">' +
+      '<button type="button" data-bact="rename">' + esc(t("board.rename")) + '</button>' +
+      '<button type="button" data-bact="dup">' + esc(t("board.dup")) + '</button>' +
+      '<hr />' +
+      '<button type="button" class="danger" data-bact="del">' + esc(t("board.del")) + '</button>' +
+      '</div>';
+  }
+
+  function runBoardAction(act) {
+    view.boardMenu = false;
+    var bd = B();
+    render();
+
+    if (act === "rename") {
+      askText({
+        title: t("board.rename"), label: t("board.name"), value: bd.title,
+        ok: t("common.save"),
+        onOk: function (name) { bd.title = name; commit(); }
+      });
+    } else if (act === "dup") {
+      var copy = JSON.parse(JSON.stringify(bd));
+      copy.id = uid("b");
+      copy.title = bd.title + " " + t("board.copySuffix");
+      copy.created = Date.now();
+      // fresh ids so the two boards never share a card
+      var map = {};
+      var cards = {};
+      Object.keys(copy.cards).forEach(function (old) {
+        var nid = uid("k");
+        map[old] = nid;
+        copy.cards[old].id = nid;
+        cards[nid] = copy.cards[old];
+      });
+      copy.cards = cards;
+      copy.columns.forEach(function (col) {
+        col.id = uid("c");
+        col.cards = col.cards.map(function (x) { return map[x]; }).filter(Boolean);
+      });
+      state.boards.push(copy);
+      state.activeBoard = copy.id;
+      commit();
+      toast(t("board.created", { t: copy.title }));
+    } else if (act === "del") {
+      if (state.boards.length === 1) { toast(t("board.needOne")); return; }
+      var n = Object.keys(bd.cards).length;
+      askConfirm({
+        title: t("board.delTitle", { t: bd.title }),
+        body: n ? t("board.delBody", { n: n }) : t("board.delBodyEmpty"),
+        ok: t("board.del"), danger: true,
+        onOk: function () {
+          var i = boardIndex(bd.id);
+          if (i === -1) return;
+          state.boards.splice(i, 1);
+          state.activeBoard = state.boards[Math.max(0, i - 1)].id;
+          commit();
+        }
+      });
+    }
+  }
+
   function renderNav() {
-    var overdue = openCards().filter(function (c) {
+    var overdue = scopedOpenCards().filter(function (c) {
       var n = daysUntil(c.due);
       return n !== null && n < 0;
     }).length;
@@ -3706,8 +4227,6 @@
     document.documentElement.dataset.bg = view.bg;
     document.documentElement.style.setProperty("--bg-h", String(view.hue));
 
-    $("mastTitle").textContent = t("mast.title");
-    $("mastSub").textContent = t("mast.sub");
     $("btnSettings").textContent = t("btn.settings");
     $("btnExport").textContent = t("btn.export");
     $("btnImport").textContent = t("btn.import");
@@ -3729,6 +4248,7 @@
 
   function render() {
     renderPulse();
+    renderBoards();
     renderNav();
 
     var onBoard = view.page === "board";
@@ -3736,10 +4256,10 @@
     $("page").hidden = onBoard;
 
     if (!onBoard) {
-      $("page").innerHTML =
+      $("page").innerHTML = scopeBarWrap(
         view.page === "today" ? renderToday() :
         view.page === "remain" ? renderRemain() :
-        view.page === "cal" ? renderCal() : renderDue();
+        view.page === "cal" ? renderCal() : renderDue());
       if (view.page === "cal") { renderCalBody(); calFetch(); }
       if (view.page === "today") mailFetch();
       $("blankSlot").innerHTML = "";
@@ -3750,9 +4270,9 @@
     var filtering = view.filter !== "all" || view.query.trim() !== "";
     var html = "";
 
-    state.columns.forEach(function (col, ci) {
+    B().columns.forEach(function (col, ci) {
       var visible = col.cards
-        .map(function (id) { return state.cards[id]; })
+        .map(function (id) { return B().cards[id]; })
         .filter(function (c) { return c && matches(c); });
 
       html += '<section class="col' + (col.done ? " is-done" : "") + '" data-col="' + col.id + '">' +
@@ -3798,7 +4318,7 @@
       esc(t("board.addCol")) + '</button>';
     $("board").innerHTML = html;
 
-    var total = Object.keys(state.cards).length;
+    var total = Object.keys(B().cards).length;
     $("blankSlot").innerHTML = total === 0
       ? '<div class="blank"><h3>' + esc(t("blank.title")) + '</h3>' +
         '<p>' + esc(t("blank.body")) + '</p></div>'
@@ -3812,6 +4332,13 @@
     }
 
     sizeBoard();
+  }
+
+  /* The scope switch rides above whichever summary page is showing. */
+  function scopeBarWrap(html) {
+    var bar = scopeBarHtml();
+    if (!bar) return html;
+    return '<section class="panel scope-panel">' + bar + '</section>' + html;
   }
 
   function renderFilterPill() {
@@ -3954,13 +4481,27 @@
     $("setClose").onclick = closeSheet;
   }
 
+  /* In cross-board scope a row can belong to another board; switch to it
+     so the editor's column list and Save target the right one. */
+  function focusCard(cardId) {
+    if (B().cards[cardId]) { openEditor(cardId); return; }
+    for (var i = 0; i < state.boards.length; i++) {
+      if (state.boards[i].cards[cardId]) {
+        state.activeBoard = state.boards[i].id;
+        saveUi(); save(); render();
+        openEditor(cardId);
+        return;
+      }
+    }
+  }
+
   function openEditor(cardId) {
-    var card = state.cards[cardId];
+    var card = B().cards[cardId];
     if (!card) return;
     editing = { id: cardId, pri: card.pri };
     var here = colOf(cardId);
 
-    var opts = state.columns.map(function (c) {
+    var opts = B().columns.map(function (c) {
       return '<option value="' + c.id + '"' + (c.id === here.id ? " selected" : "") + '>' +
         esc(c.title) + '</option>';
     }).join("");
@@ -4001,6 +4542,19 @@
         '<div class="field"><label for="fCol">' + esc(t("ed.fCol")) + '</label>' +
           '<select id="fCol">' + opts + '</select></div>' +
       '</div>' +
+      '<div class="row-2">' +
+        '<div class="field"><label for="fRepeat">' + esc(t("repeat.label")) + '</label>' +
+          '<select id="fRepeat">' +
+            REPEATS.map(function (r) {
+              return '<option value="' + r + '"' + (card.repeat === r ? " selected" : "") + '>' +
+                esc(t("repeat." + r)) + '</option>';
+            }).join("") +
+          '</select><span class="help">' + esc(t("repeat.help")) + '</span></div>' +
+        '<div class="field"><label>' + esc(t("cal.push")) + '</label>' +
+          '<button class="btn" type="button" id="calPush"' +
+            (card.calEventId ? " disabled" : "") + '>' +
+            esc(card.calEventId ? t("cal.pushed") : t("cal.push")) + '</button></div>' +
+      '</div>' +
       '<div class="log" id="logSection">' + logSectionHtml(card) + '</div>' +
       '<div class="sheet-foot">' +
         '<button class="btn btn-danger" type="button" id="fDelete">' + esc(t("ed.delete")) + '</button>' +
@@ -4019,7 +4573,7 @@
 
   function saveEditor() {
     if (!editing) return;
-    var card = state.cards[editing.id];
+    var card = B().cards[editing.id];
     if (!card) { closeEditor(); return; }
     var title = $("fTitle").value.trim();
     if (!title) { $("fTitle").focus(); return; }
@@ -4027,6 +4581,8 @@
     card.note = $("fNote").value.trim();
     card.due = $("fDue").value || "";
     card.pri = editing.pri;
+    var rep = $("fRepeat");
+    if (rep) card.repeat = REPEATS.indexOf(rep.value) > 0 ? rep.value : "";
     card.tags = $("fTags").value.split(",")
       .map(function (x) { return x.trim(); })
       .filter(function (x) { return x; })
@@ -4042,7 +4598,7 @@
     var here = colOf(card.id);
     closeEditor();
     if (target !== here.id) {
-      moveCard(card.id, target, state.columns[colIndex(target)].cards.length);
+      moveCard(card.id, target, B().columns[colIndex(target)].cards.length);
     } else {
       commit();
     }
@@ -4163,8 +4719,61 @@
 
     // calendar task chip → the same editor
     hit = target.closest(".cal-item.is-task");
-    if (hit) { openEditor(hit.dataset.card); return; }
+    if (hit) { focusCard(hit.dataset.card); return; }
     if (target.closest("#setClose")) { closeSheet(); return; }
+
+    // board tabs
+    hit = target.closest("[data-board]");
+    if (hit) {
+      state.activeBoard = hit.dataset.board;
+      view.boardMenu = false;
+      view.menuFor = null;
+      view.composing = null;
+      cal.state = "idle";
+      save(); render();
+      return;
+    }
+    if (target.closest("#boardAdd")) {
+      askText({
+        title: t("board.addTitle"), label: t("board.name"),
+        placeholder: t("board.namePh"), ok: t("board.add"),
+        onOk: function (name) {
+          var fresh = seed();
+          fresh.title = name;
+          // a brand new board starts empty rather than with sample cards
+          fresh.cards = {};
+          fresh.columns.forEach(function (col) { col.cards = []; });
+          state.boards.push(fresh);
+          state.activeBoard = fresh.id;
+          commit();
+          toast(t("board.created", { t: name }));
+        }
+      });
+      return;
+    }
+    if (target.closest("#boardMenu")) {
+      view.boardMenu = !view.boardMenu;
+      render();
+      return;
+    }
+    hit = target.closest("[data-bact]");
+    if (hit) { runBoardAction(hit.dataset.bact); return; }
+    if (view.boardMenu && !target.closest("[data-menu-panel]")) { view.boardMenu = false; render(); }
+
+    // scope + calendar range
+    hit = target.closest("[data-scope]");
+    if (hit) { view.scope = hit.dataset.scope; saveUi(); render(); return; }
+    hit = target.closest("[data-caldays]");
+    if (hit) {
+      view.calDays = Number(hit.dataset.caldays);
+      cal.state = "idle";
+      saveUi(); render();
+      return;
+    }
+    if (target.closest("#calPush")) {
+      if (editing) calPush(editing.id);
+      return;
+    }
 
     // view tabs
     hit = target.closest("[data-page]");
@@ -4195,7 +4804,7 @@
 
     // summary row → open the same editor the board uses
     hit = target.closest(".row[data-card]");
-    if (hit) { openEditor(hit.dataset.card); return; }
+    if (hit) { focusCard(hit.dataset.card); return; }
 
     // pulse filters
     hit = target.closest("[data-filter]");
@@ -4241,7 +4850,7 @@
         placeholder: t("addCol.ph"),
         ok: t("addCol.title"),
         onOk: function (name) {
-          state.columns.push({ id: uid("c"), title: name, done: false, cards: [] });
+          B().columns.push({ id: uid("c"), title: name, done: false, cards: [] });
           commit();
         }
       });
@@ -4296,7 +4905,7 @@
         ok: t("reset.ok"),
         danger: true,
         onOk: function () {
-          state = seed();
+          state = seedState();
           view.filter = "all";
           commit();
           toast(t("toast.reset"));
@@ -4310,7 +4919,7 @@
 
   function runColAction(act, colId) {
     var i = colIndex(colId);
-    var col = state.columns[i];
+    var col = B().columns[i];
     if (!col) return;
     view.menuFor = null;
     render();
@@ -4325,7 +4934,7 @@
       });
     } else if (act === "sort") {
       col.cards.sort(function (a, b) {
-        var da = state.cards[a].due, db = state.cards[b].due;
+        var da = B().cards[a].due, db = B().cards[b].due;
         if (!da && !db) return 0;
         if (!da) return 1;
         if (!db) return -1;
@@ -4336,7 +4945,7 @@
     } else if (act === "toggle-done") {
       col.done = !col.done;
       col.cards.forEach(function (id) {
-        state.cards[id].doneAt = col.done ? (state.cards[id].doneAt || Date.now()) : 0;
+        B().cards[id].doneAt = col.done ? (B().cards[id].doneAt || Date.now()) : 0;
       });
       commit();
     } else if (act === "clear") {
@@ -4347,14 +4956,14 @@
         ok: t("clearCol.ok", { n: col.cards.length }),
         danger: true,
         onOk: function () {
-          col.cards.forEach(function (id) { delete state.cards[id]; });
+          col.cards.forEach(function (id) { delete B().cards[id]; });
           col.cards = [];
           commit();
         }
       });
     } else if (act === "del-col") {
-      if (state.columns.length === 1) { toast(t("toast.needOneCol")); return; }
-      var dest = state.columns[i === 0 ? 1 : 0];
+      if (B().columns.length === 1) { toast(t("toast.needOneCol")); return; }
+      var dest = B().columns[i === 0 ? 1 : 0];
       askConfirm({
         title: t("delCol.title", { t: col.title }),
         body: col.cards.length
@@ -4366,8 +4975,8 @@
           var at = colIndex(col.id);
           if (at === -1) return;
           dest.cards = dest.cards.concat(col.cards);
-          if (!dest.done) col.cards.forEach(function (id) { state.cards[id].doneAt = 0; });
-          state.columns.splice(at, 1);
+          if (!dest.done) col.cards.forEach(function (id) { B().cards[id].doneAt = 0; });
+          B().columns.splice(at, 1);
           commit();
         }
       });
@@ -4380,6 +4989,7 @@
       if (!$("backdrop").hidden) { closeSheet(); return; }
       if (view.composing) { view.composing = null; render(); return; }
       if (view.menuFor) { view.menuFor = null; render(); return; }
+      if (view.boardMenu) { view.boardMenu = false; render(); return; }
     }
 
     if (e.target.id === "composerInput" && e.key === "Enter" && !e.shiftKey) {
@@ -4525,7 +5135,9 @@
       try { incoming = sanitize(JSON.parse(String(reader.result))); }
       catch (err) { incoming = null; }
       if (!incoming) { toast(t("toast.importBad")); return; }
-      var n = Object.keys(incoming.cards).length;
+      var n = incoming.boards.reduce(function (a, bd) {
+        return a + Object.keys(bd.cards).length;
+      }, 0);
       askConfirm({
         title: t("import.title"),
         body: t("import.body", { n: n }),
