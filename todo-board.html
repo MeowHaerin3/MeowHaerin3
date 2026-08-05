@@ -2091,6 +2091,13 @@
       "file.off": "ต่อ Google Drive ก่อนถึงจะแนบไฟล์ได้",
       "file.uploaded": "แนบ “{t}” แล้ว",
       "file.removed": "เอาไฟล์ออกแล้ว (ไฟล์ยังอยู่ใน Drive)",
+      "mail.remind": "แจ้งเตือนทางเมล",
+      "mail.remind.off": "ไม่ส่ง",
+      "mail.remind.same": "เช้าวันครบกำหนด",
+      "mail.remind.day": "ล่วงหน้า 1 วัน",
+      "mail.remind.two": "ล่วงหน้า 2 วัน",
+      "mail.remind.hint": "Google เป็นคนส่งเมลให้ ไม่ใช่หน้านี้ — ผูกกับนัดที่ดันขึ้นปฏิทิน ต้องเปิดสองอย่างคู่กัน",
+      "mail.remind.need": "ต้องเปิด “ดันกำหนดส่งขึ้นปฏิทินอัตโนมัติ” ก่อน เมลถึงจะมี",
       "autocal.label": "ดันกำหนดส่งขึ้นปฏิทินอัตโนมัติ",
       "autocal.on": "เปิด",
       "autocal.off": "ปิด",
@@ -2440,6 +2447,13 @@
       "file.off": "Connect Google Drive first to attach files",
       "file.uploaded": "Attached “{t}”",
       "file.removed": "Removed from the card (the file stays in Drive)",
+      "mail.remind": "Email reminder",
+      "mail.remind.off": "Don't send",
+      "mail.remind.same": "Morning it's due",
+      "mail.remind.day": "1 day ahead",
+      "mail.remind.two": "2 days ahead",
+      "mail.remind.hint": "Google sends the email, not this page — it rides on the calendar entries, so both switches have to be on",
+      "mail.remind.need": "Turn on “Put due dates on the calendar automatically” first, or no email is sent",
       "autocal.label": "Put due dates on the calendar automatically",
       "autocal.on": "On",
       "autocal.off": "Off",
@@ -2561,6 +2575,8 @@
   var BGS = ["default", "solid", "linear", "radial", "mesh"];
   var REPEATS = ["", "daily", "weekly", "biweekly", "monthly", "quarterly", "yearly"];
   var CAL_RANGES = [7, 14, 30];
+  // lead time in minutes before the 09:00 event; "off" means no reminder
+  var MAIL_LEADS = { off: -1, same: 0, day: 1440, two: 2880 };
   var STALE_DAYS = 21;
 
   function t(key, vars) {
@@ -2876,7 +2892,7 @@
   var view = {
     lang: "th", font: "sans", bg: "default", hue: 168,
     scope: "all", calDays: 14, boardMenu: false,
-    autoCal: false, autoSync: false,
+    autoCal: false, autoSync: false, mailRemind: "off",
     page: "board", filter: "all", query: "",
     composing: null, menuFor: null, groupBy: "col", sortBy: "due"
   };
@@ -2898,6 +2914,7 @@
         if (CAL_RANGES.indexOf(savedUi.calDays) !== -1) view.calDays = savedUi.calDays;
         view.autoCal = !!savedUi.autoCal;
         view.autoSync = !!savedUi.autoSync;
+        if (MAIL_LEADS[savedUi.mailRemind] !== undefined) view.mailRemind = savedUi.mailRemind;
       } else if (/^en\b/i.test(navigator.language || "")) {
         view.lang = "en";
       }
@@ -2911,7 +2928,7 @@
         lang: view.lang, font: view.font, bg: view.bg, hue: view.hue,
         page: view.page, groupBy: view.groupBy, sortBy: view.sortBy,
         scope: view.scope, calDays: view.calDays,
-        autoCal: view.autoCal, autoSync: view.autoSync
+        autoCal: view.autoCal, autoSync: view.autoSync, mailRemind: view.mailRemind
       }));
     } catch (e) { /* not worth warning about */ }
   }
@@ -3959,14 +3976,18 @@
     var start = card.due + "T09:00:00";
     var end = card.due + "T09:30:00";
 
-    window.claude.mcp.callTool(CAL, "create_event", {
+    var manual = {
       summary: card.title,
       startTime: start,
       endTime: end,
       description: card.note || "",
       availability: "AVAILABILITY_FREE",
       notificationLevel: "NONE"
-    }).then(function (res) {
+    };
+    var manualLead = MAIL_LEADS[view.mailRemind];
+    if (manualLead >= 0) manual.overrideReminders = [{ method: "email", minutes: manualLead }];
+
+    window.claude.mcp.callTool(CAL, "create_event", manual).then(function (res) {
       var id = res && res.payload && res.payload.id;
       card.calEventId = typeof id === "string" ? id : "yes";
       save();
@@ -4048,6 +4069,9 @@
       endTime: card.due + "T09:30:00",
       notificationLevel: "NONE"
     };
+    var lead = MAIL_LEADS[view.mailRemind];
+    // Google delivers this mail on its own schedule; the page only asks for it
+    if (lead >= 0) input.overrideReminders = [{ method: "email", minutes: lead }];
     if (job.op === "add") {
       input.description = card.note || "";
       input.availability = "AVAILABILITY_FREE";
@@ -5009,6 +5033,15 @@
           '<button type="button" data-autocal="0" aria-pressed="' + (view.autoCal === false) + '">' +
             esc(t("autocal.off")) + '</button>' +
         '</div><span class="help">' + esc(t("autocal.hint")) + '</span></div>' +
+      '<div class="field"><label>' + esc(t("mail.remind")) + '</label>' +
+        '<div class="segmented" id="mailRemindPick">' +
+          ["off", "same", "day", "two"].map(function (k) {
+            return '<button type="button" data-mailremind="' + k + '" aria-pressed="' +
+              (view.mailRemind === k) + '">' + esc(t("mail.remind." + k)) + '</button>';
+          }).join("") +
+        '</div><span class="help">' + esc(t("mail.remind.hint")) +
+        (view.mailRemind !== "off" && !view.autoCal
+          ? ' — ' + esc(t("mail.remind.need")) : '') + '</span></div>' +
       '<div class="field"><label>' + esc(t("sync.title")) + '</label>' +
         '<div class="segmented" id="autoSyncPick">' +
           '<button type="button" data-autosync="1" aria-pressed="' + (view.autoSync === true) + '">' +
@@ -5255,6 +5288,20 @@
       view.autoCal = hit.dataset.autocal === "1";
       saveUi();
       if (view.autoCal) calSyncAll();
+      openSettings();
+      return;
+    }
+    hit = target.closest("[data-mailremind]");
+    if (hit) {
+      view.mailRemind = hit.dataset.mailremind;
+      saveUi();
+      // existing entries need rewriting to carry (or drop) the reminder
+      if (view.autoCal) {
+        state.boards.forEach(function (bd) {
+          Object.keys(bd.cards).forEach(function (id) { bd.cards[id].calDue = ""; });
+        });
+        calSyncAll();
+      }
       openSettings();
       return;
     }

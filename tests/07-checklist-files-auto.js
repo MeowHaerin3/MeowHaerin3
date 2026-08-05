@@ -199,6 +199,37 @@ window.claude = { mcp: {
       .filter(c => c.doneAt && c.calEventId).length === 0, KEY));
   await p3.close();
 
+  console.log('— email reminder rides on the calendar entry —');
+  const p3b = await open(fresh + '\n' + stub);
+  await p3b.click('#btnSettings'); await p3b.waitForTimeout(300);
+  await p3b.click('[data-autocal="1"]'); await p3b.waitForTimeout(1200);
+  await check('no reminder while set to off', async () => await p3b.evaluate(() =>
+    window.__mcp.calls.filter(x => x.tool === 'create_event')
+      .every(x => !x.input.overrideReminders)));
+  await p3b.click('[data-mailremind="day"]'); await p3b.waitForTimeout(1500);
+  await check('reminder attached after switching on', async () => await p3b.evaluate(() => {
+    const c = window.__mcp.calls.filter(x => x.tool === 'update_event' || x.tool === 'create_event')
+      .filter(x => x.input.overrideReminders).pop();
+    return c ? c.input.overrideReminders[0].method + ' @ ' + c.input.overrideReminders[0].minutes + 'min' : false;
+  }));
+  await check('existing entries were rewritten, not duplicated', async () => await p3b.evaluate(() =>
+    window.__mcp.calls.filter(x => x.tool === 'update_event' && x.input.overrideReminders).length > 0));
+  await p3b.click('[data-mailremind="same"]'); await p3b.waitForTimeout(1500);
+  await check('lead time follows the choice', async () => await p3b.evaluate(() => {
+    const c = window.__mcp.calls.filter(x => x.input && x.input.overrideReminders).pop();
+    return c.input.overrideReminders[0].minutes === 0 ? '0min' : false;
+  }));
+  await p3b.click('[data-mailremind="off"]'); await p3b.waitForTimeout(1500);
+  await check('switching off drops the reminder', async () => await p3b.evaluate(() => {
+    const c = window.__mcp.calls.filter(x => x.tool === 'update_event').pop();
+    return !c.input.overrideReminders;
+  }));
+  await check('setting persists', async () => {
+    await p3b.reload(); await p3b.waitForTimeout(700);
+    return await p3b.evaluate(k => JSON.parse(localStorage.getItem(k + '.ui')).mailRemind, KEY);
+  });
+  await p3b.close();
+
   console.log('— auto sync: debounce and page-hide push —');
   const p4 = await open(fresh + '\n' + stub);
   await p4.click('#btnSettings'); await p4.waitForTimeout(300);

@@ -212,9 +212,12 @@ window.claude = { mcp: {
   }, KEY);
   await p4.reload(); await p4.waitForTimeout(450);
   await check('stale chip on the board', async () => (await p4.$$('.card .chip.stale')).length);
-  await p4.click('[data-page="today"]'); await p4.waitForTimeout(400);
-  await check('stale panel on Today', async () => await p4.evaluate(() =>
-    [...document.querySelectorAll('.panel-head h2')].some(h => /ค้างนิ่ง|untouched/i.test(h.textContent))));
+  await p4.click('[data-page="today"]');
+  // wait for the panel rather than guessing a delay
+  const stalePanel = async () => await p4.evaluate(() =>
+    [...document.querySelectorAll('.panel-head h2')].some(h => /ค้างนิ่ง|untouched/i.test(h.textContent)));
+  for (let i = 0; i < 40 && !(await stalePanel()); i++) await p4.waitForTimeout(50);
+  await check('stale panel on Today', stalePanel);
   await p4.close();
 
   console.log('— calendar range + push to Google Calendar —');
