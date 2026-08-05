@@ -124,12 +124,21 @@ const fresh = `try{if(!sessionStorage.getItem('__c')){localStorage.clear();sessi
     (await p.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--bg-h').trim())));
 
   console.log('— background follows dark theme —');
+  // poll for the repaint rather than guessing a delay — a fixed sleep here is flaky
+  const bgNow = () => p.evaluate(() => getComputedStyle(document.body).backgroundImage);
+  const settled = async (before) => {
+    for (let i = 0; i < 40; i++) {
+      const now = await bgNow();
+      if (now !== before) return now;
+      await p.waitForTimeout(50);
+    }
+    return await bgNow();
+  };
+  const startBg = await bgNow();
   await p.emulateMedia({ colorScheme: 'dark' });
-  await p.waitForTimeout(250);
-  const darkBg = await p.evaluate(() => getComputedStyle(document.body).backgroundImage);
+  const darkBg = await settled(startBg);
   await p.emulateMedia({ colorScheme: 'light' });
-  await p.waitForTimeout(250);
-  const lightBg = await p.evaluate(() => getComputedStyle(document.body).backgroundImage);
+  const lightBg = await settled(darkBg);
   await check('dark and light differ', async () => darkBg !== lightBg);
   await p.screenshot({ path: OUT + '/x-bg-mesh.png' });
   await p.close();

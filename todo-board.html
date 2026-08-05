@@ -1400,6 +1400,75 @@
     color: var(--muted);
   }
 
+  /* ─── checklist ──────────────────────────────────────────── */
+  .check-bar {
+    height: 3px;
+    border-radius: 2px;
+    background: var(--surface-3);
+    overflow: hidden;
+    margin: 2px 0 10px;
+  }
+  .check-bar span { display: block; height: 100%; background: var(--ok); border-radius: 2px; }
+
+  .check-list { display: flex; flex-direction: column; margin-bottom: 11px; }
+  .check-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    padding: 5px 0;
+  }
+  .check-row .tick { margin-top: 1px; }
+  .check-row[class*="is-done"] .check-text {
+    color: var(--muted);
+    text-decoration: line-through;
+    text-decoration-thickness: 1px;
+  }
+  .check-row.is-done .tick { border-color: var(--ok); background: var(--ok); color: var(--surface); }
+  .check-text { flex: 1; min-width: 0; font-size: 13.5px; line-height: 1.5; word-break: break-word; }
+  .check-del { flex: none; opacity: 0; transition: opacity .12s; }
+  .check-row:hover .check-del, .check-row:focus-within .check-del { opacity: 1; }
+  @media (hover: none) { .check-del { opacity: 1; } }
+
+  .log-add input[type="text"] {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--r-md);
+    background: var(--surface-2);
+    font-size: 13.5px;
+  }
+
+  /* ─── attachments ────────────────────────────────────────── */
+  .file-list { display: flex; flex-direction: column; margin-bottom: 11px; }
+  .file-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 6px 0;
+    border-top: 1px solid var(--line);
+  }
+  .file-list > .file-row:first-child { border-top: 0; }
+  .file-name {
+    flex: 1;
+    min-width: 0;
+    font-size: 13.5px;
+    color: var(--accent);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .file-size {
+    flex: none;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+  }
+
+  .chip.checks { background: transparent; border: 1px solid var(--line); color: var(--muted); }
+  .chip.checks.all-done { border-color: var(--ok); color: var(--ok); }
+  .chip.files { background: transparent; border: 1px solid var(--line); color: var(--muted); }
+
   /* comment count marker on cards and summary rows */
   .chip.log-count { background: transparent; border: 1px solid var(--line); color: var(--muted); }
   .chip.log-count.hot { border-color: var(--accent); color: var(--accent-ink); }
@@ -2006,6 +2075,31 @@
 
       "warn.noStore": "เบราว์เซอร์นี้ไม่ให้เก็บข้อมูลลงเครื่อง — งานที่เพิ่มจะหายเมื่อปิดหน้า กด “บันทึกไฟล์สำรอง” ไว้ก่อน",
       "warn.full": "บันทึกลงเครื่องไม่สำเร็จ (พื้นที่เก็บข้อมูลเต็ม) — กด “บันทึกไฟล์สำรอง” ไว้ก่อนปิดหน้านี้",
+      "check.label": "เช็กลิสต์",
+      "check.add": "เพิ่มข้อ",
+      "check.ph": "เพิ่มข้อย่อย แล้วกด Enter",
+      "check.done": "{a}/{b} เสร็จแล้ว",
+      "check.del": "ลบข้อนี้",
+      "check.empty": "ยังไม่มีข้อย่อย",
+      "file.label": "ไฟล์แนบ",
+      "file.add": "แนบไฟล์",
+      "file.adding": "กำลังอัปโหลด…",
+      "file.del": "เอาไฟล์ออก",
+      "file.empty": "ยังไม่มีไฟล์แนบ",
+      "file.hint": "อัปขึ้น Google Drive ของคุณ แล้วเก็บลิงก์ไว้ในการ์ด",
+      "file.tooBig": "ไฟล์ใหญ่เกิน {n} MB",
+      "file.off": "ต่อ Google Drive ก่อนถึงจะแนบไฟล์ได้",
+      "file.uploaded": "แนบ “{t}” แล้ว",
+      "file.removed": "เอาไฟล์ออกแล้ว (ไฟล์ยังอยู่ใน Drive)",
+      "autocal.label": "ดันกำหนดส่งขึ้นปฏิทินอัตโนมัติ",
+      "autocal.on": "เปิด",
+      "autocal.off": "ปิด",
+      "autocal.hint": "งานที่มีกำหนดส่งจะกลายเป็นนัด 09:00 ในปฏิทินเอง เลื่อนวันก็เลื่อนตาม ปิดงานหรือลบงานก็เอานัดออกให้",
+      "autocal.synced": "ซิงก์ปฏิทินแล้ว {n} รายการ",
+      "autosync.label": "ซิงก์ Drive อัตโนมัติ",
+      "autosync.hint": "ส่งขึ้น Drive ให้เองหลังหยุดแก้ประมาณ 2 นาที และตอนปิดหน้า ถ้ามีของใหม่กว่าใน Drive จะรวมเข้าด้วยกันทีละงาน ไม่ทับกันทั้งก้อน",
+      "sync.merged": "รวมข้อมูลกับ Drive แล้ว — {n} งาน",
+      "sync.auto": "ซิงก์อัตโนมัติ",
       "board.untitled": "บอร์ดใหม่",
       "board.first": "งานของฉัน",
       "board.add": "เพิ่มบอร์ด",
@@ -2330,6 +2424,31 @@
 
       "warn.noStore": "This browser won't let the board store data — anything you add is lost when the page closes. Press “Save backup” first.",
       "warn.full": "Couldn't save to this device (storage is full) — press “Save backup” before closing the page",
+      "check.label": "Checklist",
+      "check.add": "Add item",
+      "check.ph": "Add a sub-task, then press Enter",
+      "check.done": "{a}/{b} done",
+      "check.del": "Delete this item",
+      "check.empty": "No sub-tasks yet",
+      "file.label": "Attachments",
+      "file.add": "Attach a file",
+      "file.adding": "Uploading…",
+      "file.del": "Remove file",
+      "file.empty": "Nothing attached yet",
+      "file.hint": "Uploaded to your Google Drive; the card keeps the link",
+      "file.tooBig": "That file is bigger than {n} MB",
+      "file.off": "Connect Google Drive first to attach files",
+      "file.uploaded": "Attached “{t}”",
+      "file.removed": "Removed from the card (the file stays in Drive)",
+      "autocal.label": "Put due dates on the calendar automatically",
+      "autocal.on": "On",
+      "autocal.off": "Off",
+      "autocal.hint": "Any task with a due date becomes a 09:00 event. Moving the date moves the event; closing or deleting the task removes it.",
+      "autocal.synced": "Synced {n} calendar entries",
+      "autosync.label": "Sync to Drive automatically",
+      "autosync.hint": "Pushes about two minutes after you stop editing, and when the page closes. Anything newer in Drive is merged task by task rather than overwriting the whole board.",
+      "sync.merged": "Merged with Drive — {n} tasks",
+      "sync.auto": "Automatic",
       "board.untitled": "New board",
       "board.first": "My work",
       "board.add": "Add board",
@@ -2567,8 +2686,9 @@
       var c = {
         id: uid("k"), title: spec[0], note: spec[1] || "",
         due: spec[2] === null ? "" : shiftIso(spec[2]),
-        pri: spec[3], tags: spec[4] || [], log: [], repeat: spec[5] || "", calEventId: "",
-        created: Date.now(), movedAt: Date.now(), doneAt: 0
+        pri: spec[3], tags: spec[4] || [], log: [], repeat: spec[5] || "",
+        calEventId: "", calDue: "", checks: [], files: [],
+        created: Date.now(), movedAt: Date.now(), editedAt: Date.now(), doneAt: 0
       };
       cards[c.id] = c;
       return c.id;
@@ -2595,7 +2715,7 @@
     var first = seed();
     return {
       v: 3, boards: [first], activeBoard: first.id,
-      syncedAt: 0, touchedAt: 0, seenDriveAt: 0
+      syncedAt: 0, touchedAt: 0, seenDriveAt: 0, deleted: {}
     };
   }
 
@@ -2665,6 +2785,24 @@
         }) : [],
         repeat: REPEATS.indexOf(c.repeat) > 0 ? c.repeat : "",
         calEventId: typeof c.calEventId === "string" ? c.calEventId : "",
+        calDue: typeof c.calDue === "string" ? c.calDue : "",
+        checks: Array.isArray(c.checks) ? c.checks.filter(function (k) {
+          return k && typeof k.text === "string";
+        }).map(function (k) {
+          return { id: typeof k.id === "string" ? k.id : uid("x"), text: k.text, done: !!k.done };
+        }) : [],
+        files: Array.isArray(c.files) ? c.files.filter(function (fl) {
+          return fl && typeof fl.name === "string" && typeof fl.url === "string";
+        }).map(function (fl) {
+          return {
+            id: typeof fl.id === "string" ? fl.id : uid("f"),
+            name: fl.name, url: fl.url,
+            mime: typeof fl.mime === "string" ? fl.mime : "",
+            size: typeof fl.size === "number" ? fl.size : 0,
+            at: typeof fl.at === "number" ? fl.at : Date.now()
+          };
+        }) : [],
+        editedAt: typeof c.editedAt === "number" ? c.editedAt : (typeof c.created === "number" ? c.created : Date.now()),
         created: typeof c.created === "number" ? c.created : Date.now(),
         movedAt: typeof c.movedAt === "number" ? c.movedAt : (typeof c.created === "number" ? c.created : Date.now()),
         doneAt: typeof c.doneAt === "number" ? c.doneAt : 0
@@ -2727,7 +2865,9 @@
       // sync bookkeeping, kept so it survives a reload
       syncedAt: num(raw.syncedAt),
       touchedAt: num(raw.touchedAt),
-      seenDriveAt: num(raw.seenDriveAt)
+      seenDriveAt: num(raw.seenDriveAt),
+      // id -> deletion time, so a merge never resurrects a deleted card
+      deleted: (raw.deleted && typeof raw.deleted === "object") ? raw.deleted : {}
     };
   }
 
@@ -2736,6 +2876,7 @@
   var view = {
     lang: "th", font: "sans", bg: "default", hue: 168,
     scope: "all", calDays: 14, boardMenu: false,
+    autoCal: false, autoSync: false,
     page: "board", filter: "all", query: "",
     composing: null, menuFor: null, groupBy: "col", sortBy: "due"
   };
@@ -2755,6 +2896,8 @@
         if (typeof savedUi.sortBy === "string") view.sortBy = savedUi.sortBy;
         if (savedUi.scope === "all" || savedUi.scope === "one") view.scope = savedUi.scope;
         if (CAL_RANGES.indexOf(savedUi.calDays) !== -1) view.calDays = savedUi.calDays;
+        view.autoCal = !!savedUi.autoCal;
+        view.autoSync = !!savedUi.autoSync;
       } else if (/^en\b/i.test(navigator.language || "")) {
         view.lang = "en";
       }
@@ -2767,7 +2910,8 @@
       window.localStorage.setItem(UI_KEY, JSON.stringify({
         lang: view.lang, font: view.font, bg: view.bg, hue: view.hue,
         page: view.page, groupBy: view.groupBy, sortBy: view.sortBy,
-        scope: view.scope, calDays: view.calDays
+        scope: view.scope, calDays: view.calDays,
+        autoCal: view.autoCal, autoSync: view.autoSync
       }));
     } catch (e) { /* not worth warning about */ }
   }
@@ -2880,15 +3024,23 @@
 
   /* ═══ mutations ═════════════════════════════════════════════ */
   function markTouched() { state.touchedAt = Date.now(); }
-  function commit() { markTouched(); save(); render(); renderSync(); }
+  function commit() {
+    markTouched();
+    save();
+    render();
+    renderSync();
+    scheduleAutoPush();
+  }
 
   function addCard(colId, title) {
     var col = B().columns[colIndex(colId)];
     if (!col) return;
     var card = {
       id: uid("k"), title: title.trim(), note: "", due: "", pri: "low",
-      tags: [], log: [], repeat: "", calEventId: "",
-      created: Date.now(), movedAt: Date.now(), doneAt: col.done ? Date.now() : 0
+      tags: [], log: [], repeat: "", calEventId: "", calDue: "",
+      checks: [], files: [],
+      created: Date.now(), movedAt: Date.now(), editedAt: Date.now(),
+      doneAt: col.done ? Date.now() : 0
     };
     B().cards[card.id] = card;
     col.cards.push(card.id);
@@ -2905,6 +3057,8 @@
     to.cards.splice(index, 0, cardId);
     var card = B().cards[cardId];
     card.movedAt = Date.now();
+    card.editedAt = Date.now();
+    window.setTimeout(function () { calSyncCard(card); }, 0);
     if (to.done) {
       if (!card.doneAt) card.doneAt = Date.now();
       if (!from.done) spawnNextRound(card, from);
@@ -2940,7 +3094,10 @@
     var copy = {
       id: uid("k"), title: card.title, note: card.note, due: nextDue,
       pri: card.pri, tags: card.tags.slice(), log: [], repeat: card.repeat,
-      calEventId: "", created: Date.now(), movedAt: Date.now(), doneAt: 0
+      calEventId: "", calDue: "", checks: card.checks.map(function (k) {
+        return { id: uid("x"), text: k.text, done: false };
+      }), files: [],
+      created: Date.now(), movedAt: Date.now(), editedAt: Date.now(), doneAt: 0
     };
     B().cards[copy.id] = copy;
     var target = homeCol && !homeCol.done ? homeCol : B().columns[0];
@@ -3016,6 +3173,11 @@
     undoBuf = { card: B().cards[cardId], colId: col.id, index: idx };
     col.cards.splice(idx, 1);
     delete B().cards[cardId];
+    state.deleted[cardId] = Date.now();
+    if (undoBuf.card.calEventId) {
+      calQueue.push({ op: "remove", id: cardId, eventId: undoBuf.card.calEventId });
+      runCalQueue();
+    }
     commit();
     toast(t("toast.deleted", { t: clip(undoBuf.card.title, 29) }), t("toast.undo"), function () {
       if (!undoBuf) return;
@@ -3089,6 +3251,168 @@
         '</div>';
     });
     return '<div class="log-list">' + out + '</div>';
+  }
+
+  var MAX_UPLOAD_MB = 5;
+
+  function touchCard(card) {
+    if (card) card.editedAt = Date.now();
+  }
+
+  function checksHtml(card) {
+    var list = card.checks || [];
+    var done = list.filter(function (k) { return k.done; }).length;
+    var rows = list.length
+      ? '<div class="check-list">' + list.map(function (k) {
+          return '<div class="check-row' + (k.done ? " is-done" : "") + '">' +
+            '<button class="tick" type="button" data-check="' + k.id + '" ' +
+              'aria-pressed="' + !!k.done + '">✓</button>' +
+            '<span class="check-text">' + esc(k.text) + '</span>' +
+            '<button class="icon-btn check-del" type="button" data-check-del="' + k.id + '" ' +
+              'aria-label="' + esc(t("check.del")) + '">✕</button>' +
+            '</div>';
+        }).join("") + '</div>'
+      : '<p class="log-empty">' + esc(t("check.empty")) + '</p>';
+
+    return '<div class="log-head"><h3>' + esc(t("check.label")) + '</h3>' +
+        (list.length ? '<span class="n">' + t("check.done", { a: done, b: list.length }) + '</span>' : '') +
+      '</div>' +
+      (list.length ? '<div class="check-bar"><span style="width:' +
+        Math.round(done / list.length * 100) + '%"></span></div>' : '') +
+      rows +
+      '<div class="log-add"><input type="text" id="checkInput" ' +
+        'placeholder="' + esc(t("check.ph")) + '" />' +
+        '<div class="log-add-row"><button class="btn" type="button" id="checkAdd">' +
+          esc(t("check.add")) + '</button></div></div>';
+  }
+
+  function filesHtml(card) {
+    var list = card.files || [];
+    var rows = list.length
+      ? '<div class="file-list">' + list.map(function (f) {
+          return '<div class="file-row">' +
+            '<a href="' + esc(f.url) + '" target="_blank" rel="noreferrer noopener" class="file-name">' +
+              esc(f.name) + '</a>' +
+            '<span class="file-size">' + esc(prettySize(f.size)) + '</span>' +
+            '<button class="icon-btn" type="button" data-file-del="' + f.id + '" ' +
+              'aria-label="' + esc(t("file.del")) + '">✕</button>' +
+            '</div>';
+        }).join("") + '</div>'
+      : '<p class="log-empty">' + esc(t("file.empty")) + '</p>';
+
+    var canUpload = mcpReady() && !sync.off;
+    return '<div class="log-head"><h3>' + esc(t("file.label")) + '</h3>' +
+        (list.length ? '<span class="n">' + list.length + '</span>' : '') +
+      '</div>' +
+      '<p class="log-hint">' + esc(canUpload ? t("file.hint") : t("file.off")) + '</p>' +
+      rows +
+      (canUpload ? '<div class="log-add-row">' +
+        '<button class="btn" type="button" id="fileAdd">' + esc(t("file.add")) + '</button>' +
+        '<input type="file" id="fileUp" class="sr-only" />' +
+        '</div>' : '');
+  }
+
+  function prettySize(n) {
+    if (!n) return "";
+    if (n < 1024) return n + " B";
+    if (n < 1024 * 1024) return Math.round(n / 1024) + " KB";
+    return (n / 1024 / 1024).toFixed(1) + " MB";
+  }
+
+  function renderChecks(cardId) {
+    var host = $("checkSection");
+    var card = B().cards[cardId];
+    if (host && card) host.innerHTML = checksHtml(card);
+  }
+  function renderFiles(cardId) {
+    var host = $("fileSection");
+    var card = B().cards[cardId];
+    if (host && card) host.innerHTML = filesHtml(card);
+  }
+
+  function addCheck(cardId, text) {
+    var card = B().cards[cardId];
+    if (!card || !text.trim()) return;
+    card.checks.push({ id: uid("x"), text: text.trim(), done: false });
+    touchCard(card);
+    markTouched(); save(); render();
+    renderChecks(cardId);
+    var el = $("checkInput");
+    if (el) el.focus();
+  }
+
+  function toggleCheck(cardId, checkId) {
+    var card = B().cards[cardId];
+    if (!card) return;
+    card.checks.forEach(function (k) { if (k.id === checkId) k.done = !k.done; });
+    touchCard(card);
+    markTouched(); save(); render();
+    renderChecks(cardId);
+  }
+
+  function delCheck(cardId, checkId) {
+    var card = B().cards[cardId];
+    if (!card) return;
+    card.checks = card.checks.filter(function (k) { return k.id !== checkId; });
+    touchCard(card);
+    markTouched(); save(); render();
+    renderChecks(cardId);
+  }
+
+  function fileToBase64(file) {
+    return new Promise(function (res, rej) {
+      var r = new FileReader();
+      r.onload = function () { res(String(r.result).split(",")[1] || ""); };
+      r.onerror = function () { rej(new Error("read failed")); };
+      r.readAsDataURL(file);
+    });
+  }
+
+  function uploadFile(cardId, file) {
+    var card = B().cards[cardId];
+    if (!card) return;
+    if (!mcpReady() || sync.off) { toast(t("file.off")); return; }
+    if (file.size > MAX_UPLOAD_MB * 1024 * 1024) {
+      toast(t("file.tooBig", { n: MAX_UPLOAD_MB }));
+      return;
+    }
+    var btn = $("fileAdd");
+    if (btn) { btn.disabled = true; btn.textContent = t("file.adding"); }
+
+    fileToBase64(file).then(function (b64) {
+      return window.claude.mcp.callTool(DRIVE, "create_file", {
+        title: file.name,
+        base64Content: b64,
+        contentMimeType: file.type || "application/octet-stream",
+        disableConversionToGoogleType: true
+      });
+    }).then(function (res) {
+      var pl = (res && res.payload) || {};
+      card.files.push({
+        id: uid("f"), name: pl.title || file.name,
+        url: pl.viewUrl || "", mime: pl.mimeType || file.type || "",
+        size: Number(pl.fileSize) || file.size, at: Date.now()
+      });
+      touchCard(card);
+      markTouched(); save(); render();
+      renderFiles(cardId);
+      toast(t("file.uploaded", { t: clip(file.name, 26) }));
+    }).catch(function (err) {
+      if (btn) { btn.disabled = false; btn.textContent = t("file.add"); }
+      if (syncDead(err)) { sync.off = true; renderFiles(cardId); return; }
+      toast(syncErrText(err, true, DRIVE));
+    });
+  }
+
+  function delFile(cardId, fileId) {
+    var card = B().cards[cardId];
+    if (!card) return;
+    card.files = card.files.filter(function (f) { return f.id !== fileId; });
+    touchCard(card);
+    markTouched(); save(); render();
+    renderFiles(cardId);
+    // Drive exposes no delete tool, so the file itself stays put
+    toast(t("file.removed"));
   }
 
   function logSectionHtml(card) {
@@ -3279,8 +3603,14 @@
           if (manual) toast(t("sync.upToDate"));
           return;
         }
-        // untouched since the last push → safe to take Drive's copy outright
-        if ((state.touchedAt || 0) <= (state.syncedAt || 0)) applyRemote(loaded);
+        /* With auto-sync on, always merge. "Untouched since my last push"
+           is not proof this device has nothing the remote lacks: the
+           push-on-hide stamps syncedAt, so a copy pushed later from
+           another device would otherwise replace local work wholesale.
+           Merging is safe either way — a clean device simply ends up with
+           the remote contents. */
+        if (view.autoSync) applyMerge(loaded);
+        else if ((state.touchedAt || 0) <= (state.syncedAt || 0)) applyRemote(loaded);
         else askSyncConflict(loaded);
       });
     }).catch(function (err) {
@@ -3291,6 +3621,115 @@
       renderSync();
       if (manual && sync.err) toast(sync.err);
     });
+  }
+
+  var pushTimer = 0;
+  var AUTO_PUSH_MS = 120000;
+
+  function scheduleAutoPush() {
+    if (!view.autoSync || !mcpReady() || sync.off) return;
+    window.clearTimeout(pushTimer);
+    pushTimer = window.setTimeout(function () { drivePush(true); }, AUTO_PUSH_MS);
+  }
+
+  /* Card-level merge. Whole-board win/lose loses whatever the other side
+     did; this keeps both, letting the newer edit of each card win and
+     honouring tombstones so a delete is never undone by a merge. */
+  function mergeStates(local, remote) {
+    var tomb = {};
+    [local.deleted || {}, remote.deleted || {}].forEach(function (d) {
+      Object.keys(d).forEach(function (id) {
+        tomb[id] = Math.max(tomb[id] || 0, d[id] || 0);
+      });
+    });
+    var alive = function (card) {
+      var ts = tomb[card.id];
+      return !ts || (card.editedAt || 0) > ts;
+    };
+
+    var byId = {};
+    local.boards.forEach(function (bd) { byId[bd.id] = { local: bd, remote: null }; });
+    remote.boards.forEach(function (bd) {
+      if (byId[bd.id]) byId[bd.id].remote = bd;
+      else byId[bd.id] = { local: null, remote: bd };
+    });
+
+    var boards = [];
+    // local order first, then boards that only exist remotely
+    var order = local.boards.map(function (b) { return b.id; })
+      .concat(remote.boards.filter(function (b) { return !byId[b.id].local; })
+        .map(function (b) { return b.id; }));
+
+    order.forEach(function (id) {
+      var pair = byId[id];
+      if (!pair) return;
+      if (!pair.remote) { boards.push(pair.local); return; }
+      if (!pair.local) { boards.push(pair.remote); return; }
+
+      var cards = {};
+      [pair.remote, pair.local].forEach(function (side) {
+        Object.keys(side.cards).forEach(function (cid) {
+          var c = side.cards[cid];
+          if (!alive(c)) return;
+          var have = cards[cid];
+          if (!have || (c.editedAt || 0) > (have.editedAt || 0)) cards[cid] = c;
+        });
+      });
+
+      // column set: local order, plus columns only the remote has
+      var cols = [];
+      var seenCol = {};
+      pair.local.columns.forEach(function (col) { seenCol[col.id] = col; cols.push(col.id); });
+      pair.remote.columns.forEach(function (col) {
+        if (!seenCol[col.id]) { seenCol[col.id] = col; cols.push(col.id); }
+      });
+
+      var placed = {};
+      var columns = cols.map(function (colId) {
+        var lc = pair.local.columns.filter(function (c) { return c.id === colId; })[0];
+        var rc = pair.remote.columns.filter(function (c) { return c.id === colId; })[0];
+        var base = lc || rc;
+        var ids = [];
+        (rc ? rc.cards : []).concat(lc ? lc.cards : []).forEach(function (cid) {
+          if (cards[cid] && !placed[cid]) { placed[cid] = 1; ids.push(cid); }
+        });
+        return { id: base.id, title: base.title, done: !!base.done, cards: ids };
+      });
+
+      // anything the merge kept but no column claimed lands in the first one
+      Object.keys(cards).forEach(function (cid) {
+        if (!placed[cid]) { placed[cid] = 1; columns[0].cards.push(cid); }
+      });
+
+      boards.push({
+        id: pair.local.id, title: pair.local.title,
+        columns: columns, cards: cards, created: pair.local.created
+      });
+    });
+
+    return {
+      v: 3, boards: boards,
+      activeBoard: boards.some(function (b) { return b.id === local.activeBoard; })
+        ? local.activeBoard : boards[0].id,
+      syncedAt: local.syncedAt, touchedAt: local.touchedAt,
+      seenDriveAt: local.seenDriveAt, deleted: tomb
+    };
+  }
+
+  function applyMerge(loaded) {
+    var merged = mergeStates(state, loaded.state);
+    state = merged;
+    state.syncedAt = loaded.savedAt;
+    state.touchedAt = Date.now();
+    state.seenDriveAt = loaded.savedAt;
+    sync.driveAt = loaded.savedAt;
+    save();
+    render();
+    renderSync();
+    toast(t("sync.merged", {
+      n: state.boards.reduce(function (n, bd) { return n + Object.keys(bd.cards).length; }, 0)
+    }));
+    scheduleAutoPush();
   }
 
   function drivePush() {
@@ -3545,6 +3984,90 @@
     });
   }
 
+  /* ── keeping the calendar in step, automatically ─────────────
+     A task with a due date owns one 09:00 event. Moving the date moves
+     the event, closing or deleting the task removes it. Work is queued
+     and spaced so a burst of edits never fires a burst of calls. */
+  var calQueue = [];
+  var calRunning = false;
+
+  function calSyncCard(card) {
+    if (!view.autoCal || !mcpReady() || cal.off) return;
+    var col = homeColumn(card);
+    var closed = col && col.done;
+
+    if (card.due && !closed) {
+      if (!card.calEventId) calQueue.push({ op: "add", id: card.id });
+      else if (card.calDue !== card.due || card.calTitle !== card.title) {
+        calQueue.push({ op: "update", id: card.id });
+      }
+    } else if (card.calEventId) {
+      calQueue.push({ op: "remove", id: card.id, eventId: card.calEventId });
+      card.calEventId = "";
+      card.calDue = "";
+    }
+    runCalQueue();
+  }
+
+  function calSyncAll() {
+    if (!view.autoCal || !mcpReady() || cal.off) return;
+    state.boards.forEach(function (bd) {
+      Object.keys(bd.cards).forEach(function (id) {
+        calSyncCard(tagBoard(bd.cards[id], bd));
+      });
+    });
+  }
+
+  function runCalQueue() {
+    if (calRunning || !calQueue.length) return;
+    calRunning = true;
+    var job = calQueue.shift();
+    var card = null;
+    state.boards.forEach(function (bd) { if (bd.cards[job.id]) card = bd.cards[job.id]; });
+
+    var done = function () {
+      calRunning = false;
+      save();
+      if (calQueue.length) window.setTimeout(runCalQueue, 350);
+    };
+
+    if (job.op === "remove") {
+      window.claude.mcp.callTool(CAL, "delete_event", {
+        eventId: job.eventId, notificationLevel: "NONE"
+      }).then(done, function (err) {
+        if (syncDead(err)) cal.off = true;
+        done();
+      });
+      return;
+    }
+    if (!card || !card.due) { done(); return; }
+
+    var input = {
+      summary: card.title,
+      startTime: card.due + "T09:00:00",
+      endTime: card.due + "T09:30:00",
+      notificationLevel: "NONE"
+    };
+    if (job.op === "add") {
+      input.description = card.note || "";
+      input.availability = "AVAILABILITY_FREE";
+    } else {
+      input.eventId = card.calEventId;
+    }
+
+    window.claude.mcp.callTool(CAL, job.op === "add" ? "create_event" : "update_event", input)
+      .then(function (res) {
+        var id = res && res.payload && res.payload.id;
+        if (typeof id === "string") card.calEventId = id;
+        card.calDue = card.due;
+        card.calTitle = card.title;
+        done();
+      }, function (err) {
+        if (syncDead(err)) cal.off = true;
+        done();
+      });
+  }
+
   /* ═══ Gmail (read-only) ═════════════════════════════════════ */
   /* One entry per readable mail connector. Only sources whose request
      and response shapes have actually been observed belong here. */
@@ -3732,6 +4255,14 @@
       chips += '<span class="chip">' + esc(priLabel(card.pri)) + '</span>';
     }
     chips += logChip(card);
+    if ((card.checks || []).length) {
+      var kd = card.checks.filter(function (k) { return k.done; }).length;
+      chips += '<span class="chip checks' + (kd === card.checks.length ? " all-done" : "") + '">' +
+        kd + '/' + card.checks.length + '</span>';
+    }
+    if ((card.files || []).length) {
+      chips += '<span class="chip files">' + card.files.length + '</span>';
+    }
     if (card.repeat) chips += '<span class="chip repeat">' + esc(t("repeat.chip", { t: t("repeat." + card.repeat) })) + '</span>';
     var sd = staleDays(card);
     if (sd >= STALE_DAYS) chips += '<span class="chip stale">' + esc(t("stale.chip", { n: sd })) + '</span>';
@@ -4471,7 +5002,20 @@
           '<span class="val" id="hueVal">' + view.hue + '\u00b0</span>' +
         '</div>' +
         '<span class="help">' + esc(t("set.bgHint")) + '</span></div>' +
+      '<div class="field"><label>' + esc(t("autocal.label")) + '</label>' +
+        '<div class="segmented" id="autoCalPick">' +
+          '<button type="button" data-autocal="1" aria-pressed="' + (view.autoCal === true) + '">' +
+            esc(t("autocal.on")) + '</button>' +
+          '<button type="button" data-autocal="0" aria-pressed="' + (view.autoCal === false) + '">' +
+            esc(t("autocal.off")) + '</button>' +
+        '</div><span class="help">' + esc(t("autocal.hint")) + '</span></div>' +
       '<div class="field"><label>' + esc(t("sync.title")) + '</label>' +
+        '<div class="segmented" id="autoSyncPick">' +
+          '<button type="button" data-autosync="1" aria-pressed="' + (view.autoSync === true) + '">' +
+            esc(t("sync.auto")) + '</button>' +
+          '<button type="button" data-autosync="0" aria-pressed="' + (view.autoSync === false) + '">' +
+            esc(t("autocal.off")) + '</button>' +
+        '</div><span class="help">' + esc(t("autosync.hint")) + '</span>' +
         '<div id="syncBox">' + syncBoxHtml() + '</div></div>' +
       '<div class="sheet-foot"><span class="spacer"></span>' +
         '<button class="btn btn-primary" type="button" id="setClose">' +
@@ -4555,6 +5099,8 @@
             (card.calEventId ? " disabled" : "") + '>' +
             esc(card.calEventId ? t("cal.pushed") : t("cal.push")) + '</button></div>' +
       '</div>' +
+      '<div class="log" id="checkSection">' + checksHtml(card) + '</div>' +
+      '<div class="log" id="fileSection">' + filesHtml(card) + '</div>' +
       '<div class="log" id="logSection">' + logSectionHtml(card) + '</div>' +
       '<div class="sheet-foot">' +
         '<button class="btn btn-danger" type="button" id="fDelete">' + esc(t("ed.delete")) + '</button>' +
@@ -4594,9 +5140,11 @@
       logOf(card).push({ id: uid("g"), text: pending.value.trim(), at: Date.now() });
     }
 
+    touchCard(card);
     var target = $("fCol").value;
     var here = colOf(card.id);
     closeEditor();
+    calSyncCard(card);
     if (target !== here.id) {
       moveCard(card.id, target, B().columns[colIndex(target)].cards.length);
     } else {
@@ -4684,6 +5232,40 @@
   document.addEventListener("click", function (e) {
     var target = e.target;
     var hit;
+
+    // checklist
+    hit = target.closest("[data-check]");
+    if (hit && editing) { toggleCheck(editing.id, hit.dataset.check); return; }
+    hit = target.closest("[data-check-del]");
+    if (hit && editing) { delCheck(editing.id, hit.dataset.checkDel); return; }
+    if (target.closest("#checkAdd") && editing) {
+      var ci = $("checkInput");
+      if (ci && ci.value.trim()) addCheck(editing.id, ci.value);
+      return;
+    }
+
+    // attachments
+    if (target.closest("#fileAdd")) { $("fileUp").click(); return; }
+    hit = target.closest("[data-file-del]");
+    if (hit && editing) { delFile(editing.id, hit.dataset.fileDel); return; }
+
+    // auto toggles
+    hit = target.closest("[data-autocal]");
+    if (hit) {
+      view.autoCal = hit.dataset.autocal === "1";
+      saveUi();
+      if (view.autoCal) calSyncAll();
+      openSettings();
+      return;
+    }
+    hit = target.closest("[data-autosync]");
+    if (hit) {
+      view.autoSync = hit.dataset.autosync === "1";
+      saveUi();
+      if (view.autoSync) scheduleAutoPush();
+      openSettings();
+      return;
+    }
 
     // Drive sync
     if (target.closest("#btnPush") || target.closest("#syncPush")) { drivePush(); return; }
@@ -4992,6 +5574,12 @@
       if (view.boardMenu) { view.boardMenu = false; render(); return; }
     }
 
+    if (e.target.id === "checkInput" && e.key === "Enter") {
+      e.preventDefault();
+      if (editing && e.target.value.trim()) addCheck(editing.id, e.target.value);
+      return;
+    }
+
     if (e.target.id === "composerInput" && e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       var val = e.target.value.trim();
@@ -5160,10 +5748,28 @@
 
   window.addEventListener("resize", sizeBoard);
 
+  document.addEventListener("change", function (e) {
+    if (e.target.id !== "fileUp") return;
+    var f = e.target.files && e.target.files[0];
+    if (f && editing) uploadFile(editing.id, f);
+    e.target.value = "";
+  });
+
+  /* Best-effort final push — the page may be closed before it lands, which
+     is why the timed push exists as well. */
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState !== "hidden") return;
+    if (!view.autoSync || !mcpReady() || sync.off) return;
+    if ((state.touchedAt || 0) <= (state.syncedAt || 0)) return;
+    window.clearTimeout(pushTimer);
+    drivePush(true);
+  });
+
   applyStatic();
   save();
   render();
   renderSync();
   drivePull(false);
+  window.setTimeout(calSyncAll, 1200);
 })();
 </script>
