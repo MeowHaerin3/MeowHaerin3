@@ -145,6 +145,8 @@ fs.writeFileSync(OUT + '/page.html',
   await check('rendered after reload', async () => (await page.$$('.card')).length);
 
   console.log('— reset board sheet —');
+  await page.click('#btnSettings'); await page.waitForTimeout(250);
+  await page.click('[data-settab="data"]'); await page.waitForTimeout(250);
   await page.click('#btnReset');
   await page.waitForTimeout(150);
   await check('confirm sheet open', async () => await page.isVisible('#cfOk'));

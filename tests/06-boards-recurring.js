@@ -67,8 +67,15 @@ window.claude = { mcp: {
   const p = await open(fresh);
   await check('no title banner', async () => (await p.$$('#mastTitle')).length === 0);
   await check('date stamp kept', async () => await p.textContent('#todayStamp'));
-  await check('all 4 buttons still there', async () =>
+  await check('masthead trimmed to push + settings', async () =>
     (await p.$$eval('.masthead-tools button', e => e.map(x => x.textContent || x.id))).join(' | '));
+  await check('backup and erase moved into settings', async () => {
+    await p.click('#btnSettings'); await p.waitForTimeout(250);
+    await p.click('[data-settab="data"]'); await p.waitForTimeout(250);
+    const ok = (await p.$$('#btnExport')).length && (await p.$$('#btnImport')).length && (await p.$$('#btnReset')).length;
+    await p.click('#setClose');
+    return !!ok;
+  });
   await check('board tab strip present', async () => (await p.$$('.board-tab')).length);
   await p.close();
 

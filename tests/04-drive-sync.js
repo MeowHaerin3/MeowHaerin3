@@ -90,6 +90,7 @@ window.claude = {
   const p0 = await open(`try{if(!sessionStorage.getItem('__c')){localStorage.clear();sessionStorage.setItem('__c','1')}}catch(e){}`);
   await check('push button hidden', async () => await p0.isHidden('#btnPush'));
   await p0.click('#btnSettings'); await p0.waitForTimeout(250);
+  await p0.click('[data-settab="link"]'); await p0.waitForTimeout(250);
   await check('settings shows unavailable', async () => (await p0.$$('.sync-state.is-off')).length === 1);
   await check('board still fully usable', async () => (await p0.$$('.card')).length);
   await p0.close();
@@ -103,6 +104,7 @@ window.claude = {
     await p1.evaluate(() => window.__drive.calls[0].input.query));
   await check('server name', async () => await p1.evaluate(() => window.__drive.calls[0].server));
   await p1.click('#btnSettings'); await p1.waitForTimeout(250);
+  await p1.click('[data-settab="link"]'); await p1.waitForTimeout(250);
   await check('status = never pushed', async () => await p1.textContent('.sync-state span:last-child'));
 
   console.log('— push —');
@@ -120,6 +122,8 @@ window.claude = {
   }));
   await check('toast confirmed', async () => await p1.textContent('#toastText'));
   await p1.click('#btnSettings').catch(() => {});
+  await p1.waitForTimeout(200);
+  await p1.click('[data-settab="link"]').catch(() => {});
   await p1.waitForTimeout(200);
   await check('status now shows a push time', async () =>
     (await p1.textContent('.sync-state span:last-child')).length > 8);
@@ -144,6 +148,7 @@ window.claude = {
   await p2.waitForTimeout(600);
   await check('no pull toast', async () => await p2.isHidden('#toast'));
   await p2.click('#btnSettings'); await p2.waitForTimeout(250);
+  await p2.click('[data-settab="link"]'); await p2.waitForTimeout(250);
   await p2.click('#syncPull'); await p2.waitForTimeout(400);
   await check('manual pull says up to date', async () => await p2.textContent('#toastText'));
   await p2.close();
@@ -195,6 +200,7 @@ window.claude = {
       mcpStub({ fail: { code, message: 'boom' } }));
     await check(code, async () => (await pe.textContent('#toastText')) || '(silent on boot)');
     await pe.click('#btnSettings'); await pe.waitForTimeout(250);
+    await pe.click('[data-settab="link"]'); await pe.waitForTimeout(250);
     await check('  ↳ distinct message in settings', async () => {
       const txt = await pe.textContent('.sync-err').catch(() => '');
       return txt.toLowerCase().includes(expect) ? txt.slice(0, 60) : false;
@@ -217,6 +223,7 @@ window.claude = {
   const pd = await open(`try{if(!sessionStorage.getItem('__c')){localStorage.clear();sessionStorage.setItem('__c','1')}}catch(e){}\n` + mcpStub({ fail: { code: 'not_granted', message: 'x' } }));
   await check('push button hidden after not_granted', async () => await pd.isHidden('#btnPush'));
   await pd.click('#btnSettings'); await pd.waitForTimeout(250);
+  await pd.click('[data-settab="link"]'); await pd.waitForTimeout(250);
   await check('settings shows unavailable', async () => (await pd.$$('.sync-state.is-off')).length === 1);
   await pd.close();
 

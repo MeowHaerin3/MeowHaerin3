@@ -1696,6 +1696,75 @@
 
   #btnPush[hidden] { display: none; }
 
+  /* ─── settings tabs ──────────────────────────────────────── */
+  .sheet-tabs {
+    display: flex;
+    gap: 2px;
+    margin: 10px 0 18px;
+    border-bottom: 1px solid var(--line);
+  }
+  .sheet-tabs button {
+    position: relative;
+    padding: 7px 13px 10px;
+    border: 0;
+    background: transparent;
+    color: var(--muted);
+    font-size: 13.5px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .sheet-tabs button::after {
+    content: "";
+    position: absolute;
+    left: 8px; right: 8px; bottom: -1px;
+    height: 2px;
+    border-radius: 2px 2px 0 0;
+    background: transparent;
+  }
+  .sheet-tabs button:hover { color: var(--ink); }
+  .sheet-tabs button[aria-current="true"] { color: var(--ink); font-weight: 650; }
+  .sheet-tabs button[aria-current="true"]::after { background: var(--accent); }
+
+  /* ─── collapsible search ─────────────────────────────────── */
+  #searchToggle { display: none; width: 32px; height: 32px; }
+
+  /* ─── narrow screens: give the height back to the tasks ─────
+     At 390×844 the header was eating about 63% of the viewport, which
+     left room for a single card. */
+  @media (max-width: 700px) {
+    .masthead { padding-block: 12px 14px; }
+    .brand .stamp { font-size: 10.5px; }
+    .masthead-row { gap: 10px; align-items: center; }
+    .nav { margin-top: 10px; margin-bottom: -14px; }
+    .boards { margin-top: 8px; }
+
+    .pulse-band { padding-block: 10px; }
+    /* one scrollable row of compact figures instead of a 2×2 grid of cards */
+    .pulse {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .pulse::-webkit-scrollbar { display: none; }
+    .tile {
+      flex: none;
+      flex-direction: row;
+      align-items: baseline;
+      gap: 6px;
+      padding: 6px 11px 6px 13px;
+    }
+    .tile .n { font-size: 17px; }
+    .tile .lbl { font-size: 11.5px; white-space: nowrap; }
+    /* the note repeats what the figures already say */
+    .pulse-note { display: none; }
+
+    .toolbar { padding-block: 8px; gap: 8px; }
+    .toolbar .search { display: none; }
+    body.search-open .toolbar .search { display: block; flex: 1 1 100%; max-width: none; }
+    #searchToggle { display: inline-grid; }
+  }
+
   /* ─── settings sheet ─────────────────────────────────────── */
   .font-opts { display: flex; flex-direction: column; gap: 6px; }
   .font-opt {
@@ -1805,8 +1874,6 @@
       <div class="masthead-tools">
         <button class="btn btn-primary" id="btnPush" type="button" hidden></button>
         <button class="btn" id="btnSettings" type="button"></button>
-        <button class="btn" id="btnExport" type="button"></button>
-        <button class="btn" id="btnImport" type="button"></button>
         <input type="file" id="fileInput" accept=".json,application/json" class="sr-only" />
       </div>
     </div>
@@ -1831,9 +1898,13 @@
       <input type="search" id="search" />
       <button class="icon-btn clr" id="clearSearch" type="button" hidden>✕</button>
     </div>
+    <button class="icon-btn" id="searchToggle" type="button">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+        <circle cx="7" cy="7" r="4.5" /><path d="M10.5 10.5 L14 14" stroke-linecap="round" />
+      </svg>
+    </button>
     <span id="filterTagSlot"></span>
     <span class="spacer"></span>
-    <button class="btn btn-ghost" id="btnReset" type="button"></button>
   </div>
 
   <div class="wrap" id="blankSlot"></div>
@@ -1882,7 +1953,7 @@
       "btn.settings": "ตั้งค่า",
       "btn.export": "บันทึกไฟล์สำรอง",
       "btn.import": "เปิดไฟล์สำรอง",
-      "btn.reset": "เริ่มกระดานใหม่",
+      "btn.reset": "ล้างข้อมูลทั้งหมด",
       "nav.aria": "มุมมอง",
       "pulse.aria": "สรุปสถานะงาน",
 
@@ -2034,9 +2105,9 @@
       "addCol.label": "ชื่อคอลัมน์",
       "addCol.ph": "เช่น สัปดาห์นี้ / ไว้ค่อยทำ",
       "rename.title": "เปลี่ยนชื่อคอลัมน์",
-      "reset.title": "เริ่มกระดานใหม่",
-      "reset.body": "งานทั้งหมดบนกระดานนี้จะถูกลบและแทนที่ด้วยกระดานตั้งต้น ถ้ายังไม่ได้กด “บันทึกไฟล์สำรอง” งานเดิมจะหายถาวร",
-      "reset.ok": "ลบทั้งหมดแล้วเริ่มใหม่",
+      "reset.title": "ล้างข้อมูลทั้งหมด",
+      "reset.body": "บอร์ดทั้ง {n} บอร์ด และงานทั้งหมด {m} งาน จะถูกลบถาวร แล้วเริ่มจากกระดานตั้งต้นใหม่ — ไม่ใช่แค่บอร์ดที่เปิดอยู่ ถ้ายังไม่ได้บันทึกไฟล์สำรอง ของเดิมจะไม่กลับมา",
+      "reset.ok": "ลบทุกอย่าง",
       "clearCol.title": "ล้างคอลัมน์ “{t}”",
       "clearCol.body": "การ์ด {n} ใบในคอลัมน์นี้จะถูกลบถาวร",
       "clearCol.ok": "ลบ {n} การ์ด",
@@ -2055,12 +2126,19 @@
       "toast.sorted": "เรียงคอลัมน์ “{t}” ตามกำหนดส่งแล้ว",
       "toast.colEmpty": "คอลัมน์นี้ว่างอยู่แล้ว",
       "toast.needOneCol": "ต้องเหลือคอลัมน์อย่างน้อยหนึ่งคอลัมน์",
-      "toast.reset": "เริ่มกระดานใหม่แล้ว",
+      "toast.reset": "ล้างข้อมูลแล้ว เริ่มใหม่จากกระดานตั้งต้น",
       "toast.saved": "บันทึกไฟล์สำรองแล้ว",
       "toast.dlFail": "ดาวน์โหลดไม่ได้ในหน้านี้ ลองเปิดกระดานในแท็บใหม่",
       "toast.importBad": "ไฟล์นี้อ่านไม่ได้ ต้องเป็นไฟล์สำรองที่บันทึกจากกระดานนี้",
       "toast.imported": "เปิดไฟล์สำรองแล้ว — {n} งาน",
 
+      "set.tab.look": "หน้าตา",
+      "set.tab.link": "เชื่อมต่อ",
+      "set.tab.data": "ข้อมูล",
+      "set.backup": "ไฟล์สำรอง",
+      "set.backupHint": "ไฟล์ JSON ของบอร์ดทั้งหมด ใช้ย้ายเครื่องหรือกันเหนียว",
+      "set.danger": "ล้างข้อมูล",
+      "search.open": "เปิดช่องค้นหา",
       "set.title": "ตั้งค่า",
       "set.lang": "ภาษา",
       "set.font": "ฟอนต์",
@@ -2224,7 +2302,7 @@
       "btn.settings": "Settings",
       "btn.export": "Save backup",
       "btn.import": "Open backup",
-      "btn.reset": "Start a new board",
+      "btn.reset": "Erase everything",
       "nav.aria": "Views",
       "pulse.aria": "Workload summary",
 
@@ -2385,9 +2463,10 @@
       "addCol.label": "Column name",
       "addCol.ph": "e.g. This week / Someday",
       "rename.title": "Rename column",
-      "reset.title": "Start a new board",
-      "reset.body": "Every task on this board will be deleted and replaced with the starter board. If you haven't pressed “Save backup”, the current work is gone for good.",
-      "reset.ok": "Delete everything and restart",
+      "reset.title": "Erase everything",
+      "reset.body": "All {n} boards and all {m} tasks will be permanently deleted and replaced with a starter board — not just the board you are looking at. If you haven't saved a backup, none of it comes back.",
+      "reset.body.one": "Your only board and all {m} tasks will be permanently deleted and replaced with a starter board. If you haven't saved a backup, none of it comes back.",
+      "reset.ok": "Erase everything",
       "clearCol.title": "Clear column “{t}”",
       "clearCol.body": "All {n} cards in this column will be permanently deleted",
       "clearCol.body.one": "The single card in this column will be permanently deleted",
@@ -2410,13 +2489,20 @@
       "toast.sorted": "Sorted “{t}” by due date",
       "toast.colEmpty": "This column is already empty",
       "toast.needOneCol": "At least one column has to remain",
-      "toast.reset": "Started a new board",
+      "toast.reset": "Erased. Starting from a fresh board.",
       "toast.saved": "Backup saved",
       "toast.dlFail": "Downloads are blocked on this page — try opening the board in its own tab",
       "toast.importBad": "That file can't be read. It has to be a backup saved from this board.",
       "toast.imported": "Backup loaded — {n} tasks",
       "toast.imported.one": "Backup loaded — 1 task",
 
+      "set.tab.look": "Look",
+      "set.tab.link": "Connections",
+      "set.tab.data": "Data",
+      "set.backup": "Backup file",
+      "set.backupHint": "A JSON file of every board — for moving devices or keeping a copy",
+      "set.danger": "Erase",
+      "search.open": "Open search",
       "set.title": "Settings",
       "set.lang": "Language",
       "set.font": "Typeface",
@@ -2892,7 +2978,7 @@
   var view = {
     lang: "th", font: "sans", bg: "default", hue: 168,
     scope: "all", calDays: 14, boardMenu: false,
-    autoCal: false, autoSync: false, mailRemind: "off",
+    autoCal: false, autoSync: false, mailRemind: "off", setTab: "look",
     page: "board", filter: "all", query: "",
     composing: null, menuFor: null, groupBy: "col", sortBy: "due"
   };
@@ -4783,9 +4869,7 @@
     document.documentElement.style.setProperty("--bg-h", String(view.hue));
 
     $("btnSettings").textContent = t("btn.settings");
-    $("btnExport").textContent = t("btn.export");
-    $("btnImport").textContent = t("btn.import");
-    $("btnReset").textContent = t("btn.reset");
+    $("searchToggle").setAttribute("aria-label", t("search.open"));
     $("nav").setAttribute("aria-label", t("nav.aria"));
     $("pulseBand").setAttribute("aria-label", t("pulse.aria"));
 
@@ -4991,9 +5075,9 @@
 
   function openSettings() {
     var langs = [["th", "ไทย"], ["en", "English"]];
-    $("sheet").innerHTML =
-      '<h2 id="sheetTitle">' + esc(t("set.title")) + '</h2>' +
-      '<p class="sub"></p>' +
+    var tab = view.setTab;
+
+    var look =
       '<div class="field"><label>' + esc(t("set.lang")) + '</label>' +
         '<div class="segmented" id="langPick">' +
           langs.map(function (l) {
@@ -5025,7 +5109,10 @@
             'aria-label="' + esc(t("bg.hue")) + '" />' +
           '<span class="val" id="hueVal">' + view.hue + '\u00b0</span>' +
         '</div>' +
-        '<span class="help">' + esc(t("set.bgHint")) + '</span></div>' +
+        '<span class="help">' + esc(t("set.bgHint")) + '</span></div>';
+
+    var live = mcpReady() && !sync.off;
+    var link =
       '<div class="field"><label>' + esc(t("autocal.label")) + '</label>' +
         '<div class="segmented" id="autoCalPick">' +
           '<button type="button" data-autocal="1" aria-pressed="' + (view.autoCal === true) + '">' +
@@ -5043,13 +5130,40 @@
         (view.mailRemind !== "off" && !view.autoCal
           ? ' — ' + esc(t("mail.remind.need")) : '') + '</span></div>' +
       '<div class="field"><label>' + esc(t("sync.title")) + '</label>' +
-        '<div class="segmented" id="autoSyncPick">' +
-          '<button type="button" data-autosync="1" aria-pressed="' + (view.autoSync === true) + '">' +
-            esc(t("sync.auto")) + '</button>' +
-          '<button type="button" data-autosync="0" aria-pressed="' + (view.autoSync === false) + '">' +
-            esc(t("autocal.off")) + '</button>' +
-        '</div><span class="help">' + esc(t("autosync.hint")) + '</span>' +
-        '<div id="syncBox">' + syncBoxHtml() + '</div></div>' +
+        // a switch for something the page cannot reach is a dead control
+        (live
+          ? '<div class="segmented" id="autoSyncPick">' +
+              '<button type="button" data-autosync="1" aria-pressed="' + (view.autoSync === true) + '">' +
+                esc(t("sync.auto")) + '</button>' +
+              '<button type="button" data-autosync="0" aria-pressed="' + (view.autoSync === false) + '">' +
+                esc(t("autocal.off")) + '</button>' +
+            '</div><span class="help">' + esc(t("autosync.hint")) + '</span>'
+          : '') +
+        '<div id="syncBox">' + syncBoxHtml() + '</div></div>';
+
+    var data =
+      '<div class="field"><label>' + esc(t("set.backup")) + '</label>' +
+        '<div class="sync-row">' +
+          '<button class="btn" type="button" id="btnExport">' + esc(t("btn.export")) + '</button>' +
+          '<button class="btn" type="button" id="btnImport">' + esc(t("btn.import")) + '</button>' +
+        '</div><span class="help">' + esc(t("set.backupHint")) + '</span></div>' +
+      '<div class="field"><label>' + esc(t("set.danger")) + '</label>' +
+        '<div class="sync-row">' +
+          '<button class="btn btn-danger" type="button" id="btnReset">' + esc(t("btn.reset")) + '</button>' +
+        '</div><span class="help">' + esc(t("reset.body", {
+          n: state.boards.length,
+          m: state.boards.reduce(function (a, bd) { return a + Object.keys(bd.cards).length; }, 0)
+        })) + '</span></div>';
+
+    $("sheet").innerHTML =
+      '<h2 id="sheetTitle">' + esc(t("set.title")) + '</h2>' +
+      '<div class="sheet-tabs">' +
+        ["look", "link", "data"].map(function (k) {
+          return '<button type="button" data-settab="' + k + '"' +
+            (tab === k ? ' aria-current="true"' : '') + '>' + esc(t("set.tab." + k)) + '</button>';
+        }).join("") +
+      '</div>' +
+      (tab === "look" ? look : tab === "link" ? link : data) +
       '<div class="sheet-foot"><span class="spacer"></span>' +
         '<button class="btn btn-primary" type="button" id="setClose">' +
           esc(t("set.close")) + '</button>' +
@@ -5349,7 +5463,14 @@
     // calendar task chip → the same editor
     hit = target.closest(".cal-item.is-task");
     if (hit) { focusCard(hit.dataset.card); return; }
+    hit = target.closest("[data-settab]");
+    if (hit) { view.setTab = hit.dataset.settab; openSettings(); return; }
     if (target.closest("#setClose")) { closeSheet(); return; }
+    if (target.closest("#searchToggle")) {
+      document.body.classList.toggle("search-open");
+      if (document.body.classList.contains("search-open")) $("search").focus();
+      return;
+    }
 
     // board tabs
     hit = target.closest("[data-board]");
@@ -5530,7 +5651,10 @@
     if (target.closest("#btnReset")) {
       askConfirm({
         title: t("reset.title"),
-        body: t("reset.body"),
+        body: t("reset.body", {
+          n: state.boards.length,
+          m: state.boards.reduce(function (a, bd) { return a + Object.keys(bd.cards).length; }, 0)
+        }),
         ok: t("reset.ok"),
         danger: true,
         onOk: function () {

@@ -158,6 +158,7 @@ window.claude = { mcp: {
   console.log('— auto push to calendar —');
   const p3 = await open(fresh + '\n' + stub);
   await p3.click('#btnSettings'); await p3.waitForTimeout(300);
+  await p3.click('[data-settab="link"]'); await p3.waitForTimeout(250);
   await p3.click('[data-autocal="1"]'); await p3.waitForTimeout(1200);
   await check('events created for dated tasks', async () =>
     await p3.evaluate(() => Object.keys(window.__mcp.events).length));
@@ -202,6 +203,7 @@ window.claude = { mcp: {
   console.log('— email reminder rides on the calendar entry —');
   const p3b = await open(fresh + '\n' + stub);
   await p3b.click('#btnSettings'); await p3b.waitForTimeout(300);
+  await p3b.click('[data-settab="link"]'); await p3b.waitForTimeout(250);
   await p3b.click('[data-autocal="1"]'); await p3b.waitForTimeout(1200);
   await check('no reminder while set to off', async () => await p3b.evaluate(() =>
     window.__mcp.calls.filter(x => x.tool === 'create_event')
@@ -233,6 +235,7 @@ window.claude = { mcp: {
   console.log('— auto sync: debounce and page-hide push —');
   const p4 = await open(fresh + '\n' + stub);
   await p4.click('#btnSettings'); await p4.waitForTimeout(300);
+  await p4.click('[data-settab="link"]'); await p4.waitForTimeout(250);
   await p4.click('[data-autosync="1"]'); await p4.waitForTimeout(300);
   await p4.click('#setClose'); await p4.waitForTimeout(200);
   await p4.click('.col:first-child [data-add]');
@@ -254,6 +257,7 @@ window.claude = { mcp: {
   const p5 = await open(fresh + '\n' + stub);
   // push a baseline, then let each side add a different card
   await p5.click('#btnSettings'); await p5.waitForTimeout(300);
+  await p5.click('[data-settab="link"]'); await p5.waitForTimeout(250);
   await p5.click('[data-autosync="1"]'); await p5.waitForTimeout(200);
   await p5.click('#setClose'); await p5.waitForTimeout(200);
   await p5.click('#btnPush'); await p5.waitForTimeout(700);
@@ -297,6 +301,7 @@ window.claude = { mcp: {
   console.log('— a delete is not undone by a merge —');
   const p6 = await open(fresh + '\n' + stub);
   await p6.click('#btnSettings'); await p6.waitForTimeout(300);
+  await p6.click('[data-settab="link"]'); await p6.waitForTimeout(250);
   await p6.click('[data-autosync="1"]'); await p6.waitForTimeout(200);
   await p6.click('#setClose'); await p6.waitForTimeout(200);
   await p6.click('#btnPush'); await p6.waitForTimeout(700);

@@ -30,7 +30,7 @@ let pass = 0, fail = 0;
   await page.waitForTimeout(350);
 
   console.log('— boot (Thai default) —');
-  await check('export button label', async () => await page.textContent('#btnExport'));
+  await check('settings button label', async () => await page.textContent('#btnSettings'));
   await check('nav tabs', async () => (await page.$$eval('#nav button', e => e.map(x => x.textContent.replace(/\d+$/, '')))).join(' | '));
   await check('tile labels', async () => (await page.$$eval('.tile .lbl', e => e.map(x => x.textContent))).join(' | '));
   await check('html lang', async () => await page.getAttribute('html', 'lang'));
@@ -121,7 +121,7 @@ let pass = 0, fail = 0;
   await check('settings sheet retranslated', async () => await page.textContent('#sheetTitle'));
   await page.click('#setClose');
   await page.waitForTimeout(250);
-  await check('buttons in EN', async () => await page.textContent('#btnExport'));
+  await check('buttons in EN', async () => await page.textContent('#btnSettings'));
   await check('nav in EN', async () => (await page.$$eval('#nav button', e => e.map(x => x.textContent.replace(/\d+$/, '')))).join(' | '));
   await check('tiles in EN', async () => (await page.$$eval('.tile .lbl', e => e.map(x => x.textContent))).join(' | '));
   await check('search placeholder in EN', async () => await page.getAttribute('#search', 'placeholder'));
@@ -161,7 +161,7 @@ let pass = 0, fail = 0;
   console.log('— language choice persists —');
   await page.reload();
   await page.waitForTimeout(350);
-  await check('still EN after reload', async () => await page.textContent('#btnExport'));
+  await check('still EN after reload', async () => await page.textContent('#btnSettings'));
   await check('font persisted', async () => await page.getAttribute('html', 'data-font'));
   await check('log survived reload', async () => await page.evaluate(() => {
     const cards = JSON.parse(localStorage.getItem('jeno.board.v1')).boards[0].cards;
