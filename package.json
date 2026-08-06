@@ -1,0 +1,11 @@
+{
+  "name": "todo-board",
+  "private": true,
+  "description": "End-to-end tests for todo-board.html",
+  "scripts": {
+    "test": "node tests/run-all.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.49.0"
+  }
+}
