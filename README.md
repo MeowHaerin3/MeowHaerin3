@@ -1,95 +1,185 @@
-# 👋 Hi there, I'm **JENO** (JAY-NOH)!
+<div align="center">
 
-🏭 **Automation & Control Systems Engineer** bridging the gap between **OT and IT**  
-📊 Building **OEE monitoring platforms**, **time-series pipelines**, and **real-time dashboards** for manufacturing  
-🚀 Exploring **Data Engineering** through hands-on projects — from **MQTT ingestion** to **WebSocket delivery**  
-🌱 Currently leveling up with **TimescaleDB**, **Airflow**, **dbt**, and event streaming with **Kafka**  
-🤖 Tinkering with **local LLM agents** (Ollama + ReAct loops) and AI-driven automation
+# Hi, I'm JENO 👋
 
----
+### Automation Software Engineer
 
-## 🛠️ What I'm Building
+Building reliable software for machines, motion systems, inspection stations,
+and industrial data.
 
-- **OEE Dashboard System** — Full-stack platform for manufacturing equipment effectiveness using FastAPI, React/Ant Design, PostgreSQL, and Node-RED on Raspberry Pi. Features immutable alarm event logs, machine status tracking, and a migration path to TimescaleDB for time-series analytics on 6-axis robot data (predictive maintenance, anomaly detection, digital twin use cases).
-- **Ollama React Agent** — Python/FastAPI ReAct loop with a pluggable tool registry for local LLM workflows.
-- **Multi-user Household Expense Tracker** — Full-stack app with phased AI features.
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Tanawat_Soonthorn-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://linkedin.com/in/tanawat-soonthorn/)
+[![Email](https://img.shields.io/badge/Email-tanawat.stn%40gmail.com-EA4335?style=flat-square&logo=gmail&logoColor=white)](mailto:tanawat.stn@gmail.com)
+![Profile Views](https://komarev.com/ghpvc/?username=MeowHaerin3&color=2563eb&style=flat-square)
 
----
-
-## 🧰 Tech Stack
-
-### 🔤 Languages
-![Python](https://img.shields.io/badge/Python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![Bash](https://img.shields.io/badge/Bash-4EAA25?style=for-the-badge&logo=gnubash&logoColor=white)
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
-
-### ⚙️ Backend & APIs
-![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
-![Django](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white)
-![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
-![Node-RED](https://img.shields.io/badge/Node--RED-8F0000?style=for-the-badge&logo=nodered&logoColor=white)
-
-### 🎨 Frontend
-![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![Ant Design](https://img.shields.io/badge/Ant%20Design-0170FE?style=for-the-badge&logo=antdesign&logoColor=white)
-![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
-
-### 📊 Data & Analytics
-![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
-![NumPy](https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white)
-![TimescaleDB](https://img.shields.io/badge/TimescaleDB-FDB515?style=for-the-badge&logo=timescale&logoColor=black)
-
-### 🗄️ Databases
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)
-![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
-![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white)
-![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
-
-### 🧠 Data Engineering & Orchestration
-![Dagster](https://img.shields.io/badge/Dagster-4F45E4?style=for-the-badge&logo=dagster&logoColor=white)
-![dbt](https://img.shields.io/badge/dbt-FF694B?style=for-the-badge&logo=dbt&logoColor=white)
-![Airflow](https://img.shields.io/badge/Airflow-017CEE?style=for-the-badge&logo=apacheairflow&logoColor=white)
-![Kafka](https://img.shields.io/badge/Kafka-231F20?style=for-the-badge&logo=apachekafka&logoColor=white)
-
-### 🏭 Industrial / OT
-![MQTT](https://img.shields.io/badge/MQTT-660066?style=for-the-badge&logo=mqtt&logoColor=white)
-![Raspberry Pi](https://img.shields.io/badge/Raspberry%20Pi-A22846?style=for-the-badge&logo=raspberrypi&logoColor=white)
-![InfluxDB](https://img.shields.io/badge/InfluxDB-22ADF6?style=for-the-badge&logo=influxdb&logoColor=white)
-![Mitsubishi PLC](https://img.shields.io/badge/Mitsubishi%20PLC-FF0000?style=for-the-badge&logo=mitsubishi&logoColor=white)
-![Siemens PLC](https://img.shields.io/badge/Siemens%20PLC-009999?style=for-the-badge&logo=siemens&logoColor=white)
-
-### 🤖 AI / LLM
-![Ollama](https://img.shields.io/badge/Ollama-000000?style=for-the-badge&logo=ollama&logoColor=white)
-
-### 🐳 DevOps
-![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white)
+</div>
 
 ---
 
-## 📈 GitHub Stats
+## About Me
 
-![GitHub Streak](https://github-readme-streak-stats.herokuapp.com/?user=meowhaerin3&theme=radical)
-[![GitHub Trophies](https://github-profile-trophy.vercel.app/?username=meowhaerin3&theme=radical&column=4)](https://github.com/ryo-ma/github-profile-trophy)
-![Activity Graph](https://github-readme-activity-graph.vercel.app/graph?username=meowhaerin3&theme=radical)
-![Views](https://komarev.com/ghpvc/?username=meowhaerin3&color=a91101&style=flat-square)
+I'm an automation and controls software engineer based in Thailand.
+
+I build software that connects the factory floor with modern application
+architecture—from deterministic machine control and industrial communication
+to operator HMIs, monitoring platforms, and production data systems.
+
+My work typically sits at the intersection of:
+
+- Machine automation and sequence control
+- Motion, vision, robotics, and industrial devices
+- Desktop and web-based operator interfaces
+- Real-time telemetry and production data
+- Maintainable software architecture for industrial machines
+
+I enjoy turning hardware-specific logic into reusable, testable software
+components.
 
 ---
 
-## ✨ Fun Facts
+## Current Focus
 
-- 🏭 I started in the factory floor — now I'm bringing factories online with real-time data
-- 🧠 I'm a bit of a lazy thinker — I'd rather automate the task than do it twice
-- 📊 Started with **Excel**, now everything flows through **Python pipelines** and **MQTT brokers**
-- 🎧 **Lofi**, **RnB**, and **pop** for focus — **K-pop** and **rock** for everything else
-- ☕ Tea in hand, music in ear, just vibing through the workday
+- Building a modular AOI machine-control platform with .NET and WinUI 3
+- Designing deterministic scan-loop, sequence, and PackML runtimes
+- Developing visual tools for machine flows, simulation, and debugging
+- Integrating motion controllers, robots, cameras, PLCs, and industrial I/O
+- Creating local-first monitoring systems with MQTT and WebSocket
+- Exploring AI-assisted engineering workflows and local LLM tooling
 
 ---
 
-## 📫 Reach Me
+## Selected Projects
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-blue?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/tanawat-soonthorn/)
-[![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:tanawat.stn@gmail.com)
+### AutoInspection
+
+A modular AOI station platform for motion, vision, I/O, recipes, alarms,
+production flows, and machine devices.
+
+`C#` `WinUI 3` `.NET` `Modbus TCP/RTU` `SQLite` `Simulation`
+
+- Modular device and transport architecture
+- Visual flow editor with breakpoints, stepping, call stack, and watch variables
+- Virtual commissioning with simulated station hardware
+- Recipe, MES, alarm, audit, and production-data integration
+- Automated release-readiness and regression gates
+
+### SeqStudio / NavEngine
+
+An ISA-88-inspired automation platform and deterministic runtime for reusable
+industrial sequences.
+
+`C#` `.NET 8` `React` `TypeScript` `SignalR` `ISA-88` `PackML`
+
+Focused on predictable scan execution, state supervision, process images,
+sequence orchestration, and testable machine logic.
+
+### Bambu Print Farm Monitor
+
+A local monitoring platform for nine Bambu Lab printers with real-time status,
+camera streaming, and centralized operations.
+
+`Python` `FastAPI` `React` `MQTT` `WebSocket` `go2rtc` `Caddy`
+
+### Bobcat Engine
+
+Control software for a photonics assembly and test cell, covering motion,
+vision, instruments, recipes, and process sequencing.
+
+`C++17` `Qt 6` `CMake` `OpenCV` `VISA` `Motion Control`
+
+### KUKA Monitoring
+
+An industrial telemetry pipeline for capturing robot data and visualizing
+production events.
+
+`Python` `EtherNet/IP` `InfluxDB` `Grafana` `Docker`
+
+---
+
+## Engineering Stack
+
+### Core Development
+
+![C#](https://img.shields.io/badge/C%23-512BD4?style=flat-square&logo=dotnet&logoColor=white)
+![.NET](https://img.shields.io/badge/.NET-512BD4?style=flat-square&logo=dotnet&logoColor=white)
+![C++](https://img.shields.io/badge/C++-00599C?style=flat-square&logo=cplusplus&logoColor=white)
+
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
+
+### Application Development
+
+![WinUI 3](https://img.shields.io/badge/WinUI_3-0078D4?style=flat-square&logo=windows&logoColor=white)
+![WPF](https://img.shields.io/badge/WPF-512BD4?style=flat-square&logo=dotnet&logoColor=white)
+![Qt](https://img.shields.io/badge/Qt_6-41CD52?style=flat-square&logo=qt&logoColor=white)
+
+![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)
+![ASP.NET Core](https://img.shields.io/badge/ASP.NET_Core-512BD4?style=flat-square&logo=dotnet&logoColor=white)
+
+### Industrial Automation
+
+![Modbus](https://img.shields.io/badge/Modbus_TCP%2FRTU-1F2937?style=flat-square)
+![EtherNet/IP](https://img.shields.io/badge/EtherNet%2FIP-2563EB?style=flat-square)
+![MQTT](https://img.shields.io/badge/MQTT-660066?style=flat-square&logo=mqtt&logoColor=white)
+
+![PackML](https://img.shields.io/badge/PackML-0F766E?style=flat-square)
+![ISA-88](https://img.shields.io/badge/ISA--88-0F766E?style=flat-square)
+
+Hands-on experience with:
+
+- IAI RCON and RSEL motion systems
+- KUKA industrial robots
+- WAGO distributed I/O
+- CKD ABSODEX and ECG controllers
+- KEYENCE and Hikrobot vision systems
+- Servo, serial, PLC, and embedded devices
+
+### Data and Infrastructure
+
+![SQLite](https://img.shields.io/badge/SQLite-003B57?style=flat-square&logo=sqlite&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white)
+![InfluxDB](https://img.shields.io/badge/InfluxDB-22ADF6?style=flat-square&logo=influxdb&logoColor=white)
+
+![Grafana](https://img.shields.io/badge/Grafana-F46800?style=flat-square&logo=grafana&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
+![Git](https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white)
+
+---
+
+## Engineering Approach
+
+```text
+Understand the machine
+        ↓
+Define clear device boundaries
+        ↓
+Separate hardware from domain logic
+        ↓
+Simulate before commissioning
+        ↓
+Test failure paths
+        ↓
+Measure behavior on real hardware
+```
+
+I care about deterministic behavior, explicit state, observable failures,
+safe device lifecycles, and software that future engineers can understand.
+
+---
+
+## Beyond Engineering
+
+- I automate repetitive work whenever the second repetition feels suspicious.
+- I prefer learning by building real systems instead of isolated tutorials.
+- My usual soundtrack is Lofi, R&B, pop, K-pop, and rock.
+- Tea nearby, logs open, machine hopefully not alarming.
+
+---
+
+<div align="center">
+
+### Building software where code meets real machines.
+
+![GitHub Activity Graph](https://github-readme-activity-graph.vercel.app/graph?username=MeowHaerin3&theme=github-compact&hide_border=true)
+
+</div>
